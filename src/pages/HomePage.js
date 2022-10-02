@@ -11,7 +11,7 @@ const HomePage = () => {
 	const inProp = true;
 	return (
 		<>
-			<section className=' cover'>
+			<section className='cover'>
 				<Swiper
 					spaceBetween={30}
 					centeredSlides={true}
@@ -113,11 +113,17 @@ const HomePage = () => {
 			<hr className='solid' />
 
 			<section className='my-5 container'>
-				<img src={GlobalData.media.logo} alt='Logo' />
-				<div className=' row mt-3'>
+				<div className='row'>
 					<div className='col-3'>
-						<p className='fw-normal mb-4'>We provide cleaning services for the help and growth of your business.</p>
-						<p className='fw-normal mb-4' style={{ color: ThemeColors.textColor_fade }}>
+						<img src={GlobalData.media.logo} className='size-full-width' alt='Logo' />
+					</div>
+				</div>
+				<div className=' row mt-3 align-items-end'>
+					<div className='col-3'>
+						<h6 className='fw-bold mb-4 text-center'>
+							We provide cleaning services for the help and growth of your business.
+						</h6>
+						<p className='fw-normal' style={{ color: ThemeColors.textColor_fade }}>
 							08 Brett Street,
 							<br /> Melrose Park,
 							<br /> Adelaide,
@@ -127,34 +133,34 @@ const HomePage = () => {
 						</p>
 					</div>
 					<div className='col-7 offset-2'>
-						<div className=' row row-cols-md-1 row-cols-md-2 g-3'>
+						<div className=' row row-cols-md-1 row-cols-md-2 g-0'>
 							<div className='col'>
-								<div className='btn' style={{ color: ThemeColors.textColor_fade }}>
+								<div className='btn rounded-0' style={{ color: ThemeColors.textColor_fade }}>
 									HOME
 								</div>
 							</div>
 							<div className='col'>
-								<div className='btn' style={{ color: ThemeColors.textColor_fade }}>
+								<div className='btn rounded-0' style={{ color: ThemeColors.textColor_fade }}>
 									CLIENTS
 								</div>
 							</div>
 							<div className='col'>
-								<div className='btn' style={{ color: ThemeColors.textColor_fade }}>
+								<div className='btn rounded-0' style={{ color: ThemeColors.textColor_fade }}>
 									SERVICES
 								</div>
 							</div>
 							<div className='col'>
-								<div className='btn' style={{ color: ThemeColors.textColor_fade }}>
+								<div className='btn rounded-0' style={{ color: ThemeColors.textColor_fade }}>
 									ABOUT US
 								</div>
 							</div>
 							<div className='col'>
-								<div className='btn' style={{ color: ThemeColors.textColor_fade }}>
+								<div className='btn rounded-0' style={{ color: ThemeColors.textColor_fade }}>
 									CONTACT US
 								</div>
 							</div>
 							<div className='col'>
-								<div className='btn' style={{ color: ThemeColors.textColor_fade }}>
+								<div className='btn rounded-0' style={{ color: ThemeColors.textColor_fade }}>
 									PRODUCTS & EQUIPMENT
 								</div>
 							</div>
