@@ -13,13 +13,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { ThemeColors } from '../Styling/Colors';
 import { GlobalData } from '../GlobalData';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const pages = ['HOME', 'ABOUT', 'SERVICES', 'PRODUCTS & EQUIPMENT', 'CONTACT US'];
+const pages = ['HOME', 'ABOUT US', 'SERVICES', 'PRODUCTS & EQUIPMENT', 'CONTACT US'];
+const pageRoutes = ['/', '/aboutus', 'services', 'prods-equip', 'contactus'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
-	const [anchorElNav, setAnchorElNav] = React.useState(null);
-	const [anchorElUser, setAnchorElUser] = React.useState(null);
+	const [anchorElNav, setAnchorElNav] = useState(null);
+	const [anchorElUser, setAnchorElUser] = useState(null);
+
+	const navigate = useNavigate();
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
@@ -28,8 +33,13 @@ const ResponsiveAppBar = () => {
 		setAnchorElUser(event.currentTarget);
 	};
 
-	const handleCloseNavMenu = () => {
+	const handleCloseNavMenu = (event) => {
+		const btnId = String(event.currentTarget.id);
 		setAnchorElNav(null);
+
+		if (btnId.includes('nav-btn-')) {
+			navigate(pageRoutes[Number(btnId.substring(8))]);
+		}
 	};
 
 	const handleCloseUserMenu = () => {
@@ -69,8 +79,8 @@ const ResponsiveAppBar = () => {
 								display: { xs: 'block', md: 'none' },
 							}}
 						>
-							{pages.map((page) => (
-								<MenuItem key={page} onClick={handleCloseNavMenu}>
+							{pages.map((page, index) => (
+								<MenuItem id={'nav-btn-' + index} key={page} onClick={handleCloseNavMenu}>
 									<Typography textAlign='center'>{page}</Typography>
 								</MenuItem>
 							))}
@@ -80,17 +90,22 @@ const ResponsiveAppBar = () => {
 						<img src={GlobalData.media.logo} alt='Logo' />
 					</Box>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{pages.map((page) => (
-							<Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'white', display: 'block' }}>
+						{pages.map((page, index) => (
+							<Button
+								id={'nav-btn-' + index}
+								key={page}
+								onClick={handleCloseNavMenu}
+								sx={{ my: 2, color: 'white', display: 'block' }}
+							>
 								{page}
 							</Button>
 						))}
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title='Open settings'>
+						<Tooltip title='Profile'>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+								<Avatar alt='Mery Sharp' src='/static/images/avatar/2.jpg' />
 							</IconButton>
 						</Tooltip>
 						<Menu

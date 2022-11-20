@@ -1,0 +1,9 @@
+version: '3,8'
+services:
+  dnsleasd_fronend:
+    build: .
+    container_name: dnsleads_frontend
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true

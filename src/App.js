@@ -8,6 +8,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import { ThemeColors } from './Styling/Colors';
+import AboutUs from './pages/AboutUs';
 
 function App() {
 	return (
@@ -15,6 +16,7 @@ function App() {
 			<Navbar />
 			<Routes>
 				<Route path='/' element={<HomePage />} />
+				<Route path='/aboutus' element={<AboutUs />} />
 
 				<Route path='*' element={<Navigate to={'/'} />} />
 			</Routes>
