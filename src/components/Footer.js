@@ -47,7 +47,7 @@ function Footer() {
             </section>
             <div className="bottom-line">
                 <div>
-                    <i className="far fa-copyright"></i> Copyright 2022 DNS Leads. Allright Reserved.
+                    <span style={{ fontSize: '20px' }}>&copy;</span> Copyright 2022 DNS Leads. Allright Reserved.
                 </div>
                 <div>
                     Developed By <Link to="#">Tech BOSS</Link>

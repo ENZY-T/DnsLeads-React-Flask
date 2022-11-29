@@ -15,6 +15,8 @@ import ServiceDetails from './pages/ServiceDetails';
 import NotFound from './pages/NotFound';
 import ProductsAndEquipment from './pages/ProductsAndEquipment';
 import ContactUs from './pages/ContactUs';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
     return (
@@ -28,6 +30,8 @@ function App() {
                     <Route path="/services/details" exact component={ServiceDetails} />
                     <Route path="/products-and-equipments" exact component={ProductsAndEquipment} />
                     <Route path="/contact-us" exact component={ContactUs} />
+                    <Route path="/login" exact component={Login} />
+                    <Route path="/register" exact component={Register} />
                     <Route component={NotFound} />
                 </Switch>
                 <Footer />

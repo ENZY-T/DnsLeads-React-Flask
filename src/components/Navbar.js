@@ -4,7 +4,7 @@ import { GlobalData, pagesData } from '../GlobalData';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-function NewNavBar() {
+function NavBar() {
     const [isBuggerClicked, setIsBuggerClicked] = useState(true);
     const [isNavProfileClicked, setIsNavProfileClicked] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -40,6 +40,13 @@ function NewNavBar() {
         }
     };
 
+    const hideMenuWhenClick = () => {
+        setIsNavProfileClicked(false);
+        if (windowWidth <= 800) {
+            setIsBuggerClicked(false);
+        }
+    };
+
     return (
         <div className="new-nav-bar">
             <div className="container">
@@ -54,7 +61,7 @@ function NewNavBar() {
                     </div>
                     <ul className="all-nav-items" style={{ display: isBuggerClicked ? 'flex' : 'none' }}>
                         {pagesData.map((pagedt, index) => (
-                            <Link className="nav-item" to={pagedt.link} key={index}>
+                            <Link onClick={() => hideMenuWhenClick()} className="nav-item" to={pagedt.link} key={index}>
                                 <li>{pagedt.name}</li>
                             </Link>
                         ))}
@@ -68,16 +75,16 @@ function NewNavBar() {
                         <ul className="profile-popup-container">
                             {!loginStatus ? (
                                 <>
-                                    <Link className="profile-popup-link" to="/login">
+                                    <Link className="profile-popup-link" to="/login" onClick={() => hideMenuWhenClick()}>
                                         <li>Login</li>
                                     </Link>
-                                    <Link className="profile-popup-link" to="/register">
+                                    <Link className="profile-popup-link" to="/register" onClick={() => hideMenuWhenClick()}>
                                         <li>Register</li>
                                     </Link>
                                 </>
                             ) : (
                                 settings.map((setting, index) => (
-                                    <Link className="profile-popup-link" to="#" key={index}>
+                                    <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to="#" key={index}>
                                         <li>{setting}</li>
                                     </Link>
                                 ))
@@ -90,4 +97,4 @@ function NewNavBar() {
     );
 }
 
-export default NewNavBar;
+export default NavBar;
