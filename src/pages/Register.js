@@ -1,6 +1,7 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import React from 'react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { bankList } from '../GlobalData';
 
 function Register() {
@@ -80,9 +81,12 @@ function Register() {
                             <TextField className="w-100 my-2" variant="filled" label="Account Name" />
                             <TextField className="w-100 my-2" type="number" variant="filled" label="Account Number" />
                             <TextField className="w-100 my-2" type="number" variant="filled" label="BSB Number" />
-                            <Button variant="contained" className="w-100 mt-4">
+                            <Button variant="contained" className="w-100 my-4">
                                 Register
                             </Button>
+                            <p>
+                                Already have an account? <Link to="/login">Login</Link>{' '}
+                            </p>
                         </div>
                     </div>
                 </div>
