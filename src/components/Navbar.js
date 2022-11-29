@@ -1,139 +1,93 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import { ThemeColors } from '../Styling/Colors';
-import { GlobalData } from '../GlobalData';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { GlobalData, pagesData } from '../GlobalData';
 
-const pages = ['HOME', 'ABOUT US', 'SERVICES', 'PRODUCTS & EQUIPMENT', 'CONTACT US'];
-const pageRoutes = ['/', '/aboutus', 'services', 'prods-equip', 'contactus'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const ResponsiveAppBar = () => {
-	const [anchorElNav, setAnchorElNav] = useState(null);
-	const [anchorElUser, setAnchorElUser] = useState(null);
+function NewNavBar() {
+    const [isBuggerClicked, setIsBuggerClicked] = useState(true);
+    const [isNavProfileClicked, setIsNavProfileClicked] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-	const navigate = useNavigate();
+    const [loginStatus, setLoginStatus] = useState(false);
+    const [profileLogo, setProfileLogo] = useState('?');
 
-	const handleOpenNavMenu = (event) => {
-		setAnchorElNav(event.currentTarget);
-	};
-	const handleOpenUserMenu = (event) => {
-		setAnchorElUser(event.currentTarget);
-	};
+    useEffect(() => {
+        window.addEventListener('resize', () => {
+            setWindowWidth(window.innerWidth);
+        });
+    }, []);
 
-	const handleCloseNavMenu = (event) => {
-		const btnId = String(event.currentTarget.id);
-		setAnchorElNav(null);
+    useEffect(() => {
+        if (windowWidth <= 800) {
+            setIsBuggerClicked(false);
+        } else {
+            setIsBuggerClicked(true);
+        }
+    }, [windowWidth]);
 
-		if (btnId.includes('nav-btn-')) {
-			navigate(pageRoutes[Number(btnId.substring(8))]);
-		}
-	};
+    const profileMenuHAndle = () => {
+        setIsNavProfileClicked(!isNavProfileClicked);
+        if (windowWidth <= 800 && isBuggerClicked === true) {
+            setIsBuggerClicked(!isBuggerClicked);
+        }
+    };
 
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
-	};
+    const burgerClickHandle = () => {
+        setIsBuggerClicked(!isBuggerClicked);
+        if (windowWidth <= 800) {
+            setIsNavProfileClicked(false);
+        }
+    };
 
-	return (
-		<AppBar sx={{ backgroundColor: ThemeColors.red }} position='static'>
-			<Container maxWidth='xl'>
-				<Toolbar disableGutters>
-					<Box sx={{ flexGrow: 0, justifyContent: 'space-between', display: { xs: 'flex', md: 'none' } }}>
-						<IconButton
-							size='large'
-							aria-label='account of current user'
-							aria-controls='menu-appbar'
-							aria-haspopup='true'
-							onClick={handleOpenNavMenu}
-							color='inherit'
-						>
-							<MenuIcon />
-						</IconButton>
-						<Menu
-							id='menu-appbar'
-							anchorEl={anchorElNav}
-							anchorOrigin={{
-								vertical: 'bottom',
-								horizontal: 'left',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'left',
-							}}
-							open={Boolean(anchorElNav)}
-							onClose={handleCloseNavMenu}
-							sx={{
-								display: { xs: 'block', md: 'none' },
-							}}
-						>
-							{pages.map((page, index) => (
-								<MenuItem id={'nav-btn-' + index} key={page} onClick={handleCloseNavMenu}>
-									<Typography textAlign='center'>{page}</Typography>
-								</MenuItem>
-							))}
-						</Menu>
-					</Box>
-					<Box sx={{ flexGrow: { xs: 1, md: 0 }, display: 'flex', height: 65, mr: 1 }}>
-						<img src={GlobalData.media.logo} alt='Logo' />
-					</Box>
-					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{pages.map((page, index) => (
-							<Button
-								id={'nav-btn-' + index}
-								key={page}
-								onClick={handleCloseNavMenu}
-								sx={{ my: 2, color: 'white', display: 'block' }}
-							>
-								{page}
-							</Button>
-						))}
-					</Box>
+    return (
+        <div className="new-nav-bar">
+            <div className="container">
+                <div className="nav-item-container">
+                    <div className={isBuggerClicked ? 'burger bugger-clicked' : 'burger'} onClick={() => burgerClickHandle()}>
+                        <div className="bar b1"></div>
+                        <div className="bar b2"></div>
+                        <div className="bar b3"></div>
+                    </div>
+                    <div className="logo">
+                        <img src={GlobalData.media.logo} alt="Logo" />
+                    </div>
+                    <ul className="all-nav-items" style={{ display: isBuggerClicked ? 'flex' : 'none' }}>
+                        {pagesData.map((pagedt, index) => (
+                            <Link className="nav-item" to={pagedt.link} key={index}>
+                                <li>{pagedt.name}</li>
+                            </Link>
+                        ))}
+                    </ul>
+                </div>
+                <div className="nav-profile-container">
+                    <div className="profile-icon" onClick={() => profileMenuHAndle()}>
+                        {!loginStatus ? '?' : 'M'}
+                    </div>
+                    <div className="profile-popup" style={{ display: isNavProfileClicked ? 'block' : 'none' }}>
+                        <ul className="profile-popup-container">
+                            {!loginStatus ? (
+                                <>
+                                    <Link className="profile-popup-link" to="/login">
+                                        <li>Login</li>
+                                    </Link>
+                                    <Link className="profile-popup-link" to="/register">
+                                        <li>Register</li>
+                                    </Link>
+                                </>
+                            ) : (
+                                settings.map((setting, index) => (
+                                    <Link className="profile-popup-link" to="#" key={index}>
+                                        <li>{setting}</li>
+                                    </Link>
+                                ))
+                            )}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
 
-					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title='Profile'>
-							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt='Mery Sharp' src='/static/images/avatar/2.jpg' />
-							</IconButton>
-						</Tooltip>
-						<Menu
-							sx={{ mt: '45px' }}
-							id='menu-appbar'
-							anchorEl={anchorElUser}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
-						>
-							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
-									<Typography textAlign='center'>{setting}</Typography>
-								</MenuItem>
-							))}
-						</Menu>
-					</Box>
-				</Toolbar>
-			</Container>
-		</AppBar>
-	);
-};
-export default ResponsiveAppBar;
+export default NewNavBar;
