@@ -6,6 +6,26 @@ body,
   font-family: 'Lato', sans-serif;
 }
 
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ab1e05;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #921702;
+}
+
 body {
   overflow-x: hidden;
 }
@@ -20,6 +40,10 @@ html p {
 
 .bg-theme {
   background-color: #ab1e05 !important;
+}
+
+.txt-theme {
+  color: #ab1e05 !important;
 }
 
 .w-100 {
@@ -417,11 +441,8 @@ html p {
   padding: 15px 5px;
 }
 
-.new-nav-bar .container .nav-profile-container {
-  cursor: pointer;
-}
-
 .new-nav-bar .container .nav-profile-container .profile-icon {
+  cursor: pointer;
   width: 45px;
   height: 45px;
   border-radius: 50%;
@@ -438,6 +459,32 @@ html p {
           justify-content: center;
   font-size: 2vh;
   font-weight: 600;
+}
+
+.new-nav-bar .container .nav-profile-container .notification-container {
+  cursor: pointer;
+  position: relative;
+}
+
+.new-nav-bar .container .nav-profile-container .notification-container span {
+  position: absolute;
+  min-width: 20px;
+  height: 20px;
+  background-color: #767676;
+  color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: 10px;
+  top: 0;
+  right: 10px;
+  font-size: 12px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -983,6 +1030,13 @@ html p {
   border: 2px solid #ab1e05;
   color: #ab1e05;
   margin: 10px 0;
+  cursor: pointer;
+}
+
+.register-page .register-container .register-card .register-form .upload-label:hover {
+  border: 2px solid white;
+  background-color: #ab1e05;
+  color: white;
 }
 
 .register-page .register-container .register-card .register-form .input-file {
@@ -997,6 +1051,10 @@ html p {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
 }
 
 .register-page .register-container .register-card .register-form .upload-document-container .upload-document-box {

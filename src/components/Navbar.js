@@ -1,16 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GlobalData, pagesData } from '../GlobalData';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = [
+    {
+        name: 'Dashboard',
+        link: '/dashboard',
+    },
+    {
+        name: 'My Jobs',
+        link: '/my-jobs',
+    },
+    {
+        name: 'Permanent Jobs',
+        link: '/permanent-jobs',
+    },
+    {
+        name: 'Quick Jobs',
+        link: '/quick-jobs',
+    },
+    {
+        name: 'Account',
+        link: '/account',
+    },
+];
+
+function WhenLoginProfileMenu({ hideMenuWhenClick }) {
+    return (
+        <>
+            {settings.map((setting, index) => (
+                <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to={setting.link} key={index}>
+                    <li>{setting.name}</li>
+                </Link>
+            ))}
+            <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to="#" key="logout">
+                <li>Logout</li>
+            </Link>
+        </>
+    );
+}
 
 function NavBar() {
     const [isBuggerClicked, setIsBuggerClicked] = useState(true);
     const [isNavProfileClicked, setIsNavProfileClicked] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const [loginStatus, setLoginStatus] = useState(false);
+    const [loginStatus, setLoginStatus] = useState(true);
     const [profileLogo, setProfileLogo] = useState('?');
+
+    const notificationCount = 10;
 
     useEffect(() => {
         window.addEventListener('resize', () => {
@@ -67,7 +106,12 @@ function NavBar() {
                         ))}
                     </ul>
                 </div>
-                <div className="nav-profile-container">
+                <div className="nav-profile-container" style={{ display: 'flex' }}>
+                    <div className="notification-container">
+                        <NotificationsNoneIcon style={{ color: 'white', fontSize: '40px' }} className="mx-2" />
+                        <span>{notificationCount}</span>
+                    </div>
+
                     <div className="profile-icon" onClick={() => profileMenuHAndle()}>
                         {!loginStatus ? '?' : 'M'}
                     </div>
@@ -83,11 +127,7 @@ function NavBar() {
                                     </Link>
                                 </>
                             ) : (
-                                settings.map((setting, index) => (
-                                    <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to="#" key={index}>
-                                        <li>{setting}</li>
-                                    </Link>
-                                ))
+                                <WhenLoginProfileMenu hideMenuWhenClick={hideMenuWhenClick} />
                             )}
                         </ul>
                     </div>

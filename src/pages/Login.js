@@ -1,8 +1,14 @@
 import { TextField, Button } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function Login() {
+    const getfromBackend = async () => {
+        const result = await axios.get('/api/auth/login');
+        console.log(result);
+    };
+
     return (
         <div className="login-page">
             <div className="container">
@@ -12,7 +18,7 @@ function Login() {
                         <TextField className="w-100 my-3" label="EMAIL" variant="filled" />
                         <br />
                         <TextField className="w-100 my-3" label="PASSWORD" variant="filled" />
-                        <Button className="my-3 bg-theme w-100" variant="contained">
+                        <Button className="my-3 bg-theme w-100" variant="contained" onClick={getfromBackend}>
                             Login
                         </Button>
                         <p className="my-3">

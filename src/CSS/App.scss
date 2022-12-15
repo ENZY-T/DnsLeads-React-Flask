@@ -8,6 +8,25 @@ body,
 	// font-family: 'Roboto', sans-serif;
 	font-family: 'Lato', sans-serif;
 }
+::-webkit-scrollbar {
+	width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+	background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+	background: $themeColor; 
+	border-radius: 5px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+	background: #921702; 
+  }
 body{
 	overflow-x: hidden;
 }
@@ -20,6 +39,9 @@ html p {
 }
 .bg-theme{
 	background-color: $themeColor !important;
+}
+.txt-theme{
+	color: $themeColor !important;
 }
 .w-100{
 	width: 100%;
@@ -304,8 +326,8 @@ html p {
 			}
 		}
 		.nav-profile-container{
-			cursor: pointer;
 			.profile-icon{
+				cursor: pointer;
 				width: 45px;
 				height: 45px;
 				border-radius: 50%;
@@ -316,6 +338,24 @@ html p {
 				justify-content: center;
 				font-size: 2vh;
 				font-weight: 600;
+			}
+			.notification-container{
+				cursor: pointer;
+				position: relative;
+				span{
+					position: absolute;
+					min-width: 20px;
+					height: 20px;
+					background-color: rgb(118, 118, 118);
+					color: white;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					border-radius: 10px;
+					top: 0;
+					right: 10px;
+					font-size: 12px;
+				}
 			}
 		}
 	}
@@ -744,6 +784,12 @@ html p {
 					border: 2px solid $themeColor;
 					color: $themeColor;
 					margin: 10px 0;
+					cursor: pointer;
+				}
+				.upload-label:hover{
+					border: 2px solid white;
+					background-color: $themeColor;
+					color: white;
 				}
 				.input-file{
 					display: none;
@@ -752,6 +798,7 @@ html p {
 					width: 100%;
 					display: flex;
 					justify-content: space-between;
+					flex-flow: row wrap;
 					.upload-document-box{
 						width: 48%;
 						display: flex;
