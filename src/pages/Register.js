@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { bankList } from '../GlobalData';
 import axios from 'axios';
+import { v4 as uuid4 } from 'uuid';
 
 function UploadBox({ label, name }) {
     const [filename, setFilename] = useState('Upload types : .jpg, .jpeg, .png, .pdf');
@@ -17,13 +18,90 @@ function UploadBox({ label, name }) {
             <label htmlFor={name} className="upload-label">
                 {label}
             </label>
-            <input type="file" className="input-file" id={name} accept=".jpg, .jpeg, .png, .pdf" name={name} onChange={showFileName} />
+            <input
+                type="file"
+                required={true}
+                className="input-file"
+                id={name}
+                accept=".jpg, .jpeg, .png, .pdf"
+                name={name}
+                onChange={showFileName}
+            />
             <small>
                 <i>{filename}</i>
             </small>
         </div>
     );
 }
+
+let testusers = [
+    {
+        id: uuid4(),
+        name: 'kavindu',
+        address: 'test address',
+        zip_code: '5092',
+        contact_no: '0451570655',
+        email: 'test5@email.com',
+        abn: 'test ABN number 5',
+        passport_number: 'N9070656',
+        bank_name: 'commonwealth',
+        account_type: 'saving account',
+        account_name: 'kavindu harshitha',
+        account_number: '64649505540',
+        bsb: '065000',
+        address_proof_img: 'img/path',
+        passport_img: 'img/path',
+        police_check_img: 'img/path',
+        children_check_img: 'img/path',
+        agreement_img: 'img/path',
+        verified: 'True',
+        password: 'asdf1234',
+    },
+    {
+        id: uuid4(),
+        name: 'kavindu harshitha',
+        address: 'test address',
+        zip_code: '5092',
+        contact_no: '0451570615',
+        email: 'test1@email.com',
+        abn: 'test ABN number 8',
+        passport_number: 'N9070681',
+        bank_name: 'commonwealth',
+        account_type: 'saving account',
+        account_name: 'kavindu harshitha',
+        account_number: '64649805541',
+        bsb: '065000',
+        address_proof_img: 'img/path',
+        passport_img: 'img/path',
+        police_check_img: 'img/path',
+        children_check_img: 'img/path',
+        agreement_img: 'img/path',
+        verified: 'True',
+        password: 'asdf1234',
+    },
+    {
+        id: uuid4(),
+        name: 'kavindu boss',
+        address: 'test address',
+        zip_code: '5092',
+        contact_no: '0451570625',
+        email: 'test2@email.com',
+        abn: 'test ABN number 9',
+        passport_number: 'N9070626',
+        bank_name: 'commonwealth',
+        account_type: 'saving account',
+        account_name: 'kavindu harshitha',
+        account_number: '64649805542',
+        bsb: '065000',
+        address_proof_img: 'img/path',
+        passport_img: 'img/path',
+        police_check_img: 'img/path',
+        children_check_img: 'img/path',
+        agreement_img: 'img/path',
+        verified: 'True',
+        password: 'asdf1234',
+    },
+];
 
 function Register() {
     const [selectedBank, setBank] = useState('');
@@ -42,10 +120,12 @@ function Register() {
                 obj.name === 'agreement_img'
             ) {
                 formData.append(obj.name, obj.files[0]);
+                console.log(obj.files[0]);
             } else {
                 formData.append(obj.name, obj.value);
             }
         }
+        console.log(formData);
         const result = await axios.post('/api/auth/register', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
         console.log(result);
     };
@@ -60,13 +140,25 @@ function Register() {
                             <h4>User Details</h4>
                             <hr />
                             <form onSubmit={registerHandler}>
-                                <TextField className="w-100 my-2" variant="filled" label="Full Name" name="name" />
-                                <TextField className="w-100 my-2" variant="filled" label="Address" name="address" />
-                                <TextField className="w-100 my-2" variant="filled" label="Zip Code" name="zip_code" />
-                                <TextField className="w-100 my-2" variant="filled" label="Contact Number" name="contact_no" />
-                                <TextField className="w-100 my-2" variant="filled" label="Email" name="email" />
-                                <TextField className="w-100 my-2" variant="filled" label="ABN Number" name="abn" />
-                                <TextField className="w-100 my-2" variant="filled" label="Passport Number" name="passport_number" />
+                                <TextField required={true} className="w-100 my-2" variant="filled" label="Full Name" name="name" />
+                                <TextField required={true} className="w-100 my-2" variant="filled" label="Address" name="address" />
+                                <TextField required={true} className="w-100 my-2" variant="filled" label="Zip Code" name="zip_code" />
+                                <TextField
+                                    required={true}
+                                    className="w-100 my-2"
+                                    variant="filled"
+                                    label="Contact Number"
+                                    name="contact_no"
+                                />
+                                <TextField required={true} className="w-100 my-2" variant="filled" label="Email" name="email" />
+                                <TextField required={true} className="w-100 my-2" variant="filled" label="ABN Number" name="abn" />
+                                <TextField
+                                    required={true}
+                                    className="w-100 my-2"
+                                    variant="filled"
+                                    label="Passport Number"
+                                    name="passport_number"
+                                />
                                 <h4 className="mt-5">Bank Details</h4>
                                 <hr />
                                 <FormControl variant="filled" className="w-100 my-2">
@@ -77,6 +169,7 @@ function Register() {
                                         value={selectedBank}
                                         onChange={(e) => setBank(e.target.value)}
                                         name="bank_name"
+                                        required={true}
                                     >
                                         <MenuItem value="">
                                             <em>Select Bank</em>
@@ -96,6 +189,7 @@ function Register() {
                                         value={selectedAccType}
                                         onChange={(e) => setAccType(e.target.value)}
                                         name="account_type"
+                                        required={true}
                                     >
                                         <MenuItem value="">
                                             <em>Select Account Type</em>
@@ -104,22 +198,44 @@ function Register() {
                                         <MenuItem value={'Trust account'}>{'Trust account'}</MenuItem>
                                     </Select>
                                 </FormControl>
-                                <TextField className="w-100 my-2" variant="filled" label="Account Name" name="account_name" />
                                 <TextField
+                                    required={true}
+                                    className="w-100 my-2"
+                                    variant="filled"
+                                    label="Account Name"
+                                    name="account_name"
+                                />
+                                <TextField
+                                    required={true}
                                     className="w-100 my-2"
                                     type="number"
                                     variant="filled"
                                     label="Account Number"
-                                    name="account-number"
+                                    name="account_number"
                                 />
-                                <TextField className="w-100 my-2" type="number" variant="filled" label="BSB Number" name="bsb" />
-                                <TextField className="w-100 my-2" type="password" variant="filled" label="Password" name="password" />
+                                <TextField
+                                    required={true}
+                                    className="w-100 my-2"
+                                    type="number"
+                                    variant="filled"
+                                    label="BSB Number"
+                                    name="bsb"
+                                />
+                                <TextField
+                                    required={true}
+                                    className="w-100 my-2"
+                                    type="password"
+                                    variant="filled"
+                                    label="Password"
+                                    name="password"
+                                />
                                 <TextField
                                     className="w-100 my-2"
                                     type="password"
                                     variant="filled"
                                     label="Confirm Password"
                                     name="password_confirm"
+                                    required={true}
                                 />
                                 <div className="upload-document-container">
                                     <UploadBox label={'Upload Passport Image'} name={'passport_img'} />

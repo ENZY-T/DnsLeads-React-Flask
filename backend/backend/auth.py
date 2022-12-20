@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_bcrypt import generate_password_hash, check_password_hash
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
@@ -8,75 +10,6 @@ from .allFunctions import usersObjtoDictArr
 
 
 auth = Blueprint("auth", __name__)
-
-testusers = [
-    {
-        "id": str(uuid4()),
-        "name": "kavindu",
-        "address": "test address",
-        "zip_code": "5092",
-        "contact_no": "0451570655",
-        "email": "test5@email.com",
-        "abn": "test ABN number 5",
-        "passport_number": "N9070656",
-        "bank_name": "commonwealth",
-        "account_type": "saving account",
-        "account_name": "kavindu harshitha",
-        "account_number": "64649505540",
-        "bsb": "065000",
-        "address_proof_img": "img/path",
-        "passport_img": "img/path",
-        "police_check_img": "img/path",
-        "children_check_img": "img/path",
-        "agreement_img": "img/path",
-        "verified": "True",
-        "password": str(uuid4()),
-    },
-    {
-        "id": str(uuid4()),
-        "name": "kavindu harshitha",
-        "address": "test address",
-        "zip_code": "5092",
-        "contact_no": "0451570615",
-        "email": "test1@email.com",
-        "abn": "test ABN number 8",
-        "passport_number": "N9070681",
-        "bank_name": "commonwealth",
-        "account_type": "saving account",
-        "account_name": "kavindu harshitha",
-        "account_number": "64649805541",
-        "bsb": "065000",
-        "address_proof_img": "img/path",
-        "passport_img": "img/path",
-        "police_check_img": "img/path",
-        "children_check_img": "img/path",
-        "agreement_img": "img/path",
-        "verified": "True",
-        "password": str(uuid4()),
-    },
-    {
-        "id": str(uuid4()),
-        "name": "kavindu boss",
-        "address": "test address",
-        "zip_code": "5092",
-        "contact_no": "0451570625",
-        "email": "test2@email.com",
-        "abn": "test ABN number 9",
-        "passport_number": "N9070626",
-        "bank_name": "commonwealth",
-        "account_type": "saving account",
-        "account_name": "kavindu harshitha",
-        "account_number": "64649805542",
-        "bsb": "065000",
-        "address_proof_img": "img/path",
-        "passport_img": "img/path",
-        "police_check_img": "img/path",
-        "children_check_img": "img/path",
-        "agreement_img": "img/path",
-        "verified": "True",
-        "password": str(uuid4()),
-    },
-]
 
 
 def returnUsers(id=None):
@@ -88,6 +21,18 @@ def returnUsers(id=None):
     return usersObjtoDictArr(all_users)
 
 
+def saveUserImage(file, userID, saveName):
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    users_dir = os.path.join(BASE_DIR, "users")
+    user_folder = os.path.join(users_dir, str(userID))
+    if not os.path.exists(user_folder):
+        os.mkdir(user_folder)
+    save_file_path = os.path.join(
+        user_folder, f"{saveName}.{str(file.filename).split('.')[-1]}")
+    file.save(save_file_path)
+    return save_file_path
+
+
 @auth.route("/login")
 def login():
     return 'login'
@@ -97,12 +42,56 @@ def login():
 def register():
     # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     # users_dir = os.path.join(BASE_DIR, "users")
-    file = request.files["passport_img"]
-    filename = secure_filename(file.filename)
+    # file = request.files["passport_img"]
+    # filename = secure_filename(file.filename)
     # file.save(os.path.join(users_dir, filename))
-    print(f"[SAVED] {filename}")
-    print(request.form['name'])
-    return "done"
+    # print(f"[SAVED] {filename}")
+    # print(request.form['name'])
+    usr = request.form
+    usrImg = request.files
+    usrID = str(uuid4())
+
+    address_proof_img = saveUserImage(
+        usrImg["address_proof_img"], usrID, "address_proof_img")
+    passport_img = saveUserImage(usrImg["passport_img"], usrID, "passport_img")
+    police_check_img = saveUserImage(
+        usrImg["police_check_img"], usrID, "police_check_img")
+    children_check_img = saveUserImage(
+        usrImg["children_check_img"], usrID, "children_check_img")
+    agreement_img = saveUserImage(
+        usrImg["agreement_img"], usrID, "agreement_img")
+
+    new_user = User(
+        id=usrID,
+        name=usr["name"],
+        address=usr["address"],
+        zip_code=usr["zip_code"],
+        contact_no=usr["contact_no"],
+        email=usr["email"],
+        abn=usr["abn"],
+        passport_number=usr["passport_number"],
+        bank_name=usr["bank_name"],
+        account_type=usr["account_type"],
+        account_name=usr["account_name"],
+        account_number=usr["account_number"],
+        bsb=usr["bsb"],
+
+        address_proof_img=address_proof_img,
+        passport_img=passport_img,
+        police_check_img=police_check_img,
+        children_check_img=children_check_img,
+        agreement_img=agreement_img,
+
+        verified=False,
+        password=generate_password_hash(usr["password"]).decode('utf-8')
+    )
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return "done"
+    except Exception as e:
+
+        return str(e),
 
 
 @auth.route("/logout", methods=["POST"])
@@ -206,35 +195,3 @@ def updateSingleUsers():
 
     else:
         return {"error": "id required"}, 400
-
-
-
-# new_user = User(
-#     id=uuid4(),
-#     name=usr["name"],
-#     address=usr["address"],
-#     zip_code=usr["zip_code"],
-#     contact_no=usr["contact_no"],
-#     email=usr["email"],
-#     abn=usr["abn"],
-#     passport_number=usr["passport_number"],
-#     bank_name=usr["bank_name"],
-#     account_type=usr["account_type"],
-#     account_name=usr["account_name"],
-#     account_number=usr["account_number"],
-#     bsb=usr["bsb"],
-#     address_proof_img=usr["address_proof_img"],
-#     passport_img=usr["passport_img"],
-#     police_check_img=usr["police_check_img"],
-#     children_check_img=usr["children_check_img"],
-#     agreement_img=usr["agreement_img"],
-#     verified=usr["verified"],
-#     password=usr["password"]
-# )
-
-
-# usr["address_proof_img"] =
-# usr["passport_img"] =
-# usr["police_check_img"] =
-# usr["children_check_img"] =
-# usr["agreement_img"] =
