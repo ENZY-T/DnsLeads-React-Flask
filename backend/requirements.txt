@@ -1,6 +1,6 @@
 flask
 flask-cors
 flask_jwt_extended 
-flask_bcryptf
+flask_bcrypt
 flask_sqlalchemy
 flask_login
