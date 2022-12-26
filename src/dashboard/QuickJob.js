@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Button } from '@mui/material';
 import { quickJob } from './QuickJobs';
+import { authToken } from '../allFuncs';
 
 function QuickJob(props) {
     const jobID = props.match.params.jobID;
@@ -11,6 +12,9 @@ function QuickJob(props) {
     const goBack = () => {
         history.goBack();
     };
+    useEffect(() => {
+        authToken(history);
+    }, []);
     return (
         <div className="container py-5">
             <span className="go-back" onClick={goBack}>

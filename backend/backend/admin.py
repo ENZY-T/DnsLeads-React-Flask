@@ -10,7 +10,7 @@ from .allFunctions import usersObjtoDictArr
 from datetime import timedelta
 
 
-auth = Blueprint("auth", __name__)
+admin = Blueprint("admin", __name__)
 
 
 def returnUsers(id=None):
@@ -42,7 +42,7 @@ def saveUserImage(file, userID, saveName):
     return save_file_path
 
 
-@auth.route("/login", methods=["POST"])
+@admin.route("/login", methods=["POST"])
 def login():
     user_data = request.json
     if "email" in user_data and "password" in user_data:
@@ -61,7 +61,7 @@ def login():
         return jsonify("Fill all fields"), 404
 
 
-@auth.route("/register", methods=['POST'])
+@admin.route("/register", methods=['POST'])
 def register():
     usr = request.form
     usrImg = request.files
@@ -110,19 +110,19 @@ def register():
         return str(e),
 
 
-@auth.route("/logout", methods=["POST"])
+@admin.route("/logout", methods=["POST"])
 def logout():
     return 'logout'
 
 
-@auth.route("/get", methods=["GET"])
+@admin.route("/get", methods=["GET"])
 def getUsers():
     all_users = returnUsers()
 
     return jsonify(all_users)
 
 
-@auth.route("/get/user", methods=["POST"])
+@admin.route("/get/user", methods=["POST"])
 def getSingleUsers():
     if "id" in request.json:
         id = request.json["id"]
@@ -133,20 +133,18 @@ def getSingleUsers():
         return {"error": "id required"}, 400
 
 
-@auth.route("/del/user", methods=["POST"])
+@admin.route("/del/user", methods=["POST"])
 def delSingleUsers():
     if "id" in request.json:
         id = request.json["id"]
         del_user = User.query.filter_by(id=id).delete()
-        db.session.commit()
         return "", 200
 
     else:
         return {"error": "id required"}, 400
 
 
-'''
-@auth.route("/update/user", methods=["POST"])
+@admin.route("/update/user", methods=["POST"])
 def updateSingleUsers():
     if "id" in request.json:
         id = request.json["id"]
@@ -213,11 +211,10 @@ def updateSingleUsers():
 
     else:
         return {"error": "id required"}, 400
-'''
 
 
-@auth.route("/authorization-token", methods=["POST"])
+@admin.route("/authorization-token")
 @jwt_required()
 def protected():
     current_user = get_jwt_identity()
-    return jsonify(current_user), 200
+    return jsonify(logged_in_as=current_user), 200

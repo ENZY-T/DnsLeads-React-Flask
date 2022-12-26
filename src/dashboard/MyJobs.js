@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { authToken } from '../allFuncs';
 
 function JobCard({ job }) {
     return (
@@ -109,6 +110,10 @@ export const myJobs = [
 ];
 
 function MyJobs() {
+    const history = useHistory();
+    useEffect(() => {
+        authToken(history);
+    }, []);
     return (
         <div className="container py-4">
             <h1 className="p-4">My Jobs</h1>

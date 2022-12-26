@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { GlobalData, pagesData } from '../GlobalData';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { getItemFromLocalStorage, localStoreKeys, removeItemFromLocalStorage } from '../allFuncs';
 
 const settings = [
     {
@@ -26,7 +27,18 @@ const settings = [
     },
 ];
 
-function WhenLoginProfileMenu({ hideMenuWhenClick }) {
+function authForNav() {
+    const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+
+    if (accessToken) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function WhenLoginProfileMenu({ hideMenuWhenClick, setIsLogin }) {
+    const history = useHistory();
     return (
         <>
             {settings.map((setting, index) => (
@@ -34,20 +46,29 @@ function WhenLoginProfileMenu({ hideMenuWhenClick }) {
                     <li>{setting.name}</li>
                 </Link>
             ))}
-            <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to="#" key="logout">
+            <Link
+                onClick={() => {
+                    removeItemFromLocalStorage(localStoreKeys.authKey);
+                    history.push('/');
+                    setIsLogin(false);
+                    hideMenuWhenClick();
+                }}
+                className="profile-popup-link"
+                to="#"
+                key="logout"
+            >
                 <li>Logout</li>
             </Link>
         </>
     );
 }
 
-function NavBar() {
+function NavBar({ loginState }) {
     const [isBuggerClicked, setIsBuggerClicked] = useState(true);
     const [isNavProfileClicked, setIsNavProfileClicked] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const [loginStatus, setLoginStatus] = useState(true);
-    const [profileLogo, setProfileLogo] = useState('?');
+    // const [profileLogo, setProfileLogo] = useState('?');
 
     const notificationCount = 10;
 
@@ -56,6 +77,12 @@ function NavBar() {
             setWindowWidth(window.innerWidth);
         });
     }, []);
+
+    const [loginStatus, setLoginStatus] = useState(authForNav());
+
+    useEffect(() => {
+        setLoginStatus(authForNav());
+    }, [getItemFromLocalStorage(localStoreKeys.authKey)]);
 
     useEffect(() => {
         if (windowWidth <= 800) {
@@ -127,7 +154,7 @@ function NavBar() {
                                     </Link>
                                 </>
                             ) : (
-                                <WhenLoginProfileMenu hideMenuWhenClick={hideMenuWhenClick} />
+                                <WhenLoginProfileMenu hideMenuWhenClick={hideMenuWhenClick} setIsLogin={setLoginStatus} />
                             )}
                         </ul>
                     </div>

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TimeTable } from './MyJob';
 import { Button } from '@mui/material';
 import { permanentJob } from './PermanentJobs';
+import { authToken } from '../allFuncs';
 
 const daysToWork = [
     {
@@ -23,6 +24,9 @@ function PermanentJob(props) {
     const goBack = () => {
         history.goBack();
     };
+    useEffect(() => {
+        authToken(history);
+    }, []);
     return (
         <div className="container py-5">
             <span className="go-back" onClick={goBack}>

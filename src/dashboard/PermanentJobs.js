@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import FlagIcon from '@mui/icons-material/Flag';
@@ -7,6 +7,7 @@ import PaidIcon from '@mui/icons-material/Paid';
 
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
+import { authToken } from '../allFuncs';
 
 export const permanentJob = {
     id: '2d0b0064-90c0-42aa-82fb-8daa8c9a7a2e',
@@ -72,6 +73,10 @@ function JobCard({ job }) {
 }
 
 function PermanentJobs() {
+    const history = useHistory();
+    useEffect(() => {
+        authToken(history);
+    }, []);
     return (
         <div className="permanent-jobs container py-5">
             <h1>Permanent Jobs</h1>

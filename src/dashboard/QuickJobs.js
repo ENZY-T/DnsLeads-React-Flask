@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
@@ -6,6 +6,7 @@ import { v4 as uuidV4 } from 'uuid';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PaidIcon from '@mui/icons-material/Paid';
+import { authToken } from '../allFuncs';
 
 export const quickJob = {
     id: '2a694fef-39fa-460f-9caf-ce9ff2889e71',
@@ -56,6 +57,10 @@ function JobCard({ job }) {
 }
 
 function QuickJobs() {
+    const history = useHistory();
+    useEffect(() => {
+        authToken(history);
+    }, []);
     return (
         <div className="container py-5">
             <h1>Quick Jobs</h1>

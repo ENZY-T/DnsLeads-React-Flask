@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { myJobs } from './MyJobs';
 import { Button } from '@mui/material';
 
 import CheckIcon from '@mui/icons-material/Check';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
+import { authToken } from '../allFuncs';
 
 export function TimeTable({ daysToWork }) {
     return (
@@ -43,6 +44,9 @@ function MyJob(props) {
     const goBack = () => {
         history.goBack();
     };
+    useEffect(() => {
+        authToken(history);
+    }, []);
 
     return (
         <div className="container py-4">

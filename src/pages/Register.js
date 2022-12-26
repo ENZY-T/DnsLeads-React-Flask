@@ -1,10 +1,11 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import React from 'react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { bankList } from '../GlobalData';
 import axios from 'axios';
 import { v4 as uuid4 } from 'uuid';
+import { getItemFromLocalStorage, localStoreKeys, removeItemFromLocalStorage } from '../allFuncs';
 
 function UploadBox({ label, name }) {
     const [filename, setFilename] = useState('Upload types : .jpg, .jpeg, .png, .pdf');
@@ -106,6 +107,30 @@ let testusers = [
 function Register() {
     const [selectedBank, setBank] = useState('');
     const [selectedAccType, setAccType] = useState('');
+
+    const history = useHistory();
+
+    const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+    let userID = undefined;
+    if (accessToken) {
+        axios
+            .post(
+                '/api/auth/authorization-token',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            )
+            .then((response) => {
+                userID = response.data;
+                history.push('/dashboard');
+            })
+            .catch((error) => {
+                removeItemFromLocalStorage(localStoreKeys.authKey);
+            });
+    }
 
     const registerHandler = async (e) => {
         e.preventDefault();

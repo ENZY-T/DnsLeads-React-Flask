@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts';
+import { useHistory } from 'react-router-dom';
+import { authToken, reqToBackend } from '../allFuncs';
 
 const optionsMonth = {
     chart: {
@@ -159,12 +161,16 @@ function TimeSheet() {
 }
 
 function DashboardHome() {
+    const history = useHistory();
+    useEffect(() => {
+        authToken(history);
+    }, []);
     return (
         <div className="container py-5">
             <h1>Earnings</h1>
             <div className="card-container">
-                <EarningChartCard type="bar" topic="2022" options={optionsYear} series={seriesYear} />
-                <EarningChartCard type="line" topic="September" options={optionsMonth} series={seriesMonth} />
+                {/* <EarningChartCard type="bar" topic="2022" options={optionsYear} series={seriesYear} />
+                <EarningChartCard type="line" topic="September" options={optionsMonth} series={seriesMonth} /> */}
             </div>
             <TimeSheet />
         </div>

@@ -26,12 +26,14 @@ import PermanentJob from './dashboard/PermanentJob';
 import QuickJobs from './dashboard/QuickJobs';
 import QuickJob from './dashboard/QuickJob';
 import AdminHome from './admin/AdminHome';
+import { useState } from 'react';
 
 function App() {
+    const [isLoging, setIsLogin] = useState(false);
     return (
         <div style={{ color: ThemeColors.textColor }}>
             <Router>
-                <NavBar />
+                <NavBar loginState={isLoging} />
                 <Switch>
                     <Route path="/" exact component={HomePage} />
                     <Route path="/about-us" exact component={AboutUs} />
@@ -39,7 +41,9 @@ function App() {
                     <Route path="/services/details" exact component={ServiceDetails} />
                     <Route path="/products-and-equipments" exact component={ProductsAndEquipment} />
                     <Route path="/contact-us" exact component={ContactUs} />
-                    <Route path="/login" exact component={Login} />
+                    <Route path="/login" exact>
+                        <Login loginState={isLoging} setLoginState={setIsLogin} />
+                    </Route>
                     <Route path="/register" exact component={Register} />
                     {/* dashboard */}
                     <Route path="/dashboard" exact component={DashboardHome} />
