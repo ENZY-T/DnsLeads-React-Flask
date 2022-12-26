@@ -108,30 +108,6 @@ function Register() {
     const [selectedBank, setBank] = useState('');
     const [selectedAccType, setAccType] = useState('');
 
-    const history = useHistory();
-
-    const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
-    let userID = undefined;
-    if (accessToken) {
-        axios
-            .post(
-                '/api/auth/authorization-token',
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
-            )
-            .then((response) => {
-                userID = response.data;
-                history.push('/dashboard');
-            })
-            .catch((error) => {
-                removeItemFromLocalStorage(localStoreKeys.authKey);
-            });
-    }
-
     const registerHandler = async (e) => {
         e.preventDefault();
         const formData = new FormData();
@@ -151,7 +127,9 @@ function Register() {
             }
         }
         console.log(formData);
-        const result = await axios.post('/api/auth/register', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const result = await axios.post('/api/auth/register', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
         console.log(result);
     };
 
@@ -160,70 +138,134 @@ function Register() {
             <div className="container">
                 <div className="register-container">
                     <div className="register-card py-5">
-                        <h1 className="text-center mb-3">Register</h1>
+                        <h1 className="text-center mb-3 display-6">REGISTER</h1>
                         <div className="register-form px-4">
                             <h4>User Details</h4>
                             <hr />
                             <form onSubmit={registerHandler}>
-                                <TextField required={true} className="w-100 my-2" variant="filled" label="Full Name" name="name" />
-                                <TextField required={true} className="w-100 my-2" variant="filled" label="Address" name="address" />
-                                <TextField required={true} className="w-100 my-2" variant="filled" label="Zip Code" name="zip_code" />
+                                <div className="row">
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            required={true}
+                                            className="w-100 my-2"
+                                            variant="filled"
+                                            label="Full Name"
+                                            name="name"
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            required={true}
+                                            className="w-100 my-2"
+                                            variant="filled"
+                                            label="Email"
+                                            name="email"
+                                        />
+                                    </div>
+                                </div>
                                 <TextField
+                                    size="small"
                                     required={true}
                                     className="w-100 my-2"
                                     variant="filled"
-                                    label="Contact Number"
-                                    name="contact_no"
+                                    label="Address"
+                                    name="address"
                                 />
-                                <TextField required={true} className="w-100 my-2" variant="filled" label="Email" name="email" />
-                                <TextField required={true} className="w-100 my-2" variant="filled" label="ABN Number" name="abn" />
-                                <TextField
-                                    required={true}
-                                    className="w-100 my-2"
-                                    variant="filled"
-                                    label="Passport Number"
-                                    name="passport_number"
-                                />
+                                <div className="row">
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            required={true}
+                                            className="w-100 my-2"
+                                            variant="filled"
+                                            label="Zip Code"
+                                            name="zip_code"
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            required={true}
+                                            className="w-100 my-2"
+                                            variant="filled"
+                                            label="Contact Number"
+                                            name="contact_no"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            required={true}
+                                            className="w-100 my-2"
+                                            variant="filled"
+                                            label="ABN Number"
+                                            name="abn"
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            required={true}
+                                            className="w-100 my-2"
+                                            variant="filled"
+                                            label="Passport Number"
+                                            name="passport_number"
+                                        />
+                                    </div>
+                                </div>
+
                                 <h4 className="mt-5">Bank Details</h4>
                                 <hr />
-                                <FormControl variant="filled" className="w-100 my-2">
-                                    <InputLabel id="select-bank">Select Bank</InputLabel>
-                                    <Select
-                                        labelId="select-bank"
-                                        id="demo-simple-select-filled"
-                                        value={selectedBank}
-                                        onChange={(e) => setBank(e.target.value)}
-                                        name="bank_name"
-                                        required={true}
-                                    >
-                                        <MenuItem value="">
-                                            <em>Select Bank</em>
-                                        </MenuItem>
-                                        {bankList.map((bank, index) => (
-                                            <MenuItem value={bank} key={index}>
-                                                {bank}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <FormControl variant="filled" className="w-100 my-2">
-                                    <InputLabel id="bank-account-type">Account Type</InputLabel>
-                                    <Select
-                                        labelId="bank-account-type"
-                                        id="demo-simple-select-filled"
-                                        value={selectedAccType}
-                                        onChange={(e) => setAccType(e.target.value)}
-                                        name="account_type"
-                                        required={true}
-                                    >
-                                        <MenuItem value="">
-                                            <em>Select Account Type</em>
-                                        </MenuItem>
-                                        <MenuItem value={'Savings account'}>{'Savings account'}</MenuItem>
-                                        <MenuItem value={'Trust account'}>{'Trust account'}</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                <div className="row">
+                                    <div className="col">
+                                        <FormControl variant="filled" className="w-100 my-2">
+                                            <InputLabel id="select-bank">Select Bank</InputLabel>
+                                            <Select
+                                                labelId="select-bank"
+                                                id="demo-simple-select-filled"
+                                                value={selectedBank}
+                                                onChange={(e) => setBank(e.target.value)}
+                                                name="bank_name"
+                                                required={true}
+                                            >
+                                                <MenuItem value="">
+                                                    <em>Select Bank</em>
+                                                </MenuItem>
+                                                {bankList.map((bank, index) => (
+                                                    <MenuItem value={bank} key={index}>
+                                                        {bank}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                    <div className="col">
+                                        <FormControl variant="filled" className="w-100 my-2">
+                                            <InputLabel id="bank-account-type">Account Type</InputLabel>
+                                            <Select
+                                                labelId="bank-account-type"
+                                                id="demo-simple-select-filled"
+                                                value={selectedAccType}
+                                                onChange={(e) => setAccType(e.target.value)}
+                                                name="account_type"
+                                                required={true}
+                                            >
+                                                <MenuItem value="">
+                                                    <em>Select Account Type</em>
+                                                </MenuItem>
+                                                <MenuItem value={'Savings account'}>{'Savings account'}</MenuItem>
+                                                <MenuItem value={'Trust account'}>{'Trust account'}</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                </div>
+
                                 <TextField
+                                    size="small"
                                     required={true}
                                     className="w-100 my-2"
                                     variant="filled"
@@ -231,6 +273,7 @@ function Register() {
                                     name="account_name"
                                 />
                                 <TextField
+                                    size="small"
                                     required={true}
                                     className="w-100 my-2"
                                     type="number"
@@ -239,6 +282,7 @@ function Register() {
                                     name="account_number"
                                 />
                                 <TextField
+                                    size="small"
                                     required={true}
                                     className="w-100 my-2"
                                     type="number"
@@ -246,22 +290,32 @@ function Register() {
                                     label="BSB Number"
                                     name="bsb"
                                 />
-                                <TextField
-                                    required={true}
-                                    className="w-100 my-2"
-                                    type="password"
-                                    variant="filled"
-                                    label="Password"
-                                    name="password"
-                                />
-                                <TextField
-                                    className="w-100 my-2"
-                                    type="password"
-                                    variant="filled"
-                                    label="Confirm Password"
-                                    name="password_confirm"
-                                    required={true}
-                                />
+                                <div className="row">
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            required={true}
+                                            className="w-100 my-2"
+                                            type="password"
+                                            variant="filled"
+                                            label="Password"
+                                            name="password"
+                                        />
+                                    </div>
+                                    <div className="col">
+                                        <TextField
+                                            size="small"
+                                            className="w-100 my-2"
+                                            type="password"
+                                            variant="filled"
+                                            label="Confirm Password"
+                                            name="password_confirm"
+                                            required={true}
+                                        />
+                                    </div>
+                                </div>
+
+                                <hr />
                                 <div className="upload-document-container">
                                     <UploadBox label={'Upload Passport Image'} name={'passport_img'} />
                                     <UploadBox label={'Upload Address proof document'} name={'address_proof_img'} />
@@ -269,13 +323,17 @@ function Register() {
                                     <UploadBox label={'Upload children check'} name={'children_check_img'} />
                                     <UploadBox label={'Upload signed contract agreement'} name={'agreement_img'} />
                                 </div>
-                                <Button variant="contained" className="w-100 my-4 bg-theme" type="submit">
-                                    Register
-                                </Button>
+                                <div className="d-flex justify-content-center">
+                                    <Button variant="contained" className="my-4 rounded-0 px-4 bg-theme" type="submit">
+                                        Register
+                                    </Button>
+                                </div>
                             </form>
-                            <p>
-                                Already have an account? <Link to="/login">Login</Link>{' '}
-                            </p>
+                            <div className="d-flex justify-content-center">
+                                <p>
+                                    Already have an account? <Link to="/login">Login</Link>{' '}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
