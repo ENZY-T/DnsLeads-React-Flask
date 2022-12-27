@@ -44,3 +44,36 @@ $themeColor:#ab1e05;
     }
 }
 
+.time-date-line{
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+}
+.fw-33{
+    width: 33%;
+}
+
+.select-days-to-work{
+    td{
+        width: 50px !important;
+        height: 50px !important;
+        border: 1px solid rgb(142, 142, 142);
+        align-items: center;
+        label{
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+        }
+        input{
+            margin: 0 20px;
+            
+        }
+    }
+}
+
+@media only screen and (max-width: 800px){
+    .fw-33{
+        width: 100%;
+    }
+}

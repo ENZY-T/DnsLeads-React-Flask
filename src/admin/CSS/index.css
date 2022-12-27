@@ -60,4 +60,47 @@
   height: 3px;
   background-color: #ab1e05;
 }
+
+.time-date-line {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+}
+
+.fw-33 {
+  width: 33%;
+}
+
+.select-days-to-work td {
+  width: 50px !important;
+  height: 50px !important;
+  border: 1px solid #8e8e8e;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.select-days-to-work td label {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.select-days-to-work td input {
+  margin: 0 20px;
+}
+
+@media only screen and (max-width: 800px) {
+  .fw-33 {
+    width: 100%;
+  }
+}
 /*# sourceMappingURL=index.css.map */
