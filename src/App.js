@@ -11,7 +11,6 @@ import { ThemeColors } from './Styling/Colors';
 import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
 import Services from './pages/Services';
-import NavBar from './components/NavBar';
 import ServiceDetails from './pages/ServiceDetails';
 import NotFound from './pages/NotFound';
 import ProductsAndEquipment from './pages/ProductsAndEquipment';
@@ -26,12 +25,13 @@ import PermanentJob from './dashboard/PermanentJob';
 import QuickJobs from './dashboard/QuickJobs';
 import QuickJob from './dashboard/QuickJob';
 import AdminHome from './admin/AdminHome';
+import NavigationBar from './components/NavigationBar';
 
 function App() {
     return (
         <div style={{ color: ThemeColors.textColor }}>
             <Router>
-                <NavBar />
+                <NavigationBar />
                 <Switch>
                     <Route path="/" exact component={HomePage} />
                     <Route path="/about-us" exact component={AboutUs} />

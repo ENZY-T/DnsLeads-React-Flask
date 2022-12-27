@@ -30,11 +30,12 @@ function Login({ loginState, setLoginState }) {
                 removeItemFromLocalStorage(localStoreKeys.authKey);
             });
     }
-
-function Login() {
-    const getfromBackend = async () => {
-        const result = await axios.get('/api/auth/login');
-        console.log(result);
+    const logingHandle = async () => {
+        if (email !== '' && pw !== '') {
+            const result = await axios.post('/api/auth/login', { email: email, password: pw });
+            setItemToLocalStorage(localStoreKeys.authKey, result.data.access_token);
+            history.push('/dashboard');
+        }
     };
 
     return (
@@ -43,10 +44,16 @@ function Login() {
                 <div className="login-card-container">
                     <div className="login-card py-4 px-4">
                         <h1 className="text-center my-4">Login</h1>
-                        <TextField className="w-100 my-3" label="EMAIL" variant="filled" />
+                        <TextField className="w-100 my-3" label="EMAIL" variant="filled" onChange={(e) => setEmail(e.target.value)} />
                         <br />
-                        <TextField className="w-100 my-3" label="PASSWORD" variant="filled" />
-                        <Button className="my-3 bg-theme w-100" variant="contained" onClick={getfromBackend}>
+                        <TextField
+                            className="w-100 my-3"
+                            label="PASSWORD"
+                            type="password"
+                            variant="filled"
+                            onChange={(e) => setPw(e.target.value)}
+                        />
+                        <Button className="my-3 bg-theme w-100" variant="contained" onClick={logingHandle}>
                             Login
                         </Button>
                         <p className="my-3">

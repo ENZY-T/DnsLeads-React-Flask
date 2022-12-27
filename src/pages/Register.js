@@ -105,6 +105,29 @@ let testusers = [
 ];
 
 function Register() {
+    const history = useHistory();
+    const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+    let userID = undefined;
+    if (accessToken) {
+        axios
+            .post(
+                '/api/auth/authorization-token',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            )
+            .then((response) => {
+                userID = response.data;
+                history.push('/dashboard');
+            })
+            .catch((error) => {
+                removeItemFromLocalStorage(localStoreKeys.authKey);
+            });
+    }
+
     const [selectedBank, setBank] = useState('');
     const [selectedAccType, setAccType] = useState('');
 
