@@ -1,0 +1,79 @@
+$themeColor:#ab1e05;
+.admin-nav-bar{
+    width: 100%;
+    height: 4vh;
+    display: flex;
+    align-items: center;
+    .nav-list{
+        display: flex;
+        .nav-item{
+            margin: 0 10px;
+            color: $themeColor;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 110%;
+            position: relative;
+        }
+        .nav-item::before{
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -2px;
+            height: 3px;
+            background-color: $themeColor;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.2s ease-in-out;
+        }
+        .nav-item:hover::before{
+            transform: scaleX(1);
+        }
+        .active{
+            position: relative;
+        }
+        .active::before{
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -2px;
+            height: 3px;
+            background-color: $themeColor;
+        }
+    }
+}
+
+.time-date-line{
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+}
+.fw-33{
+    width: 33%;
+}
+
+.select-days-to-work{
+    td{
+        width: 50px !important;
+        height: 50px !important;
+        border: 1px solid rgb(142, 142, 142);
+        align-items: center;
+        label{
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+        }
+        input{
+            margin: 0 20px;
+            
+        }
+    }
+}
+
+@media only screen and (max-width: 800px){
+    .fw-33{
+        width: 100%;
+    }
+}
