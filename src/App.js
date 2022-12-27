@@ -24,8 +24,11 @@ import PermanentJobs from './dashboard/PermanentJobs';
 import PermanentJob from './dashboard/PermanentJob';
 import QuickJobs from './dashboard/QuickJobs';
 import QuickJob from './dashboard/QuickJob';
-import AdminHome from './admin/AdminHome';
 import NavigationBar from './components/NavigationBar';
+import AdminHome from './admin/AdminHome';
+import SubContractors from './admin/SubContractors';
+import CreatePermanentJob from './admin/CreatePermanentJob';
+import CreateQuickJob from './admin/CreateQuickJob';
 
 function App() {
     return (
@@ -51,6 +54,9 @@ function App() {
                     <Route path="/quick-jobs/:jobID" exact component={QuickJob} />
                     {/* Admin dashboard */}
                     <Route path="/admin" exact component={AdminHome} />
+                    <Route path="/admin/sub-contractors" exact component={SubContractors} />
+                    <Route path="/admin/create-permanent-job" exact component={CreatePermanentJob} />
+                    <Route path="/admin/create-quick-job" exact component={CreateQuickJob} />
                     <Route component={NotFound} />
                 </Switch>
                 <Footer />
