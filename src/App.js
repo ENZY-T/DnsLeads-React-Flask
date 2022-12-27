@@ -26,37 +26,40 @@ import QuickJobs from './dashboard/QuickJobs';
 import QuickJob from './dashboard/QuickJob';
 import AdminHome from './admin/AdminHome';
 import NavigationBar from './components/NavigationBar';
+import { AppContextProvider } from './Context/AppContext';
 
 function App() {
-    return (
-        <div style={{ color: ThemeColors.textColor }}>
-            <Router>
-                <NavigationBar />
-                <Switch>
-                    <Route path="/" exact component={HomePage} />
-                    <Route path="/about-us" exact component={AboutUs} />
-                    <Route path="/services" exact component={Services} />
-                    <Route path="/services/details" exact component={ServiceDetails} />
-                    <Route path="/products-and-equipments" exact component={ProductsAndEquipment} />
-                    <Route path="/contact-us" exact component={ContactUs} />
-                    <Route path="/login" exact component={Login} />
-                    <Route path="/register" exact component={Register} />
-                    {/* dashboard */}
-                    <Route path="/dashboard" exact component={DashboardHome} />
-                    <Route path="/my-jobs" exact component={MyJobs} />
-                    <Route path="/my-jobs/:jobID" exact component={MyJob} />
-                    <Route path="/permanent-jobs" exact component={PermanentJobs} />
-                    <Route path="/permanent-jobs/:jobID" exact component={PermanentJob} />
-                    <Route path="/quick-jobs" exact component={QuickJobs} />
-                    <Route path="/quick-jobs/:jobID" exact component={QuickJob} />
-                    {/* Admin dashboard */}
-                    <Route path="/admin" exact component={AdminHome} />
-                    <Route component={NotFound} />
-                </Switch>
-                <Footer />
-            </Router>
-        </div>
-    );
+	return (
+		<AppContextProvider>
+			<div style={{ color: ThemeColors.textColor }}>
+				<Router>
+					<NavigationBar />
+					<Switch>
+						<Route path='/' exact component={HomePage} />
+						<Route path='/about-us' exact component={AboutUs} />
+						<Route path='/services' exact component={Services} />
+						<Route path='/services/details' exact component={ServiceDetails} />
+						<Route path='/products-and-equipments' exact component={ProductsAndEquipment} />
+						<Route path='/contact-us' exact component={ContactUs} />
+						<Route path='/login' exact component={Login} />
+						<Route path='/register' exact component={Register} />
+						{/* dashboard */}
+						<Route path='/dashboard' exact component={DashboardHome} />
+						<Route path='/my-jobs' exact component={MyJobs} />
+						<Route path='/my-jobs/:jobID' exact component={MyJob} />
+						<Route path='/permanent-jobs' exact component={PermanentJobs} />
+						<Route path='/permanent-jobs/:jobID' exact component={PermanentJob} />
+						<Route path='/quick-jobs' exact component={QuickJobs} />
+						<Route path='/quick-jobs/:jobID' exact component={QuickJob} />
+						{/* Admin dashboard */}
+						<Route path='/admin' exact component={AdminHome} />
+						<Route component={NotFound} />
+					</Switch>
+					<Footer />
+				</Router>
+			</div>
+		</AppContextProvider>
+	);
 }
 
 export default App;
