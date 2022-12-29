@@ -38,21 +38,29 @@ function Login() {
 				removeItemFromLocalStorage(localStoreKeys.authKey);
 			});
 	}
+
+	//#region Handles
+	const handleLoginSuccess = (result) => {
+		if (result.data.access_token) {
+			setItemToLocalStorage(localStoreKeys.authKey, result.data.access_token);
+			history.push('/dashboard');
+		}
+	};
+
+	const handleLoginError = (error) => {
+		setIsError(error.response.data);
+	};
+
 	const handleLogin = async () => {
 		if (email !== '' && pw !== '') {
 			axios
 				.post(GlobalData.baseUrl + '/api/auth/login', { email: email, password: pw })
-				.then((result) => {
-					if (result.data.access_token) {
-						setItemToLocalStorage(localStoreKeys.authKey, result.data.access_token);
-						history.push('/dashboard');
-					}
-				})
-				.catch((err) => {
-					setIsError(err.response.data);
-				});
+				.then((result) => handleLoginSuccess(result))
+				.catch((error) => handleLoginError(error));
 		}
 	};
+
+	//#endregion
 
 	return (
 		<div className='login-page'>
