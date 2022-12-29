@@ -2,7 +2,9 @@ from . import db
 from flask_login import UserMixin
 
 
-class User(db.Model, UserMixin):
+class Users(db.Model, UserMixin):
+    __tablename__ = 'Users'
+    
     id = db.Column(db.String(50), primary_key=True)
     name = db.Column(db.String(250))
     address = db.Column(db.String(250))
@@ -26,6 +28,8 @@ class User(db.Model, UserMixin):
 
 
 class PermanentJobs(db.Model):
+    __tablename__ = 'PermanentJobs'
+    
     job_id = db.Column(db.String(50), primary_key=True)
     job_name = db.Column(db.String(250))
     job_desc = db.Column(db.String(1500))
@@ -39,6 +43,8 @@ class PermanentJobs(db.Model):
 
 
 class QuickJobs(db.Model):
+    __tablename__='QuickJobs'
+    
     job_id = db.Column(db.String(50), primary_key=True)
     job_name = db.Column(db.String(250))
     job_desc = db.Column(db.String(1500))
@@ -49,7 +55,9 @@ class QuickJobs(db.Model):
     job_available_ids = db.Column(db.String(10000))
 
 
-class DonePermanentJobsByUsers(db.Model):
+class CompletedJobs(db.Model):
+    __tablename__= 'CompletedJobs'
+    
     id = db.Column(db.String(50), primary_key=True)
     user_id = db.Column(db.String(50))
     job_id = db.Column(db.String(50))

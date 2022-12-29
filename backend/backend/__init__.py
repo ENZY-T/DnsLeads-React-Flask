@@ -24,12 +24,14 @@ def create_app():
     bcrypt = Bcrypt(app)
     jwt = JWTManager(app)
 
-    from .views import views
-    from .auth import auth
-    from .admin import admin
+    from .Views import views
+    from .Controllers.AuthController import auth
+    from .Controllers.AdminController import admin
+    from .Controllers.UserController import user
 
     app.register_blueprint(views, url_prefix="/api/views")
     app.register_blueprint(auth, url_prefix="/api/auth")
+    app.register_blueprint(user, url_prefix="/api/user")
     app.register_blueprint(admin, url_prefix="/api/admin")
 
     return app

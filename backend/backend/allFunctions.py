@@ -26,7 +26,7 @@ def userObjToDict(obj):
     }
 
 
-def usersObjtoDictArr(objarr):
+def usersObjToDictArr(objarr):
     allUsers = []
     for usr in objarr:
         tmp = userObjToDict(usr)
