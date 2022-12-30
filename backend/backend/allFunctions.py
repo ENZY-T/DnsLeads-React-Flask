@@ -1,7 +1,30 @@
 import re
 
 
-def userObjToDict(obj):
+def userObjToDict(obj, isPw):
+    if isPw:
+        return {
+            "id": str(obj.id),
+            "name": str(obj.name),
+            "address": str(obj.address),
+            "zip_code": str(obj.zip_code),
+            "contact_no": str(obj.contact_no),
+            "email": str(obj.email),
+            "abn": str(obj.abn),
+            "passport_number": str(obj.passport_number),
+            "bank_name": str(obj.bank_name),
+            "account_type": str(obj.account_type),
+            "account_name": str(obj.account_name),
+            "account_number": str(obj.account_number),
+            "bsb": str(obj.bsb),
+            "address_proof_img": str(obj.address_proof_img),
+            "passport_img": str(obj.passport_img),
+            "police_check_img": str(obj.police_check_img),
+            "children_check_img": str(obj.children_check_img),
+            "agreement_img": str(obj.agreement_img),
+            "verified": str(obj.verified),
+            "password": str(obj.password),
+        }
     return {
         "id": str(obj.id),
         "name": str(obj.name),
@@ -21,15 +44,14 @@ def userObjToDict(obj):
         "police_check_img": str(obj.police_check_img),
         "children_check_img": str(obj.children_check_img),
         "agreement_img": str(obj.agreement_img),
-        "verified": bool(obj.verified),
-        "password": str(obj.password),
+        "verified": str(obj.verified),
     }
 
 
 def usersObjToDictArr(objarr):
     allUsers = []
     for usr in objarr:
-        tmp = userObjToDict(usr)
+        tmp = userObjToDict(usr, True)
         allUsers.append(tmp)
     return allUsers
 

@@ -6,7 +6,7 @@ import os
 from uuid import uuid4
 from ..models import Users
 from .. import db
-from ..allFunctions import usersObjToDictArr
+from ..allFunctions import usersObjToDictArr, userObjToDict
 from datetime import timedelta
 from .. import BASE_DIR
 
@@ -23,7 +23,9 @@ def getUserFromEmail(email):
 
 
 def saveUserImage(file, userID, saveName):
-    users_dir = os.path.join(BASE_DIR, "users")
+    # users_dir = os.path.join(os.path.join(BASE_DIR, "img"), "users")
+    users_dir = os.path.join(os.path.join(
+        os.path.join(BASE_DIR, "Resources"), "img"), "users")
     user_folder = os.path.join(users_dir, str(userID))
     if not os.path.exists(user_folder):
         os.mkdir(user_folder)
@@ -38,13 +40,14 @@ def login():
     user_data = request.json
     if "email" in user_data and "password" in user_data:
         user = getUserFromEmail(user_data["email"])
+        print(user.__dict__)
         if user:
-            print(dir(user))
             if check_password_hash(user.password, user_data["password"]):
                 expires = timedelta(hours=24)
                 access_token = create_access_token(
                     identity=user.id, expires_delta=expires)
-                return jsonify({"access_token": access_token}), 200
+                usrData = userObjToDict(user)
+                return jsonify({"access_token": access_token, "user": usrData}), 200
             else:
                 return jsonify("Something went wrong please check the credentials"), 401
         else:
@@ -112,3 +115,10 @@ def logout():
 def protected():
     current_user = get_jwt_identity()
     return jsonify(current_user), 200
+
+
+# this route for testing purposes
+@auth.route("/get-all")
+def get_all_users():
+    all_users = db.session.query(Users).all()
+    return jsonify(usersObjToDictArr(all_users))
