@@ -11,6 +11,7 @@ import os
 
 db = SQLAlchemy()
 DB_NAME = 'database.sqlite3'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def create_app():
@@ -25,11 +26,13 @@ def create_app():
     jwt = JWTManager(app)
 
     from .views import views
-    from .auth import auth
-    from .admin import admin
+    from .Controllers.AuthController import auth
+    from .Controllers.AdminController import admin
+    from .Controllers.UserController import user
 
     app.register_blueprint(views, url_prefix="/api/views")
     app.register_blueprint(auth, url_prefix="/api/auth")
+    app.register_blueprint(user, url_prefix="/api/user")
     app.register_blueprint(admin, url_prefix="/api/admin")
 
     return app
