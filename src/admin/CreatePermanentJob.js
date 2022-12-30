@@ -5,6 +5,8 @@ import { adminWrap } from './component/adminWrap';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { useRef } from 'react';
+import axios from 'axios';
 
 function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
     const [mo, setMo] = useState(false);
@@ -48,6 +50,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                         <input
                             type="checkbox"
                             id="monday"
+                            name="monday"
                             value={mo}
                             onChange={(e) => {
                                 setMo(e.target.checked);
@@ -62,6 +65,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                         <input
                             type="checkbox"
                             id="tuesday"
+                            name="tuesday"
                             value={tu}
                             onChange={(e) => {
                                 setTu(e.target.checked);
@@ -76,6 +80,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                         <input
                             type="checkbox"
                             id="wednesday"
+                            name="wednesday"
                             value={we}
                             onChange={(e) => {
                                 setWe(e.target.checked);
@@ -90,6 +95,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                         <input
                             type="checkbox"
                             id="thursday"
+                            name="thursday"
                             value={th}
                             onChange={(e) => {
                                 setTh(e.target.checked);
@@ -104,6 +110,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                         <input
                             type="checkbox"
                             id="friday"
+                            name="friday"
                             value={fr}
                             onChange={(e) => {
                                 setFr(e.target.checked);
@@ -118,6 +125,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                         <input
                             type="checkbox"
                             id="saturday"
+                            name="saturday"
                             value={sa}
                             onChange={(e) => {
                                 setSa(e.target.checked);
@@ -132,6 +140,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                         <input
                             type="checkbox"
                             id="sunday"
+                            name="sunday"
                             value={su}
                             onChange={(e) => {
                                 setSu(e.target.checked);
@@ -165,7 +174,7 @@ function SelectTime({ hr, setHr, min, setMin, day, setDay }) {
             <h5 className="w-100">Select Time Duration</h5>
             <FormControl variant="filled" className="fw-33 my-2 mr-2">
                 <InputLabel id="">Hr</InputLabel>
-                <Select labelId="" id="demo-simple-select-filled" value={hr} onChange={(e) => setHr(e.target.value)} name="account_type">
+                <Select labelId="" id="demo-simple-select-filled" value={hr} required onChange={(e) => setHr(e.target.value)} name="hrs">
                     <MenuItem value="">
                         <em>Hours</em>
                     </MenuItem>
@@ -183,7 +192,7 @@ function SelectTime({ hr, setHr, min, setMin, day, setDay }) {
                     id="demo-simple-select-filled"
                     value={min}
                     onChange={(e) => setMin(e.target.value)}
-                    name="account_type"
+                    name="mins"
                     required={true}
                 >
                     <MenuItem value="">
@@ -206,6 +215,8 @@ function CreatePermanentJob() {
     const [day, setDay] = useState(null);
     const [value, setValue] = useState(null);
 
+    const formRef = useRef(null);
+
     const [allDaysData, setAllDaysData] = useState({
         monday: false,
         tuesday: false,
@@ -216,33 +227,38 @@ function CreatePermanentJob() {
         sunday: false,
     });
 
-    function handleCreateJob() {
-        console.log(allDaysData);
+    async function handleCreateJob(e) {
+        e.preventDefault();
+        const formData = new FormData(formRef.current);
+        const result = await axios.post('/api/admin/create-permanent-job', formData);
+        console.log(result.data);
     }
 
     return (
         <div>
             <h3>Create Permanent Job</h3>
             <div>
-                <TextField className="w-100 my-3" label="Job Title" variant="filled" />
-                <TextField className="w-100 my-3" label="Job Address" variant="filled" />
-                <SelectTime hr={hr} setHr={setHr} min={min} setMin={setMin} day={day} setDay={setDay} />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TimePicker
-                        label="Select Start Time"
-                        value={value}
-                        onChange={(newValue) => {
-                            setValue(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
-                <br />
-                <TextField className="w-100 my-3" label="Job Description" variant="filled" />
-                <SelectDaysHaveToWork setAllDaysData={setAllDaysData} allDaysData={allDaysData} />
-                <Button variant="contained" className="mt-3" onClick={handleCreateJob}>
-                    Create Job
-                </Button>
+                <form ref={formRef} onSubmit={handleCreateJob}>
+                    <TextField required className="w-100 my-3" label="Job Title" name="job_title" variant="filled" />
+                    <TextField required className="w-100 my-3" label="Job Address" name="job_address" variant="filled" />
+                    <SelectTime hr={hr} setHr={setHr} min={min} setMin={setMin} day={day} setDay={setDay} />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TimePicker
+                            label="Select Start Time"
+                            value={value}
+                            onChange={(newValue) => {
+                                setValue(newValue);
+                            }}
+                            renderInput={(params) => <TextField name="start_time" {...params} />}
+                        />
+                    </LocalizationProvider>
+                    <br />
+                    <TextField className="w-100 my-3" name="job_description" label="Job Description" variant="filled" />
+                    <SelectDaysHaveToWork setAllDaysData={setAllDaysData} allDaysData={allDaysData} />
+                    <Button type="submit" variant="contained" className="mt-3" onClick={handleCreateJob}>
+                        Create Job
+                    </Button>
+                </form>
             </div>
         </div>
     );
