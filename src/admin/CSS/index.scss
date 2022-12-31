@@ -1,13 +1,16 @@
 $themeColor:#ab1e05;
 .admin-nav-bar{
     width: 100%;
-    height: 4vh;
+    padding: 10px 0;
     display: flex;
     align-items: center;
+    height: auto;
     .nav-list{
         display: flex;
+        flex-flow: row wrap;
         .nav-item{
-            margin: 0 10px;
+            width: max-content;
+            margin: 5px 10px;
             color: $themeColor;
             text-decoration: none;
             font-weight: bold;
@@ -75,5 +78,44 @@ $themeColor:#ab1e05;
 @media only screen and (max-width: 800px){
     .fw-33{
         width: 100%;
+    }
+}
+
+.all-jobs-cards-container{
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    .job-card{
+        width: 25%;
+        height: 150px;
+        padding: 10px;
+        .inner-card{
+            cursor: pointer;
+            width: 100%;
+            height: 130px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.1);
+            h3{
+                width: 100%;
+                word-wrap: break-word;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 990px){
+    .all-jobs-cards-container{
+        .job-card{
+            width: 50%;
+        }
+    }
+}
+
+@media only screen and (max-width: 500px){
+    .all-jobs-cards-container{
+        .job-card{
+            width: 100%;
+        }
     }
 }
