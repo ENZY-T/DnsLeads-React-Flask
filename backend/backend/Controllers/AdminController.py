@@ -11,3 +11,7 @@ from datetime import timedelta
 
 
 admin = Blueprint("admin", __name__)
+
+
+# @admin.route("/create-permanent-job")
+# def create_permanent_job():

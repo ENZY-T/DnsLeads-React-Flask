@@ -40,7 +40,6 @@ def login():
     user_data = request.json
     if "email" in user_data and "password" in user_data:
         user = getUserFromEmail(user_data["email"])
-        print(user.__dict__)
         if user:
             if check_password_hash(user.password, user_data["password"]):
                 expires = timedelta(hours=24)

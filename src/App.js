@@ -39,6 +39,7 @@ function App() {
                 <Router>
                     <NavigationBar />
                     <Switch>
+                        {/* static site */}
                         <Route path="/" exact component={HomePage} />
                         <Route path="/about-us" exact component={AboutUs} />
                         <Route path="/services" exact component={Services} />

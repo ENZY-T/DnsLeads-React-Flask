@@ -1,7 +1,7 @@
 import re
 
 
-def userObjToDict(obj, isPw):
+def userObjToDict(obj, isPw=False):
     if isPw:
         return {
             "id": str(obj.id),
