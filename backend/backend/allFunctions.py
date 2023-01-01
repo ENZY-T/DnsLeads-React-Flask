@@ -1,7 +1,10 @@
 import re
-
+from .Services.DbService import DbGetOne
 
 def userObjToDict(obj, isPw = False):
+    if(obj == None):
+        return None
+    
     if isPw:
         return {
             "id": str(obj.id),
@@ -92,3 +95,15 @@ def txtValidation(txt, typeOfTxt):
         else:
             return False
 
+
+def GetJwtFromRequest(request):
+    authHeader = request.headers.get('Authorization')
+    jwt = authHeader.split(' ', 1)[1]
+    return jwt
+
+def CheckJwtBlacklisted(jwt):
+    jwtFound = DbGetOne('BlacklistedAccessTokens', 'access_token', jwt)
+    if(jwtFound == None):
+        return False
+    else:
+        return True

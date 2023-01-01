@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
@@ -7,9 +7,11 @@ from uuid import uuid4
 from ..Models import Users
 from .. import db
 from sqlalchemy import select
-from ..allFunctions import usersObjToDictArr, userObjToDict
+from ..allFunctions import usersObjToDictArr, userObjToDict, GetJwtFromRequest
 from datetime import timedelta
 from .. import BASE_DIR
+from ..Services.DbService import DbAddMany
+from ..Models import BlacklistedAccessTokens
 
 
 auth = Blueprint("auth", __name__)
@@ -44,7 +46,7 @@ def login():
         user = getUserFromEmail(user_data["email"])
         if user:
             if check_password_hash(user.password, user_data["password"]):
-                expires = timedelta(hours=24)
+                expires = timedelta(days=7)
                 access_token = create_access_token(
                     identity=user.id, expires_delta=expires)
                 usrData = userObjToDict(user)
@@ -102,13 +104,19 @@ def register():
         db.session.commit()
         return jsonify("done")
     except Exception as e:
-        print(e)
-        return str(e),
+        return Response(status=400),
 
 
 @auth.route("/logout", methods=["POST"])
+@jwt_required()
 def logout():
-    return 'logout'
+    jwt = GetJwtFromRequest(request)
+    blackListingToken = BlacklistedAccessTokens(access_token = jwt)
+    try:
+        DbAddMany([blackListingToken])
+        return jsonify("Logged out."), 200
+    except Exception as e:
+        return jsonify("Already logged out."), 400
 
 # this route for testing purposes
 @auth.route("/get-all")

@@ -9,6 +9,7 @@ from .. import db
 from ..allFunctions import usersObjToDictArr
 from datetime import timedelta
 from ..Services.DbService import *
+from ..allFunctions import userObjToDict,GetJwtFromRequest, CheckJwtBlacklisted
 
 user = Blueprint("user", __name__)
 
@@ -132,8 +133,15 @@ def updateSingleUsers():
 
 @user.route("/user", methods=["GET"])
 @jwt_required()
-def protected():
-    currentUserId = get_jwt_identity()
-    user = DbGetOne('Users', 'id', currentUserId)
-    userDict = usersObjToDictArr(user, False)
-    return jsonify(userDict), 200
+def GetUser():
+    jwt = GetJwtFromRequest(request)
+    if(CheckJwtBlacklisted(jwt)):
+        return jsonify("You already logged out. Unauthorized"), 401
+    else:
+        currentUserId = get_jwt_identity()
+        user = DbGetOne('Users', 'id', currentUserId)
+        if(user == None):
+            return jsonify("Unauthorized"), 401
+        
+        userDict = userObjToDict(user, False)
+        return jsonify(userDict), 200    
