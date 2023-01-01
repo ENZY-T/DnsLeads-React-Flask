@@ -30,6 +30,7 @@ import SubContractors from './admin/SubContractors';
 import CreatePermanentJob from './admin/CreatePermanentJob';
 import CreateQuickJob from './admin/CreateQuickJob';
 import { AppContextProvider } from './Context/AppContext';
+import Jobs from './admin/Jobs';
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
                 <Router>
                     <NavigationBar />
                     <Switch>
+                        {/* static site */}
                         <Route path="/" exact component={HomePage} />
                         <Route path="/about-us" exact component={AboutUs} />
                         <Route path="/services" exact component={Services} />
@@ -59,6 +61,7 @@ function App() {
                         <Route path="/admin/sub-contractors" exact component={SubContractors} />
                         <Route path="/admin/create-permanent-job" exact component={CreatePermanentJob} />
                         <Route path="/admin/create-quick-job" exact component={CreateQuickJob} />
+                        <Route path="/admin/jobs/:jobID" exact component={Jobs} />
                         <Route component={NotFound} />
                     </Switch>
                     <Footer />

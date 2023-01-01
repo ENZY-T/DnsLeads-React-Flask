@@ -161,9 +161,9 @@ function Register() {
             <div className="container">
                 <div className="register-container">
                     <div className="register-card py-5">
-                        <h1 className="text-center mb-3 display-6">REGISTER</h1>
+                        <h2 className="text-center mb-3 display-6">Sub-Contractor Register</h2>
                         <div className="register-form px-4">
-                            <h4>User Details</h4>
+                            <h4>Sub-Contractor Details</h4>
                             <hr />
                             <form onSubmit={registerHandler}>
                                 <div className="row">

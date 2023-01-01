@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-function GenTable({ tableData }) {
+function GenTable({ tableData, tableTitle = '' }) {
     const headerData = tableData[0];
     const bodyData = tableData.slice(1);
     return (
         <div>
-            <h3>Table Title</h3>
+            <h3>{tableTitle}</h3>
             <div className="table-responsive">
                 <table className="table table-bordered">
                     <thead>
