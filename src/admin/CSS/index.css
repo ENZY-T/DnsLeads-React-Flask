@@ -87,22 +87,25 @@
 }
 
 .select-days-to-work td {
+  border: 1px solid #8e8e8e;
+}
+
+.select-days-to-work tbody td {
   width: 50px !important;
   height: 50px !important;
-  border: 1px solid #8e8e8e;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
 }
 
-.select-days-to-work td label {
+.select-days-to-work tbody td label {
   width: 50px;
   height: 50px;
   line-height: 50px;
   text-align: center;
 }
 
-.select-days-to-work td input {
+.select-days-to-work tbody td input {
   margin: 0 20px;
 }
 

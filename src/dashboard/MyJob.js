@@ -11,7 +11,7 @@ export function TimeTable({ daysToWork }) {
     return (
         <div className="table-container my-3">
             <div className="header">
-                <div className="cell">Time\Day</div>
+                <div className="cell">Time</div>
                 <div className="cell">Mo</div>
                 <div className="cell">Tu</div>
                 <div className="cell">We</div>

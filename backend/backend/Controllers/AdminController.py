@@ -13,5 +13,40 @@ from datetime import timedelta
 admin = Blueprint("admin", __name__)
 
 
-# @admin.route("/create-permanent-job")
-# def create_permanent_job():
+@admin.route("/create-permanent-job", methods=["POST"])
+def create_permanent_job():
+    allItemsFromForm = []
+    must_have = [
+        "job_title",
+        "job_address",
+        "duration_hrs",
+        "duration_mins",
+        "job_description",
+        "start_time",
+        "end_time",
+    ]
+    days = [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+    ]
+    for itm in must_have:
+        if itm not in request.form:
+            return jsonify({"status": "error", "msg": "Details missing"})
+
+    for itm in request.form:
+        print(itm)
+        allItemsFromForm.append(itm)
+
+    for itm in must_have:
+        if itm in allItemsFromForm:
+            allItemsFromForm.remove(itm)
+
+    if len(allItemsFromForm) == 0:
+        return jsonify({"status": "error", "msg": "You havent selected any day for the job"})
+
+    return ""
