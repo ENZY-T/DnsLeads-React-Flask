@@ -1,7 +1,7 @@
 import re
 
 
-def userObjToDict(obj, isPw):
+def userObjToDict(obj, isPw = False):
     if isPw:
         return {
             "id": str(obj.id),
@@ -25,6 +25,7 @@ def userObjToDict(obj, isPw):
             "verified": str(obj.verified),
             "password": str(obj.password),
         }
+        
     return {
         "id": str(obj.id),
         "name": str(obj.name),
@@ -91,9 +92,3 @@ def txtValidation(txt, typeOfTxt):
         else:
             return False
 
-
-# a = "uhuisdtg suhgerdhgerg hergie rgoie ergediug"
-# b = "uashgfusfhguids"
-# c = "0451570605"
-# d = "Lorem ipsum dolor 18:90 sit amet co18nsectetur adipisicing elit. Quam voluptatibus in expedita tenetur hic! Molestiae at cum illo minus quam reiciendis veritatis impedit vitae, fugit incidunt quod distinctio assumenda. Eius soluta adipisci accusamus nisi illo nemo esse consequatur, itaque quis animi, ex iste voluptatibus eos ullam laudantium sequi numquam nihil."
-# print(txtValidation(a, "desc"))

@@ -1,5 +1,5 @@
 from .. import db
-from ..models import *
+from ..Models import *
 from sqlalchemy import select
 
 # Get a record from a model/table

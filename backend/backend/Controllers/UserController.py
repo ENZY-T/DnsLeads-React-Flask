@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
-from ..models import Users
+from ..Models import Users
 from .. import db
 from ..allFunctions import usersObjToDictArr
 from datetime import timedelta
@@ -36,7 +36,7 @@ def getUsers():
     return jsonify(users), 200
 
 
-@user.route("/get/<id>", methods=["GET"])
+@user.route("/user/<id>", methods=["GET"])
 def getSingleUsers(id):
     if (id):
         user = DbGetOne('Users', 'id', id)
@@ -129,3 +129,11 @@ def updateSingleUsers():
     else:
         return {"error": "id required"}, 400
 '''
+
+@user.route("/user", methods=["GET"])
+@jwt_required()
+def protected():
+    currentUserId = get_jwt_identity()
+    user = DbGetOne('Users', 'id', currentUserId)
+    userDict = usersObjToDictArr(user, False)
+    return jsonify(userDict), 200

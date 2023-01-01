@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
-from ..models import Users
+from ..Models import Users
 from .. import db
 from ..allFunctions import usersObjToDictArr
 from datetime import timedelta

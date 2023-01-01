@@ -15,7 +15,7 @@ const SecureRoute = ({ component: Component, ...rest }) => {
 		if (accessToken) {
 			axios
 				.post(
-					'/api/auth/authorization-token',
+					'/api/user',
 					{},
 					{
 						headers: {

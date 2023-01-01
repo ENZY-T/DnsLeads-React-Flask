@@ -4,8 +4,9 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
-from ..models import Users
+from ..Models import Users
 from .. import db
+from sqlalchemy import select
 from ..allFunctions import usersObjToDictArr, userObjToDict
 from datetime import timedelta
 from .. import BASE_DIR
@@ -16,9 +17,10 @@ auth = Blueprint("auth", __name__)
 
 def getUserFromEmail(email):
     try:
-        user = Users.query.filter_by(email=email).first()
+        user = db.session.query(Users).filter(Users.email.like(email)).first()
         return user
-    except:
+    except Exception as e:
+        print(e)
         return False
 
 
@@ -40,7 +42,6 @@ def login():
     user_data = request.json
     if "email" in user_data and "password" in user_data:
         user = getUserFromEmail(user_data["email"])
-        print(user.__dict__)
         if user:
             if check_password_hash(user.password, user_data["password"]):
                 expires = timedelta(hours=24)
@@ -59,7 +60,6 @@ def login():
 @auth.route("/register", methods=['POST'])
 def register():
     usr = request.form
-    print(usr)
     usrImg = request.files
     usrID = str(uuid4())
 
@@ -102,20 +102,13 @@ def register():
         db.session.commit()
         return jsonify("done")
     except Exception as e:
+        print(e)
         return str(e),
 
 
 @auth.route("/logout", methods=["POST"])
 def logout():
     return 'logout'
-
-
-@auth.route("/authorization-token", methods=["POST"])
-@jwt_required()
-def protected():
-    current_user = get_jwt_identity()
-    return jsonify(current_user), 200
-
 
 # this route for testing purposes
 @auth.route("/get-all")
