@@ -161,10 +161,6 @@ function TimeSheet() {
 }
 
 function DashboardHome() {
-	const history = useHistory();
-	useEffect(() => {
-		authToken(history);
-	}, []);
 	return (
 		<div className='container py-5'>
 			<h1>Earnings</h1>

@@ -6,7 +6,6 @@ import { Transition } from 'react-transition-group';
 import { ThemeColors } from '../Styling/Colors';
 import ServiceCard from '../components/ServiceCard';
 import BulletText from '../components/BulletText';
-import { v4 as uuidv4 } from 'uuid';
 
 const HomePage = () => {
 	const inProp = true;
@@ -27,11 +26,11 @@ const HomePage = () => {
 					modules={[Autoplay, Pagination, Navigation]}
 					className='home-swiper'
 				>
-					{GlobalData.media.home.slides.map((slideItem, index) => (
-						<Transition in={inProp} timeout={500} key={uuidv4()}>
-							<SwiperSlide>
+					{GlobalData.media.home.slides.map((slideItem) => (
+						<Transition in={inProp} timeout={500} key={slideItem.id}>
+							<SwiperSlide key={slideItem.id}>
 								<div className='position-relative size-full'>
-									<img className='position-absolute z-index-0' src={slideItem.image} alt={'slide ' + index + 1} />
+									<img className='position-absolute z-index-0' src={slideItem.image} alt={'slide ' + slideItem.id} />
 									<div className='position-relative z-index-1 w-50 ms-5 mt-5'>
 										<p
 											className='display-3 text-start fw-bold'
@@ -69,8 +68,8 @@ const HomePage = () => {
 			<section className='container-fluid py-5' style={{ backgroundColor: ThemeColors.bg_grey }}>
 				<div className='container'>
 					<div className='d-flex flex-column flex-md-row flex-wrap justify-content-between align-items-center align-items-md-stretch'>
-						{GlobalData.services.map((serviceItem, index) => (
-							<ServiceCard key={uuidv4()} serviceItem={serviceItem} />
+						{GlobalData.services.map((serviceItem) => (
+							<ServiceCard key={serviceItem.id} serviceItem={serviceItem} />
 						))}
 					</div>
 				</div>
@@ -99,27 +98,13 @@ const HomePage = () => {
 						</p>
 						<hr className='solid' />
 						<div className='row row-cols-1 row-cols-md-2 g-4'>
-							<BulletText key={0} className='col'>
-								Comprehensive Solutions
-							</BulletText>
-							<BulletText key={1} className='col'>
-								Professionally Trained Workforce
-							</BulletText>
-							<BulletText key={2} className='col'>
-								The Highest Quality Standards
-							</BulletText>
-							<BulletText key={3} className='col'>
-								Modern Tools and Machinery
-							</BulletText>
-							<BulletText key={4} className='col'>
-								Cost Effective Service
-							</BulletText>
-							<BulletText key={5} className='col'>
-								Hazard Free Services
-							</BulletText>
-							<BulletText key={6} className='col'>
-								Capacity to Provide a 24/365 Service
-							</BulletText>
+							<BulletText className='col'>Comprehensive Solutions</BulletText>
+							<BulletText className='col'>Professionally Trained Workforce</BulletText>
+							<BulletText className='col'>The Highest Quality Standards</BulletText>
+							<BulletText className='col'>Modern Tools and Machinery</BulletText>
+							<BulletText className='col'>Cost Effective Service</BulletText>
+							<BulletText className='col'>Hazard Free Services</BulletText>
+							<BulletText className='col'>Capacity to Provide a 24/365 Service</BulletText>
 						</div>
 					</div>
 				</div>
