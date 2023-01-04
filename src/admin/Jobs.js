@@ -5,6 +5,8 @@ import { adminWrap } from './component/adminWrap';
 import GenTable from './component/GenTable';
 
 import WarningIcon from '@mui/icons-material/WarningRounded';
+import axios from 'axios';
+import { GlobalData } from '../GlobalData';
 
 function SelectOptions({ setSelectedData, selectedData, inputLabel, dropList = [], name = '', emptyVal = false }) {
     return (
@@ -27,7 +29,7 @@ function SelectOptions({ setSelectedData, selectedData, inputLabel, dropList = [
                 )}
 
                 {dropList.map((itm, index) => (
-                    <MenuItem value={itm.val} key={index}>
+                    <MenuItem value={itm.id ? itm.id : itm.val} key={index}>
                         {itm.name}
                     </MenuItem>
                 ))}
@@ -92,7 +94,24 @@ for (let i = 2022; i < 2100; i++) {
     allYears.push({ name: i, val: i });
 }
 
-function UsersTable({ usersData = [] }) {
+function UserTableRow({ row, addOrRemoveUser, jobID }) {
+    async function removeUserFromJob() {
+        addOrRemoveUser(jobID, 'remove', row.id, row.name);
+    }
+
+    return (
+        <tr>
+            <td>{row.name}</td>
+            <td>
+                <Button variant="contained" color="error" onClick={removeUserFromJob}>
+                    Remove
+                </Button>
+            </td>
+        </tr>
+    );
+}
+
+function UsersTable({ usersData = [], addOrRemoveUser, jobID }) {
     return (
         <div className="table-responsive">
             {usersData.length === 0 ? (
@@ -111,10 +130,7 @@ function UsersTable({ usersData = [] }) {
                     </thead>
                     <tbody>
                         {usersData.map((row, indx) => (
-                            <tr key={indx}>
-                                <td>{row.name}</td>
-                                <td>{row.actionBtn}</td>
-                            </tr>
+                            <UserTableRow key={indx} row={row} addOrRemoveUser={addOrRemoveUser} jobID={jobID} />
                         ))}
                     </tbody>
                 </table>
@@ -123,8 +139,23 @@ function UsersTable({ usersData = [] }) {
     );
 }
 
+async function getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob) {
+    const result = await axios.get(GlobalData.baseUrl + `/api/admin/get-permanent-jobs/${jobID}`);
+    if (result.status === 200) {
+        setJobData(result.data);
+        setWorkingSubContractorsInThisJob(result.data.job_enrolled_ids);
+        setLoadingJob(false);
+    }
+}
+
 function Jobs(props) {
     const jobID = props.match.params.jobID;
+    const [jobData, setJobData] = useState({});
+    const [loadingJob, setLoadingJob] = useState(true);
+
+    const [loadingContractors, setLoadingContractors] = useState(true);
+    const [userData, setUserData] = useState([]);
+
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
 
@@ -132,68 +163,52 @@ function Jobs(props) {
     const [selectedMonth, setSelectedMonth] = useState((currentMonth + 1).toString().padStart(2, '0'));
     const [selectedUser, setSelectedUser] = useState('');
 
-    const [workingSubContractorsInThisJob, setWorkingSubContractorsInThisJob] = useState([
-        {
-            id: '546513',
-            name: 'Kavindu Harshitha',
-            actionBtn: (
-                <Button variant="contained" color="error" onClick={() => removeUserFromJob('546513')}>
-                    Remove
-                </Button>
-            ),
-        },
-    ]);
+    const [workingSubContractorsInThisJob, setWorkingSubContractorsInThisJob] = useState([]);
 
-    const [allUsers, setAllUsers] = useState([
-        {
-            val: '546513',
-            name: 'Kavindu Harshitha',
-        },
-        {
-            val: '598913',
-            name: 'Chathura Vinod',
-        },
-        {
-            val: '598919',
-            name: 'Adam Levine',
-        },
-    ]);
-
-    function removeUserFromJob(id) {
-        console.log(workingSubContractorsInThisJob);
-        const currentArr = [...workingSubContractorsInThisJob];
-        // console.log(currentArr);
-        setWorkingSubContractorsInThisJob(workingSubContractorsInThisJob.filter((item) => item.id !== id));
+    async function addOrRemoveUser(jobID, method, added_id, added_name) {
+        const sendData = {
+            id: jobID,
+            method: method,
+            added_id: added_id,
+            added_name: added_name,
+        };
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/add-or-remove-user-to-permanent-job', sendData);
+        if (result.status === 200) {
+            setWorkingSubContractorsInThisJob(result.data);
+            getAllContractors(setUserData, setLoadingContractors, jobID);
+        }
     }
 
     function addUserToJob() {
         if (selectedUser !== '') {
-            const addedUser = allUsers.filter((usrs) => usrs.val === selectedUser)[0];
-            const newStateToAdd = {
-                id: addedUser.val,
-                name: addedUser.name,
-                actionBtn: (
-                    <Button variant="contained" color="error" onClick={() => removeUserFromJob(addedUser.val)}>
-                        Remove
-                    </Button>
-                ),
-            };
-            setWorkingSubContractorsInThisJob([...workingSubContractorsInThisJob, newStateToAdd]);
-            setSelectedUser('');
-            console.log(workingSubContractorsInThisJob);
+            const addedUser = userData.filter((usrs) => usrs.id === selectedUser)[0];
+            addOrRemoveUser(jobID, 'add', addedUser.id, addedUser.name);
         }
     }
 
+    async function getAllContractors(setUserData, setLoadingContractors, jobID) {
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-contractors', { jobID: jobID });
+        if (result.status === 200) {
+            setUserData(result.data);
+            setLoadingContractors(false);
+        }
+    }
+
+    useEffect(() => {
+        getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob);
+        getAllContractors(setUserData, setLoadingContractors, jobID);
+    }, []);
+
     return (
         <div>
-            <h2>This is the Job Title</h2>
-            <UsersTable usersData={workingSubContractorsInThisJob} />
+            <h2>{jobData.job_name}</h2>
+            <UsersTable usersData={workingSubContractorsInThisJob} addOrRemoveUser={addOrRemoveUser} jobID={jobID} />
             <div className="d-flex p-3" style={{ alignItems: 'center' }}>
                 <SelectOptions
                     setSelectedData={setSelectedUser}
                     selectedData={selectedUser}
                     inputLabel="All Users"
-                    dropList={allUsers}
+                    dropList={userData}
                     emptyVal={true}
                 />
                 <span style={{ width: '10px' }}></span>

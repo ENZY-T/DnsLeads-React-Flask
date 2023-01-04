@@ -1,10 +1,25 @@
 import re
 from .Services.DbService import DbGetOne
+import json
+from flask import url_for
 
-def userObjToDict(obj, isPw = False):
-    if(obj == None):
+
+def imgPath(cur_path=""):
+    new_path = cur_path.split("\\")
+    print(cur_path)
+    # print(new_path)
+    new_path = "/".join(new_path[-4:])
+    # print(new_path)
+    new_path = url_for('static', filename=new_path, _external=True)
+    print(new_path)
+    print("")
+    return new_path
+
+
+def userObjToDict(obj, isPw=False):
+    if (obj == None):
         return None
-    
+
     if isPw:
         return {
             "id": str(obj.id),
@@ -20,15 +35,20 @@ def userObjToDict(obj, isPw = False):
             "account_name": str(obj.account_name),
             "account_number": str(obj.account_number),
             "bsb": str(obj.bsb),
-            "address_proof_img": str(obj.address_proof_img),
-            "passport_img": str(obj.passport_img),
-            "police_check_img": str(obj.police_check_img),
-            "children_check_img": str(obj.children_check_img),
-            "agreement_img": str(obj.agreement_img),
+
+            "address_proof_img": imgPath(str(obj.address_proof_img)),
+            "passport_img": imgPath(str(obj.passport_img)),
+            "police_check_img": imgPath(str(obj.police_check_img)),
+            "children_check_img": imgPath(str(obj.children_check_img)),
+            "agreement_img": imgPath(str(obj.agreement_img)),
+
             "verified": str(obj.verified),
             "password": str(obj.password),
+            "permanent_jobs": json.loads(obj.permanent_jobs),
+            "quick_jobs": json.loads(obj.quick_jobs),
+            "current_job_id": str(obj.current_job_id)
         }
-        
+
     return {
         "id": str(obj.id),
         "name": str(obj.name),
@@ -43,12 +63,17 @@ def userObjToDict(obj, isPw = False):
         "account_name": str(obj.account_name),
         "account_number": str(obj.account_number),
         "bsb": str(obj.bsb),
-        "address_proof_img": str(obj.address_proof_img),
-        "passport_img": str(obj.passport_img),
-        "police_check_img": str(obj.police_check_img),
-        "children_check_img": str(obj.children_check_img),
-        "agreement_img": str(obj.agreement_img),
+
+        "address_proof_img": imgPath(str(obj.address_proof_img)),
+        "passport_img": imgPath(str(obj.passport_img)),
+        "police_check_img": imgPath(str(obj.police_check_img)),
+        "children_check_img": imgPath(str(obj.children_check_img)),
+        "agreement_img": imgPath(str(obj.agreement_img)),
+
         "verified": str(obj.verified),
+        "permanent_jobs": json.loads(obj.permanent_jobs),
+        "quick_jobs": json.loads(obj.quick_jobs),
+        "current_job_id": str(obj.current_job_id)
     }
 
 
@@ -101,9 +126,10 @@ def GetJwtFromRequest(request):
     jwt = authHeader.split(' ', 1)[1]
     return jwt
 
+
 def CheckJwtBlacklisted(jwt):
     jwtFound = DbGetOne('BlacklistedAccessTokens', 'access_token', jwt)
-    if(jwtFound == None):
+    if (jwtFound == None):
         return False
     else:
         return True

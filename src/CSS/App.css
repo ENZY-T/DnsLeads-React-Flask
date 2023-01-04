@@ -1118,4 +1118,12 @@ html p {
     width: 100% !important;
   }
 }
+
+.txt-green {
+  color: #12b512 !important;
+}
+
+.txt-red {
+  color: red !important;
+}
 /*# sourceMappingURL=App.css.map */

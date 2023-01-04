@@ -6,7 +6,7 @@ from sqlalchemy import DDL, event
 
 class Users(db.Model, UserMixin):
     __tablename__ = 'Users'
-    
+
     id = db.Column(db.String(50), primary_key=True)
     name = db.Column(db.String(250))
     address = db.Column(db.String(250))
@@ -27,11 +27,14 @@ class Users(db.Model, UserMixin):
     agreement_img = db.Column(db.String(250))
     verified = db.Column(db.String(10))
     password = db.Column(db.String(250))
+    permanent_jobs = db.Column(db.String(2000))
+    quick_jobs = db.Column(db.String(2000))
+    current_job_id = db.Column(db.String(50))
 
 
 class PermanentJobs(db.Model):
     __tablename__ = 'PermanentJobs'
-    
+
     job_id = db.Column(db.String(50), primary_key=True)
     job_name = db.Column(db.String(250))
     job_desc = db.Column(db.String(1500))
@@ -45,8 +48,8 @@ class PermanentJobs(db.Model):
 
 
 class QuickJobs(db.Model):
-    __tablename__='QuickJobs'
-    
+    __tablename__ = 'QuickJobs'
+
     job_id = db.Column(db.String(50), primary_key=True)
     job_name = db.Column(db.String(250))
     job_desc = db.Column(db.String(1500))
@@ -58,20 +61,26 @@ class QuickJobs(db.Model):
 
 
 class CompletedJobs(db.Model):
-    __tablename__= 'CompletedJobs'
-    
+    __tablename__ = 'CompletedJobs'
+
     id = db.Column(db.String(50), primary_key=True)
     user_id = db.Column(db.String(50))
+    user_name = db.Column(db.String(150))
     job_id = db.Column(db.String(50))
+    job_name = db.Column(db.String(150))
     started_time = db.Column(db.String(20))
     ended_time = db.Column(db.String(20))
     date = db.Column(db.String(20))
     job_payment_for_day = db.Column(db.String(10))
+    job_status = db.Column(db.String(20))
+    job_started_location = db.Column(db.String(50))
+    job_ended_location = db.Column(db.String(50))
+    job_duration = db.Column(db.String(10))
 
 
 class BlacklistedAccessTokens(db.Model):
     __tablename__ = "BlacklistedAccessTokens"
-    
-    access_token = db.Column(db.String(), primary_key=True)
-    time_added = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
+    access_token = db.Column(db.String(), primary_key=True)
+    time_added = db.Column(db.DateTime(timezone=True),
+                           server_default=func.now())

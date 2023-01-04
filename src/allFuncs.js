@@ -52,7 +52,6 @@ export function authToken(history) {
             )
             .then((response) => {
                 userID = response.data;
-                // console.log(response);
             })
             .catch((error) => {
                 history.push('/login');

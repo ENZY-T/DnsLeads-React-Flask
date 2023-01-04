@@ -2,11 +2,9 @@ import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@m
 import React from 'react';
 import { useState } from 'react';
 import { adminWrap } from './component/adminWrap';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { useRef } from 'react';
 import axios from 'axios';
+import { GlobalData } from '../GlobalData';
 
 function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
     const [mo, setMo] = useState(false);
@@ -17,25 +15,8 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
     const [sa, setSa] = useState(false);
     const [su, setSu] = useState(false);
 
-    const currentHour = new Date().getHours();
-    const currentMin = new Date().getMinutes();
-
     const [s_time, set_s_time] = useState(allDaysData.s_time);
     const [e_time, set_e_time] = useState(allDaysData.e_time);
-
-    const returnData = () => {
-        setAllDaysData({
-            s_time: s_time,
-            e_time: e_time,
-            monday: mo,
-            tuesday: tu,
-            wednesday: we,
-            thursday: th,
-            friday: fr,
-            saturday: sa,
-            sunday: su,
-        });
-    };
 
     return (
         <div>
@@ -78,6 +59,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                                     name="start_time"
                                     onChange={(e) => set_s_time(e.target.value)}
                                     value={s_time}
+                                    required
                                 />
                                 <div>to</div>
                                 <input
@@ -86,6 +68,7 @@ function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
                                     name="end_time"
                                     onChange={(e) => set_e_time(e.target.value)}
                                     value={e_time}
+                                    required
                                 />
                             </div>
                         </td>
@@ -202,8 +185,13 @@ function CreatePermanentJob() {
     async function handleCreateJob(e) {
         e.preventDefault();
         const formData = new FormData(formRef.current);
-        const result = await axios.post('/api/admin/create-permanent-job', formData);
-        console.log(result.data);
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/create-permanent-job', formData);
+        if (result.data.status === 'error') {
+            alert(result.data.msg);
+        } else {
+            alert(result.data.msg);
+            // formRef.current.reset();
+        }
     }
 
     return (
@@ -213,9 +201,17 @@ function CreatePermanentJob() {
                 <form ref={formRef} onSubmit={handleCreateJob}>
                     <TextField required className="w-100 my-3" label="Job Title" name="job_title" variant="filled" />
                     <TextField required className="w-100 my-3" label="Job Address" name="job_address" variant="filled" />
+                    <TextField
+                        required
+                        className="w-100 my-3"
+                        label="Payment per fortnight"
+                        name="payment_per_fortnight"
+                        type="number"
+                        variant="filled"
+                    />
                     <h6>Job Time Duration</h6>
-                    <SelectTime hr={hr} setHr={setHr} min={min} setMin={setMin} />
-                    <TextField className="w-100 my-3" name="job_description" label="Job Description" variant="filled" />
+                    {/* <SelectTime hr={hr} setHr={setHr} min={min} setMin={setMin} /> */}
+                    <TextField required className="w-100 my-3" name="job_description" label="Job Description" variant="filled" />
                     <SelectDaysHaveToWork setAllDaysData={setAllDaysData} allDaysData={allDaysData} />
                     <Button type="submit" variant="contained" className="mt-3" onClick={handleCreateJob}>
                         Create Job

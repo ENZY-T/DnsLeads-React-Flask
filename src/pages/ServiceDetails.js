@@ -44,7 +44,6 @@ function HalfContainer({ leftRightData, indx, line, prp }) {
 }
 
 function ServiceDetails(props) {
-    console.log(props);
     return (
         <div className="service-details">
             <PageHeader headertxt="SERVICES DETAILS" />

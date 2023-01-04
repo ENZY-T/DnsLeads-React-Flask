@@ -12,6 +12,7 @@ from datetime import timedelta
 from .. import BASE_DIR
 from ..Services.DbService import DbAddMany
 from ..Models import BlacklistedAccessTokens
+import json
 
 
 auth = Blueprint("auth", __name__)
@@ -29,7 +30,7 @@ def getUserFromEmail(email):
 def saveUserImage(file, userID, saveName):
     # users_dir = os.path.join(os.path.join(BASE_DIR, "img"), "users")
     users_dir = os.path.join(os.path.join(
-        os.path.join(BASE_DIR, "Resources"), "img"), "users")
+        os.path.join(BASE_DIR, "static"), "img"), "users")
     user_folder = os.path.join(users_dir, str(userID))
     if not os.path.exists(user_folder):
         os.mkdir(user_folder)
@@ -50,7 +51,7 @@ def login():
                 access_token = create_access_token(
                     identity=user.id, expires_delta=expires)
                 usrData = userObjToDict(user)
-                return jsonify({"access_token": access_token, "user": usrData}), 200
+                return jsonify({"access_token": access_token, "user": usrData})
             else:
                 return jsonify("Something went wrong please check the credentials"), 401
         else:
@@ -95,28 +96,31 @@ def register():
         police_check_img=police_check_img,
         children_check_img=children_check_img,
         agreement_img=agreement_img,
-
-        verified=False,
-        password=generate_password_hash(usr["password"]).decode('utf-8')
+        permanent_jobs=json.dumps([]),
+        quick_jobs=json.dumps([]),
+        verified="false",
+        password=generate_password_hash(usr["password"]).decode('utf-8'),
+        current_job_id="empty"
     )
     try:
         db.session.add(new_user)
         db.session.commit()
-        return jsonify("done")
+        return jsonify("User Created")
     except Exception as e:
-        return Response(status=400),
+        return str(e), 401
 
 
 @auth.route("/logout", methods=["POST"])
 @jwt_required()
 def logout():
     jwt = GetJwtFromRequest(request)
-    blackListingToken = BlacklistedAccessTokens(access_token = jwt)
+    blackListingToken = BlacklistedAccessTokens(access_token=jwt)
     try:
         DbAddMany([blackListingToken])
         return jsonify("Logged out."), 200
     except Exception as e:
         return jsonify("Already logged out."), 400
+
 
 # this route for testing purposes
 @auth.route("/get-all")

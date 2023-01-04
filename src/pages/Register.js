@@ -2,7 +2,7 @@ import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@m
 import React from 'react';
 import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { bankList } from '../GlobalData';
+import { bankList, GlobalData } from '../GlobalData';
 import axios from 'axios';
 import { v4 as uuid4 } from 'uuid';
 import { getItemFromLocalStorage, localStoreKeys, removeItemFromLocalStorage } from '../allFuncs';
@@ -144,13 +144,11 @@ function Register() {
                 obj.name === 'agreement_img'
             ) {
                 formData.append(obj.name, obj.files[0]);
-                console.log(obj.files[0]);
             } else {
                 formData.append(obj.name, obj.value);
             }
         }
-        console.log(formData);
-        const result = await axios.post('/api/auth/register', formData, {
+        const result = await axios.post(GlobalData.baseUrl + '/api/auth/register', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
         console.log(result);

@@ -32,46 +32,48 @@ import CreateQuickJob from './admin/CreateQuickJob';
 import { AppContextProvider } from './Context/AppContext';
 import Jobs from './admin/Jobs';
 import SecureRoute from './components/SecureRoute';
+import SubContractor from './admin/SubContractor';
 
 function App() {
-	return (
-		<AppContextProvider>
-			<div style={{ color: ThemeColors.textColor }}>
-				<Router>
-					<NavigationBar />
-					<Switch>
-						{/* Public Pages */}
-						<Route path='/' exact component={HomePage} />
-						<Route path='/about-us' exact component={AboutUs} />
-						<Route path='/services' exact component={Services} />
-						<Route path='/services/details' exact component={ServiceDetails} />
-						<Route path='/products-and-equipments' exact component={ProductsAndEquipment} />
-						<Route path='/contact-us' exact component={ContactUs} />
-						<Route path='/login' exact component={Login} />
-						<Route path='/register' exact component={Register} />
+    return (
+        <AppContextProvider>
+            <div style={{ color: ThemeColors.textColor }}>
+                <Router>
+                    <NavigationBar />
+                    <Switch>
+                        {/* Public Pages */}
+                        <Route path="/" exact component={HomePage} />
+                        <Route path="/about-us" exact component={AboutUs} />
+                        <Route path="/services" exact component={Services} />
+                        <Route path="/services/details" exact component={ServiceDetails} />
+                        <Route path="/products-and-equipments" exact component={ProductsAndEquipment} />
+                        <Route path="/contact-us" exact component={ContactUs} />
+                        <Route path="/login" exact component={Login} />
+                        <Route path="/register" exact component={Register} />
 
-						{/* User Private Pages */}
-						<SecureRoute path='/dashboard' exact component={DashboardHome} />
-						<SecureRoute path='/my-jobs' exact component={MyJobs} />
-						<SecureRoute path='/my-jobs/:jobID' exact component={MyJob} />
-						<SecureRoute path='/permanent-jobs' exact component={PermanentJobs} />
-						<SecureRoute path='/permanent-jobs/:jobID' exact component={PermanentJob} />
-						<SecureRoute path='/quick-jobs' exact component={QuickJobs} />
-						<SecureRoute path='/quick-jobs/:jobID' exact component={QuickJob} />
+                        {/* User Private Pages */}
+                        <SecureRoute path="/dashboard" exact component={DashboardHome} />
+                        <SecureRoute path="/my-jobs" exact component={MyJobs} />
+                        <SecureRoute path="/my-jobs/:jobID" exact component={MyJob} />
+                        <SecureRoute path="/permanent-jobs" exact component={PermanentJobs} />
+                        <SecureRoute path="/permanent-jobs/:jobID" exact component={PermanentJob} />
+                        <SecureRoute path="/quick-jobs" exact component={QuickJobs} />
+                        <SecureRoute path="/quick-jobs/:jobID" exact component={QuickJob} />
 
-						{/* Admin Private Pages */}
-						<Route path='/admin' exact component={AdminHome} />
-						<Route path='/admin/sub-contractors' exact component={SubContractors} />
-						<Route path='/admin/create-permanent-job' exact component={CreatePermanentJob} />
-						<Route path='/admin/create-quick-job' exact component={CreateQuickJob} />
-						<Route path='/admin/jobs/:jobID' exact component={Jobs} />
-						<Route component={NotFound} />
-					</Switch>
-					<Footer />
-				</Router>
-			</div>
-		</AppContextProvider>
-	);
+                        {/* Admin Private Pages */}
+                        <Route path="/admin" exact component={AdminHome} />
+                        <Route path="/admin/sub-contractors" exact component={SubContractors} />
+                        <Route path="/admin/sub-contractors/:userID" exact component={SubContractor} />
+                        <Route path="/admin/create-permanent-job" exact component={CreatePermanentJob} />
+                        <Route path="/admin/create-quick-job" exact component={CreateQuickJob} />
+                        <Route path="/admin/jobs/:jobID" exact component={Jobs} />
+                        <Route component={NotFound} />
+                    </Switch>
+                    <Footer />
+                </Router>
+            </div>
+        </AppContextProvider>
+    );
 }
 
 export default App;

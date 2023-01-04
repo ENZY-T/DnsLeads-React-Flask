@@ -15,17 +15,18 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 
+
 def create_app():
     CORS(app)
-    
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///D:\\{DB_NAME}"
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
     app.config['SECRET_KEY'] = "7c0b1c38-938b-4cce-831d-f3a4dc89e582-4f1ee439-7ee1-4ed2-a44a-5c07f4467a7b"
     app.config["JWT_SECRET_KEY"] = "9f9373d8-a595-4036-bba5-61b45f5f467d-ce14bb63-0a95-4f8c-b5bb-348b61242c64"
-    
+    app.config['STATIC_URL_PATH'] = '/static'
+
     db.init_app(app)
     bcrypt = Bcrypt(app)
     jwt = JWTManager(app)
-    
 
     from .Views import views
     from .Controllers.AuthController import auth
@@ -37,13 +38,14 @@ def create_app():
     app.register_blueprint(user, url_prefix="/api")
     app.register_blueprint(admin, url_prefix="/api/admin")
 
-    create_database(app, db)
+    # create_database(app, db)
+
     return app
 
 
 # database has been created now
 def create_database(app, db):
-    if not os.path.exists(f'D:\\{DB_NAME}'):
+    if not os.path.exists(f'{DB_NAME}'):
         with app.app_context():
             try:
                 db.create_all()

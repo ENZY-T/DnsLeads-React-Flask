@@ -1,5 +1,8 @@
+import axios from 'axios';
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { GlobalData } from '../GlobalData';
 import { adminWrap } from './component/adminWrap';
 import GenTable from './component/GenTable';
 
@@ -28,16 +31,27 @@ function JobCard({ jobID, jobTitle }) {
     );
 }
 
+async function get_all_jobs(setLoadingJobs, setAllJobs) {
+    const result = await axios.get(GlobalData.baseUrl + '/api/admin/get-permanent-jobs');
+    if (result.status === 200) {
+        setAllJobs(result.data);
+        setLoadingJobs(false);
+    }
+    return [];
+}
+
 // Job places data
 function AdminHome() {
+    const [allJobs, setAllJobs] = useState([]);
+    const [loadingJobs, setLoadingJobs] = useState(true);
+
+    useEffect(() => {
+        get_all_jobs(setLoadingJobs, setAllJobs);
+    }, []);
+
     return (
         <div className="all-jobs-cards-container py-3">
-            <JobCard jobID={'216384'} jobTitle="Job 1" />
-            <JobCard jobID={'215584'} jobTitle="Job 2" />
-            <JobCard jobID={'295584'} jobTitle="Job 3" />
-            <JobCard jobID={'266384'} jobTitle="Job 4" />
-            <JobCard jobID={'216334'} jobTitle="Job 5" />
-            <JobCard jobID={'212234'} jobTitle="Job 6" />
+            {loadingJobs ? '' : allJobs.map((job, indx) => <JobCard key={indx} jobID={job.job_id} jobTitle={job.job_name} />)}
         </div>
     );
 }
