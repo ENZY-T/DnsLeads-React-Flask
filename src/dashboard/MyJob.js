@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
-import { myJobs } from './MyJobs';
 import { Button } from '@mui/material';
-
+import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 import CheckIcon from '@mui/icons-material/Check';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
-import { authToken } from '../allFuncs';
+import { useState } from 'react';
+import axios from 'axios';
+import { GlobalData } from '../GlobalData';
+import { useContext } from 'react';
+import { AppContext } from '../Context/AppContext';
 
 export function TimeTable({ daysToWork }) {
     return (
@@ -38,35 +41,98 @@ export function TimeTable({ daysToWork }) {
 
 function MyJob(props) {
     const jobID = props.match.params.jobID;
-
-    const jobData = myJobs.find((jb) => jb.id === jobID);
+    const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
+    const [jobData, setJobData] = useState({});
+    const [jobStarted, setJobStarted] = useState();
     const history = useHistory();
+    const { authState, setCurrentPermanentJobID } = useContext(AppContext);
+    console.log(authState);
+
     const goBack = () => {
         history.goBack();
     };
 
+    async function loadJobData() {
+        const result = await axios.get(GlobalData.baseUrl + `/api/get-permanent-jobs/${jobID}`, {
+            headers: {
+                Authorization: `Bearer ${authTokenData}`,
+            },
+        });
+        if (result.status === 200) {
+            setJobData(result.data);
+            setJobStarted(
+                authState.loggedUser.current_job_id === 'empty' ? false : authState.loggedUser.current_job_id === jobID ? true : false
+            );
+        }
+    }
+
+    async function startJob() {
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/start-permanent-job',
+            { user_id: authState.loggedUser.id, job_id: jobID },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+
+        if (result.status === 200) {
+            const data = result.data;
+            setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+        }
+    }
+    async function finishJob() {
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/stop-permanent-job',
+            { user_id: authState.loggedUser.id, row_id: authState.loggedUser.current_permanent_job_row_id },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+
+        if (result.status === 200) {
+            const data = result.data;
+            setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+        }
+    }
+
+    useEffect(() => {
+        loadJobData();
+    }, []);
+
     return (
         <div className="container py-4">
-            <span className="go-back" onClick={goBack}>
-                <ArrowBackIcon /> Go Back
-            </span>
-            <h1 className="my-3">{jobData.topic}</h1>
-            <h4>Time Duration : {jobData.duration}</h4>
-            <div className="d-flex">
-                {jobData.started ? (
-                    <Button variant="contained" className="bg-theme">
-                        Finished
-                    </Button>
-                ) : (
-                    <Button variant="contained" className="m-3">
-                        Start
-                    </Button>
-                )}
-            </div>
-            <TimeTable daysToWork={jobData.daysToWork} />
-            <h3 className="my-3">Job Details</h3>
-            <p>{jobData.details}</p>
-            <div className="w-100 my-3">{jobData.map}</div>
+            {jobData ? (
+                <div>
+                    <span className="go-back" onClick={goBack}>
+                        <ArrowBackIcon /> Go Back
+                    </span>
+                    <h1 className="my-3">{jobData.job_name}</h1>
+                    <h4>Time Duration : {jobData.job_duration}</h4>
+                    <h4>Start time : {jobData.job_start_time}</h4>
+                    <div className="d-flex">
+                        {authState.loggedUser.current_permanent_job_row_id !== 'empty' ? (
+                            <Button variant="contained" className="bg-theme" onClick={finishJob}>
+                                Finished
+                            </Button>
+                        ) : (
+                            <Button variant="contained" className="m-3" onClick={startJob}>
+                                Start
+                            </Button>
+                        )}
+                    </div>
+                    {jobData.job_timetable ? <TimeTable daysToWork={jobData.job_timetable} /> : ''}
+
+                    <h3 className="my-3">Job Details</h3>
+                    <p>{jobData.job_desc}</p>
+                    {/* <div className="w-100 my-3">{jobData.map}</div> */}
+                </div>
+            ) : (
+                ''
+            )}
         </div>
     );
 }

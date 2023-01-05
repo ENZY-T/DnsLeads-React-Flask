@@ -4,16 +4,58 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { Button } from '@mui/material';
 import { Link, useHistory } from 'react-router-dom';
-import { authToken } from '../allFuncs';
+import { authToken, getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 import { useContext } from 'react';
 import { AppContext } from '../Context/AppContext';
+import { useState } from 'react';
+import axios from 'axios';
+import { GlobalData } from '../GlobalData';
 
 function JobCard({ job }) {
-    const { authState } = useContext(AppContext);
+    const { authState, setCurrentPermanentJobID } = useContext(AppContext);
+    const [jobStarted, setJobStarted] = useState();
+    const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
 
-    const testfunc = () => {
-        console.log(authState);
-    };
+    const jobID = job.job_id;
+
+    async function startJob() {
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/start-permanent-job',
+            { user_id: authState.loggedUser.id, job_id: jobID },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+
+        if (result.status === 200) {
+            const data = result.data;
+            setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+        }
+    }
+    async function finishJob() {
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/stop-permanent-job',
+            { user_id: authState.loggedUser.id, row_id: authState.loggedUser.current_permanent_job_row_id },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+
+        if (result.status === 200) {
+            const data = result.data;
+            setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+        }
+    }
+
+    useEffect(() => {
+        setJobStarted(
+            authState.loggedUser.current_job_id === 'empty' ? false : authState.loggedUser.current_job_id === job.job_id ? true : false
+        );
+    }, []);
 
     return (
         <div className="job-card">
@@ -36,12 +78,12 @@ function JobCard({ job }) {
                     <ScheduleIcon /> Duration : {job.job_duration}
                 </h5>
                 <h5 className="mx-4">Start time : {job.job_start_time}</h5>
-                {job.started ? (
-                    <Button variant="contained" className="bg-theme" onClick={testfunc}>
+                {authState.loggedUser.current_permanent_job_id === job.job_id ? (
+                    <Button variant="contained" className="bg-theme" onClick={finishJob}>
                         Finished
                     </Button>
                 ) : (
-                    <Button variant="contained" className="m-3">
+                    <Button variant="contained" className="m-3" onClick={startJob}>
                         Start
                     </Button>
                 )}
@@ -119,12 +161,17 @@ export const myJobs = [
 
 function MyJobs() {
     const { authState } = useContext(AppContext);
+    console.log(authState);
     return (
         <div className="container py-4">
             <h1 className="p-4">My Jobs</h1>
             <div className="jobs-card-container">
                 {authState.loggedUser.permanent_jobs ? (
-                    authState.loggedUser.permanent_jobs.map((job, index) => <JobCard job={job} key={index} />)
+                    authState.loggedUser.permanent_jobs.length > 0 ? (
+                        authState.loggedUser.permanent_jobs.map((job, index) => <JobCard job={job} key={index} />)
+                    ) : (
+                        <h3 className="px-4">You haven't assign for any job</h3>
+                    )
                 ) : (
                     <h3 className="px-4">You haven't assign for any job</h3>
                 )}

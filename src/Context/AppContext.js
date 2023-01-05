@@ -14,6 +14,13 @@ export const AppContextProvider = (props) => {
         setAuthState((prev) => ({ ...prev, isLogged: false, loggedUser: null, accessToken: null }));
     };
 
+    const setCurrentPermanentJobID = (data) => {
+        setAuthState((prev) => ({
+            ...prev,
+            loggedUser: { ...prev.loggedUser, current_permanent_job_id: data.job_id, current_permanent_job_row_id: data.row_id },
+        }));
+    };
+
     useEffect(() => {
         if (isError) {
             setTimeout(() => {
@@ -23,7 +30,7 @@ export const AppContextProvider = (props) => {
     }, [isError]);
 
     return (
-        <AppContext.Provider value={{ authState, setAuthState, isError, setIsError, setLogged, setLoggedOut }}>
+        <AppContext.Provider value={{ authState, setAuthState, isError, setIsError, setLogged, setLoggedOut, setCurrentPermanentJobID }}>
             {props.children}
         </AppContext.Provider>
     );

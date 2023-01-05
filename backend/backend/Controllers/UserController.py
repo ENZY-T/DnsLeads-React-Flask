@@ -10,25 +10,35 @@ from ..allFunctions import usersObjToDictArr
 from datetime import timedelta
 from ..Services.DbService import *
 from ..allFunctions import userObjToDict, GetJwtFromRequest, CheckJwtBlacklisted
+import json
+from datetime import datetime
+
 
 user = Blueprint("user", __name__)
 
 
-# def returnUsers(id=None):
-#     all_users = None
-#     if id == None:
-#         all_users = Users.query.all()
-#     else:
-#         all_users = Users.query.filter_by(id=id)
-#     return usersObjToDictArr(all_users)
+def getTimeAndDate():
+    today = str(datetime.now())
+    started_date = today.split(" ")[0]
+    started_time = today.split(" ")[1].split(".")[0]
+    return started_date, started_time
 
 
-# def getUserFromEmail(email):
-#     try:
-#         user = Users.query.filter_by(email=email).first()
-#         return user
-#     except:
-#         return False
+def returnUsers(id=None):
+    all_users = None
+    if id == None:
+        all_users = Users.query.all()
+    else:
+        all_users = Users.query.filter_by(id=id)
+    return usersObjToDictArr(all_users)
+
+
+def getUserFromEmail(email):
+    try:
+        user = Users.query.filter_by(email=email).first()
+        return user
+    except:
+        return False
 
 
 @user.route("/users", methods=["GET"])
@@ -146,3 +156,115 @@ def GetUser():
 
         userDict = userObjToDict(user, False)
         return jsonify(userDict), 200
+
+
+@user.route("/get-permanent-jobs/<jobID>")
+@jwt_required()
+def get_a_permanent_job(jobID):
+    job_data = PermanentJobs.query.filter_by(job_id=jobID).first()
+    return_data = {
+        "job_id": job_data.job_id,
+        "job_name": job_data.job_name,
+        "job_desc": job_data.job_desc,
+        "job_duration": job_data.job_duration,
+        "job_payment_for_fortnight": job_data.job_payment_for_fortnight,
+        # "job_payment_for_day": job_data.job_payment_for_day,
+        "job_location": job_data.job_location,
+        "job_start_time": job_data.job_start_time,
+        "job_timetable": json.loads(job_data.job_timetable),
+        # "job_enrolled_ids": json.loads(job_data.job_enrolled_ids),
+    }
+    return jsonify(return_data)
+
+
+@user.route('/start-permanent-job', methods=["POST"])
+@jwt_required()
+def start_permanent_job():
+    data = request.json
+    user_id = data["user_id"]
+    job_id = data['job_id']
+
+    user_data = Users.query.filter_by(id=user_id).first()
+
+    if user_data.current_permanent_job_id == "empty":
+        job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
+
+        started_job_id = str(uuid4())
+        user_data.current_permanent_job_row_id = started_job_id
+        user_data.current_permanent_job_id = job_id
+
+        job_started_date, job_started_time = getTimeAndDate()
+
+        started_job = CompletedJobs(
+            id=started_job_id,
+            user_id=user_id,
+            user_name=user_data.name,
+            job_id=job_id,
+            job_name=job_data.job_name,
+            started_time=job_started_time,
+            ended_time="pending",
+            date=job_started_date,
+            job_payment_for_day=job_data.job_payment_for_day,
+            job_status="pending",
+            job_started_location="",
+            job_ended_location="",
+            job_duration=job_data.job_duration
+        )
+        db.session.add(started_job)
+        db.session.commit()
+
+        return jsonify({"status": "done", "msg": "Job started", "started_row_id": started_job_id, "started_job_id": job_id})
+
+    else:
+        return jsonify({"status": "error", "msg": "You already have started job"})
+
+
+@user.route("/stop-permanent-job", methods=["POST"])
+@jwt_required()
+def stop_permanent_job():
+    data = request.json
+    user_id = data["user_id"]
+    row_id = data['row_id']
+
+    user_data = Users.query.filter_by(id=user_id).first()
+
+    if user_data.current_permanent_job_row_id == row_id:
+        job_completed_row = CompletedJobs.query.filter_by(id=row_id).first()
+        job_ended_date, job_ended_time = getTimeAndDate()
+
+        job_completed_row.ended_time = job_ended_time
+        job_completed_row.job_status = "done"
+
+        user_data.current_permanent_job_id = "empty"
+        user_data.current_permanent_job_row_id = "empty"
+
+        db.session.commit()
+
+        return jsonify({"status": "done", "msg": "Job started", "started_row_id": "empty", "started_job_id": "empty"})
+
+    else:
+        return jsonify({"status": "error", "msg": "You have not started job"})
+
+
+# this route for testing purposes
+@user.route("/get-all-permanent-job-workings")
+def get_all_permanent_job_workings():
+    all_jobs = db.session.query(CompletedJobs).all()
+    allJobs = []
+    for job in all_jobs:
+        allJobs.append({
+            "id": job.id,
+            "user_id": job.user_id,
+            "user_name": job.user_name,
+            "job_id": job.job_id,
+            "job_name": job.job_name,
+            "started_time": job.started_time,
+            "ended_time": job.ended_time,
+            "date": job.date,
+            "job_payment_for_day": job.job_payment_for_day,
+            "job_status": job.job_status,
+            "job_started_location": job.job_started_location,
+            "job_ended_location": job.job_ended_location,
+            "job_duration": job.job_duration,
+        })
+    return jsonify(allJobs)

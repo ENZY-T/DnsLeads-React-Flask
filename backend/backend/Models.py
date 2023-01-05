@@ -29,7 +29,11 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(250))
     permanent_jobs = db.Column(db.String(2000))
     quick_jobs = db.Column(db.String(2000))
-    current_job_id = db.Column(db.String(50))
+
+    current_permanent_job_row_id = db.Column(db.String(50))
+    current_quick_job_row_id = db.Column(db.String(50))
+    current_permanent_job_id = db.Column(db.String(50))
+    current_quick_job_id = db.Column(db.String(50))
 
 
 class PermanentJobs(db.Model):

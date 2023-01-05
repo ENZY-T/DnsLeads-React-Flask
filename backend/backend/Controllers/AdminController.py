@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
-from ..Models import Users, PermanentJobs
+from ..Models import Users, PermanentJobs, CompletedJobs
 from .. import db
 from ..allFunctions import usersObjToDictArr, userObjToDict
 from datetime import timedelta
@@ -252,6 +252,34 @@ def verify_user():
         return_state = use_data.verified
 
     return return_state
+
+
+@admin.route("/get-done-jobs-by-place", methods=["POST"])
+def get_done_jobs_by_place():
+    data = request.json
+    job_id = data["job_id"]
+
+    job_datas = CompletedJobs.query.filter_by(job_id=job_id)
+    jobDatas = []
+
+    for job in job_datas:
+        jobDatas.append({
+            "id":job.id,
+            "user_id":job.user_id,
+            "user_name":job.user_name,
+            "job_id":job.job_id,
+            "job_name":job.job_name,
+            "started_time":job.started_time,
+            "ended_time":job.ended_time,
+            "date":job.date,
+            "job_payment_for_day":job.job_payment_for_day,
+            "job_status":job.job_status,
+            "job_started_location":job.job_started_location,
+            "job_ended_location":job.job_ended_location,
+            "job_duration":job.job_duration,
+        })
+    return jsonify(jobDatas)
+
 
 
 # this route for testing porposes

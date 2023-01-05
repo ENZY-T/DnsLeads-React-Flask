@@ -100,7 +100,10 @@ def register():
         quick_jobs=json.dumps([]),
         verified="false",
         password=generate_password_hash(usr["password"]).decode('utf-8'),
-        current_job_id="empty"
+        current_permanent_job_row_id="empty",
+        current_quick_job_row_id="empty",
+        current_permanent_job_id="empty",
+        current_quick_job_id="empty",
     )
     try:
         db.session.add(new_user)

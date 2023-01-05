@@ -8,6 +8,49 @@ import WarningIcon from '@mui/icons-material/WarningRounded';
 import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 
+function JobDataTable({ jobData }) {
+    return (
+        <div>
+            <div className="table-responsive">
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Done By</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Duration</th>
+                            <th>Pay/day</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {jobData.map((jobRow, indx) => (
+                            <tr key={indx}>
+                                <td>{indx}</td>
+                                <td>{jobRow.date}</td>
+                                <td>{jobRow.user_name}</td>
+                                <td>{jobRow.started_time}</td>
+                                <td>{jobRow.ended_time}</td>
+                                <td>{jobRow.job_duration}hr</td>
+                                <td>A$ {jobRow.job_payment_for_day.split('.')[0]}.00</td>
+                                <td>
+                                    {jobRow.job_status === 'done' ? (
+                                        <span className="txt-green">Done</span>
+                                    ) : (
+                                        <span className="txt-yellow">Pending</span>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
+
 function SelectOptions({ setSelectedData, selectedData, inputLabel, dropList = [], name = '', emptyVal = false }) {
     return (
         <FormControl variant="filled" className={`w-100 my-2`}>
@@ -162,8 +205,8 @@ function Jobs(props) {
     const [selectedYear, setSelectedYear] = useState(currentYear);
     const [selectedMonth, setSelectedMonth] = useState((currentMonth + 1).toString().padStart(2, '0'));
     const [selectedUser, setSelectedUser] = useState('');
-
     const [workingSubContractorsInThisJob, setWorkingSubContractorsInThisJob] = useState([]);
+    const [completedJobData, setCompletedJobData] = useState([]);
 
     async function addOrRemoveUser(jobID, method, added_id, added_name) {
         const sendData = {
@@ -194,9 +237,18 @@ function Jobs(props) {
         }
     }
 
+    async function getAllCompletedJobData() {
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-done-jobs-by-place', { job_id: jobID });
+        if (result.status === 200) {
+            console.log(result.data);
+            setCompletedJobData(result.data);
+        }
+    }
+
     useEffect(() => {
         getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob);
         getAllContractors(setUserData, setLoadingContractors, jobID);
+        getAllCompletedJobData();
     }, []);
 
     return (
@@ -223,7 +275,7 @@ function Jobs(props) {
                 {/* <span style={{ width: '10px' }}></span> */}
                 {/* <Button>Download </Button> */}
             </div>
-            <GenTable tableData={adminHomeData} />
+            {completedJobData ? <JobDataTable jobData={completedJobData} /> : ''}
         </div>
     );
 }

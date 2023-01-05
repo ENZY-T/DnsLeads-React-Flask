@@ -6,13 +6,8 @@ from flask import url_for
 
 def imgPath(cur_path=""):
     new_path = cur_path.split("\\")
-    print(cur_path)
-    # print(new_path)
     new_path = "/".join(new_path[-4:])
-    # print(new_path)
     new_path = url_for('static', filename=new_path, _external=True)
-    print(new_path)
-    print("")
     return new_path
 
 
@@ -46,7 +41,11 @@ def userObjToDict(obj, isPw=False):
             "password": str(obj.password),
             "permanent_jobs": json.loads(obj.permanent_jobs),
             "quick_jobs": json.loads(obj.quick_jobs),
-            "current_job_id": str(obj.current_job_id)
+
+            "current_permanent_job_row_id": str(obj.current_permanent_job_row_id),
+            "current_quick_job_row_id": str(obj.current_quick_job_row_id),
+            "current_permanent_job_id": str(obj.current_permanent_job_id),
+            "current_quick_job_id": str(obj.current_quick_job_id),
         }
 
     return {
@@ -73,7 +72,11 @@ def userObjToDict(obj, isPw=False):
         "verified": str(obj.verified),
         "permanent_jobs": json.loads(obj.permanent_jobs),
         "quick_jobs": json.loads(obj.quick_jobs),
-        "current_job_id": str(obj.current_job_id)
+
+        "current_permanent_job_row_id": str(obj.current_permanent_job_row_id),
+        "current_quick_job_row_id": str(obj.current_quick_job_row_id),
+        "current_permanent_job_id": str(obj.current_permanent_job_id),
+        "current_quick_job_id": str(obj.current_quick_job_id),
     }
 
 
