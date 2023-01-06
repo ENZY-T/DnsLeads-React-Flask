@@ -191,6 +191,50 @@ async function getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContrac
     }
 }
 
+function RequestedRow({
+    row,
+    indx,
+    setAllReqUsers,
+    allReqUsers,
+    userData,
+    setUserData,
+    workingSubContractorsInThisJob,
+    setWorkingSubContractorsInThisJob,
+}) {
+    ////////////////////////////////////////////////////////////////////////////////////////
+    // console.log(userData);
+    // console.log(workingSubContractorsInThisJob);
+    async function acceptJob() {
+        // const result = await axios.post();
+        setAllReqUsers(allReqUsers.filter((rw) => rw.row_id !== row.row_id));
+        setUserData(userData.filter((itm) => itm.id !== row.user_id));
+        setWorkingSubContractorsInThisJob([...workingSubContractorsInThisJob, { id: row.user_id, name: row.user_name }]);
+    }
+
+    async function rejectJob() {
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/reject-req-job', { row_id: row.row_id });
+        setAllReqUsers(allReqUsers.filter((rw) => rw.row_id !== row.row_id));
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    return (
+        <tr>
+            <td>{indx + 1}</td>
+            <td>{row.user_name}</td>
+            <td>
+                <div className="d-flex">
+                    <Button variant="contained" color="success" onClick={acceptJob}>
+                        Accept
+                    </Button>
+                    <Button variant="contained" color="error" className="mx-2" onClick={rejectJob}>
+                        Reject
+                    </Button>
+                </div>
+            </td>
+        </tr>
+    );
+}
+
 function Jobs(props) {
     const jobID = props.match.params.jobID;
     const [jobData, setJobData] = useState({});
@@ -207,6 +251,7 @@ function Jobs(props) {
     const [selectedUser, setSelectedUser] = useState('');
     const [workingSubContractorsInThisJob, setWorkingSubContractorsInThisJob] = useState([]);
     const [completedJobData, setCompletedJobData] = useState([]);
+    const [allReqUsers, setAllReqUsers] = useState([]);
 
     async function addOrRemoveUser(jobID, method, added_id, added_name) {
         const sendData = {
@@ -217,6 +262,7 @@ function Jobs(props) {
         };
         const result = await axios.post(GlobalData.baseUrl + '/api/admin/add-or-remove-user-to-permanent-job', sendData);
         if (result.status === 200) {
+            console.log(result.data);
             setWorkingSubContractorsInThisJob(result.data);
             getAllContractors(setUserData, setLoadingContractors, jobID);
         }
@@ -245,10 +291,19 @@ function Jobs(props) {
         }
     }
 
+    async function getAllReqUsers() {
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-all-req-users', { job_id: jobID });
+        if (result.status === 200) {
+            console.log(result.data);
+            setAllReqUsers(result.data);
+        }
+    }
+
     useEffect(() => {
         getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob);
         getAllContractors(setUserData, setLoadingContractors, jobID);
         getAllCompletedJobData();
+        getAllReqUsers();
     }, []);
 
     return (
@@ -268,6 +323,40 @@ function Jobs(props) {
                     Add User To Job
                 </Button>
             </div>
+            {allReqUsers ? (
+                allReqUsers.length > 0 ? (
+                    <div className="table-responsive">
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>User Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {allReqUsers.map((row, indx) => (
+                                    <RequestedRow
+                                        row={row}
+                                        indx={indx}
+                                        key={indx}
+                                        setAllReqUsers={setAllReqUsers}
+                                        allReqUsers={allReqUsers}
+                                        userData={userData}
+                                        setUserData={setUserData}
+                                        workingSubContractorsInThisJob={workingSubContractorsInThisJob}
+                                        setWorkingSubContractorsInThisJob={setWorkingSubContractorsInThisJob}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    ''
+                )
+            ) : (
+                ''
+            )}
             <div className="d-flex">
                 <SelectOptions setSelectedData={setSelectedYear} selectedData={selectedYear} inputLabel="Year" dropList={allYears} />
                 <span style={{ width: '10px' }}></span>

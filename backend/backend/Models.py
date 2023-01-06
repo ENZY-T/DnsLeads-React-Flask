@@ -89,3 +89,11 @@ class BlacklistedAccessTokens(db.Model):
     access_token = db.Column(db.String(), primary_key=True)
     time_added = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
+
+
+class PermanentJobRequests(db.Model):
+    __tablename__ = "PermanentJobRequests"
+
+    id = db.Column(db.String(50), primary_key=True)
+    user_id = db.Column(db.String(50))
+    job_id = db.Column(db.String(50))

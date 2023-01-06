@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
-from ..Models import Users, PermanentJobs, CompletedJobs
+from ..Models import Users, PermanentJobs, CompletedJobs, PermanentJobRequests
 from .. import db
 from ..allFunctions import usersObjToDictArr, userObjToDict
 from datetime import timedelta
@@ -284,12 +284,50 @@ def get_done_jobs_by_place():
     return jsonify(jobDatas)
 
 
-# this route for testing porposes
-@admin.route("/deleteall")
-def deleteAll():
-    all_jobs = db.session.query(PermanentJobs).all()
-    for jb in all_jobs:
-        job_data = PermanentJobs.query.filter_by(job_id=jb.job_id).first()
-        db.session.delete(job_data)
+@admin.route("/get-req-count", methods=["POST"])
+def get_req_count():
+    job_id = request.json["job_id"]
+    return str(len(PermanentJobRequests.query.filter_by(job_id=job_id).all()))
+
+
+@admin.route("/get-all-req-users", methods=["POST"])
+def get_all_req_users():
+    job_id = request.json["job_id"]
+    all_reqs = PermanentJobRequests.query.filter_by(job_id=job_id).all()
+    allReqs = []
+
+    for req in all_reqs:
+        get_user = Users.query.filter_by(id=req.user_id).first()
+        allReqs.append({
+            "row_id": req.id,
+            "user_id": get_user.id,
+            "user_name": get_user.name
+        })
+
+    return jsonify(allReqs)
+
+
+@admin.route("/reject-req-job", methods=["POST"])
+def reject_req_job():
+    row_id = request.json["row_id"]
+    get_req = PermanentJobRequests.query.filter_by(id=row_id).first()
+    if get_req:
+        db.session.delete(get_req)
         db.session.commit()
-    return jsonify("")
+
+    return "done"
+
+
+@admin.route("/all-reqs")
+def deleteAll():
+    all_reqs = db.session.query(PermanentJobRequests).all()
+    allReqs = []
+
+    for req in all_reqs:
+        allReqs.append({
+            "id": req.id,
+            "user_id": req.user_id,
+            "job_id": req.job_id
+        })
+
+    return jsonify(allReqs)

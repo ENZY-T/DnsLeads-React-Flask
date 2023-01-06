@@ -204,6 +204,15 @@ function CreatePermanentJob() {
                     <TextField
                         required
                         className="w-100 my-3"
+                        label="Sub-Contractors Count for Job"
+                        name="job_need_count"
+                        type="number"
+                        variant="filled"
+                        min="1"
+                    />
+                    <TextField
+                        required
+                        className="w-100 my-3"
                         label="Payment per fortnight"
                         name="payment_per_fortnight"
                         type="number"

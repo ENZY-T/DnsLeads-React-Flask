@@ -22,10 +22,32 @@ function JobCard({ jobID, jobTitle }) {
     function goTo() {
         history.push(`/admin/jobs/${jobID}`);
     }
+
+    const [reqCount, setReqCount] = useState(0);
+
+    async function getReqCount() {
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-req-count', { job_id: jobID });
+        if (result.status === 200) {
+            console.log(result.data);
+            setReqCount(result.data);
+        }
+    }
+
+    useEffect(() => {
+        getReqCount();
+    }, []);
+
     return (
         <div className="job-card">
             <div className="inner-card p-3" onClick={goTo}>
                 <h3>{jobTitle}</h3>
+                {reqCount > 0 ? (
+                    <h6 className="txt-red">
+                        <b>Job Requests {reqCount}</b>
+                    </h6>
+                ) : (
+                    ''
+                )}
             </div>
         </div>
     );

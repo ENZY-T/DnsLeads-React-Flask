@@ -25,6 +25,8 @@ function PermanentJob(props) {
     const history = useHistory();
     const { authState } = useContext(AppContext);
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
+    const [isRequested, setIsRequested] = useState(false);
+
     const goBack = () => {
         history.goBack();
     };
@@ -52,8 +54,49 @@ function PermanentJob(props) {
         }
     }
 
+    async function reqForJob() {
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/req-for-permanent-job',
+            { job_id: jobID, user_id: authState.loggedUser.id },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+        console.log(result.data);
+        if (result.status === 200) {
+            if (result.data === 'done') {
+                setIsRequested(true);
+            } else {
+                setIsRequested(false);
+            }
+        }
+    }
+
+    async function checkIsRequested() {
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/check-is-req-for-permanent-job',
+            { job_id: jobID, user_id: authState.loggedUser.id },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+
+        if (result.status === 200) {
+            if (result.data.status === 'not-enrolled') {
+                setIsRequested(false);
+            } else if (result.data.status === 'enrolled') {
+                setIsRequested(true);
+            }
+        }
+    }
+
     useEffect(() => {
         getPermanentJob();
+        checkIsRequested();
     }, []);
 
     return (
@@ -71,9 +114,15 @@ function PermanentJob(props) {
                     <h4>Job Details</h4>
                     <p>{JobData.job_desc}</p>
                     {/* {permanentJob.location} */}
-                    <Button variant="contained" size="medium" className="my-3">
-                        Request for Job
-                    </Button>
+                    {isRequested ? (
+                        <div className="alert alert-warning my-3" role="alert">
+                            You have already request for the job. Waiting for admin to decide.
+                        </div>
+                    ) : (
+                        <Button variant="contained" size="medium" className="my-3" onClick={reqForJob}>
+                            Request for Job
+                        </Button>
+                    )}
                 </div>
             ) : (
                 ''

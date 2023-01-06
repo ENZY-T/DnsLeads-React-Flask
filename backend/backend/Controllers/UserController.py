@@ -12,6 +12,7 @@ from ..Services.DbService import *
 from ..allFunctions import userObjToDict, GetJwtFromRequest, CheckJwtBlacklisted
 import json
 from datetime import datetime
+from sqlalchemy.sql.operators import and_
 
 
 user = Blueprint("user", __name__)
@@ -312,6 +313,56 @@ def get_permanent_job():
             # "job_enrolled_ids": json.loads(job_data.job_enrolled_ids),
         })
     return jsonify({"status": "enrolled", "job_id": job_id})
+
+
+@user.route("/check-is-req-for-permanent-job", methods=["POST"])
+def check_is_req_for_permanent_job():
+    data = request.json
+    user_id = data["user_id"]
+    job_id = data["job_id"]
+
+    check_already_requested = PermanentJobRequests.query.filter(
+        and_(
+            PermanentJobRequests.user_id == user_id,
+            PermanentJobRequests.job_id == job_id
+        )
+    ).all()
+
+    if len(check_already_requested) == 0:
+        return jsonify({"status": "not-enrolled"})
+    else:
+        return jsonify({"status": "enrolled"})
+
+
+@user.route("/req-for-permanent-job", methods=["POST"])
+@jwt_required()
+def req_for_permanent_job():
+    data = request.json
+    user_id = data["user_id"]
+    job_id = data["job_id"]
+
+    check_already_requested = PermanentJobRequests.query.filter(
+        and_(
+            PermanentJobRequests.user_id == user_id,
+            PermanentJobRequests.job_id == job_id
+        )
+    ).all()
+
+    if len(check_already_requested) == 0:
+        req_id = str(uuid4())
+        new_req = PermanentJobRequests(
+            id=req_id,
+            job_id=job_id,
+            user_id=user_id
+        )
+        try:
+            db.session.add(new_req)
+            db.session.commit()
+            return "done"
+        except RuntimeError as e:
+            return str(e), 500
+    else:
+        return jsonify({"status": "error", "msg": "You have already requested for this job"})
 
 
 # this route for testing purposes
