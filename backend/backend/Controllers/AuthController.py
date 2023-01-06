@@ -79,6 +79,7 @@ def register():
     new_user = Users(
         id=usrID,
         name=usr["name"],
+        role=usr['role'],
         address=usr["address"],
         zip_code=usr["zip_code"],
         contact_no=usr["contact_no"],

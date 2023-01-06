@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
@@ -12,6 +12,7 @@ from ..Services.DbService import *
 from ..allFunctions import userObjToDict, GetJwtFromRequest, CheckJwtBlacklisted
 import json
 from datetime import datetime
+from backend.middlewares.AuthorizationMiddleware import AuthorizationRequired
 
 
 user = Blueprint("user", __name__)
@@ -268,3 +269,9 @@ def get_all_permanent_job_workings():
             "job_duration": job.job_duration,
         })
     return jsonify(allJobs)
+
+
+@user.route("/admin")
+@AuthorizationRequired("admin")
+def GetAdmin():
+    return "Success", 200

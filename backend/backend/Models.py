@@ -9,6 +9,7 @@ class Users(db.Model, UserMixin):
 
     id = db.Column(db.String(50), primary_key=True)
     name = db.Column(db.String(250))
+    role = db.Column(db.String(10), nullable=False)
     address = db.Column(db.String(250))
     zip_code = db.Column(db.String(250))
     contact_no = db.Column(db.String(250), unique=True)

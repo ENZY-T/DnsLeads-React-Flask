@@ -1,7 +1,8 @@
 import re
 from .Services.DbService import DbGetOne
 import json
-from flask import url_for
+from flask import url_for, g
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 def imgPath(cur_path=""):
@@ -19,6 +20,7 @@ def userObjToDict(obj, isPw=False):
         return {
             "id": str(obj.id),
             "name": str(obj.name),
+            "role": str(obj.role),
             "address": str(obj.address),
             "zip_code": str(obj.zip_code),
             "contact_no": str(obj.contact_no),
@@ -51,6 +53,7 @@ def userObjToDict(obj, isPw=False):
     return {
         "id": str(obj.id),
         "name": str(obj.name),
+        "role": str(obj.role),
         "address": str(obj.address),
         "zip_code": str(obj.zip_code),
         "contact_no": str(obj.contact_no),
