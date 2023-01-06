@@ -50,6 +50,7 @@ class PermanentJobs(db.Model):
     job_start_time = db.Column(db.String(30))
     job_timetable = db.Column(db.String(500))
     job_enrolled_ids = db.Column(db.String(10000))
+    job_need_count = db.Column(db.String(5))
 
 
 class QuickJobs(db.Model):

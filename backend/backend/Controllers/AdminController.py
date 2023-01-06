@@ -26,7 +26,8 @@ def create_permanent_job():
         "job_description",
         "start_time",
         "end_time",
-        "payment_per_fortnight"
+        "payment_per_fortnight",
+        "job_need_count",
     ]
     days = [
         "monday",
@@ -78,6 +79,7 @@ def create_permanent_job():
     job_location = formData[must_have[1]]
     job_start_time = formData[must_have[3]]
     job_enrolled_ids = json.dumps([])
+    job_need_count = formData[must_have[6]]
 
     end_time = formData[must_have[4]]
 
@@ -100,7 +102,8 @@ def create_permanent_job():
         job_location=job_location,
         job_start_time=job_start_time,
         job_timetable=job_timetable,
-        job_enrolled_ids=job_enrolled_ids
+        job_enrolled_ids=job_enrolled_ids,
+        job_need_count=job_need_count
     )
 
     try:
@@ -264,22 +267,21 @@ def get_done_jobs_by_place():
 
     for job in job_datas:
         jobDatas.append({
-            "id":job.id,
-            "user_id":job.user_id,
-            "user_name":job.user_name,
-            "job_id":job.job_id,
-            "job_name":job.job_name,
-            "started_time":job.started_time,
-            "ended_time":job.ended_time,
-            "date":job.date,
-            "job_payment_for_day":job.job_payment_for_day,
-            "job_status":job.job_status,
-            "job_started_location":job.job_started_location,
-            "job_ended_location":job.job_ended_location,
-            "job_duration":job.job_duration,
+            "id": job.id,
+            "user_id": job.user_id,
+            "user_name": job.user_name,
+            "job_id": job.job_id,
+            "job_name": job.job_name,
+            "started_time": job.started_time,
+            "ended_time": job.ended_time,
+            "date": job.date,
+            "job_payment_for_day": job.job_payment_for_day,
+            "job_status": job.job_status,
+            "job_started_location": job.job_started_location,
+            "job_ended_location": job.job_ended_location,
+            "job_duration": job.job_duration,
         })
     return jsonify(jobDatas)
-
 
 
 # this route for testing porposes

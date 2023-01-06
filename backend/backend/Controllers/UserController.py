@@ -247,6 +247,74 @@ def stop_permanent_job():
         return jsonify({"status": "error", "msg": "You have not started job"})
 
 
+@user.route("/get-all-permanent-jobs", methods=["POST"])
+@jwt_required()
+def get_all_permanent_jobs():
+    userID = request.json["userID"]
+    all_jobs = db.session.query(PermanentJobs).all()
+    allJobs = []
+
+    for job in all_jobs:
+        userIn = False
+        json_loaded_enrolled_data = json.loads(job.job_enrolled_ids)
+        for user_id in json_loaded_enrolled_data:
+            if user_id['id'] == userID:
+                userIn = True
+                break
+        if int(job.job_need_count) > len(json_loaded_enrolled_data):
+            if userIn == False:
+                allJobs.append({
+                    "job_id": job.job_id,
+                    "job_name": job.job_name,
+                    # "job_desc": job.job_desc,
+                    "job_duration": job.job_duration,
+                    "job_payment_for_fortnight": job.job_payment_for_fortnight,
+                    # "job_payment_for_day": job.job_payment_for_day,
+                    "job_location": job.job_location,
+                    "job_start_time": job.job_start_time,
+                    # "job_timetable": json.loads(job.job_timetable),
+                    # "job_enrolled_ids": json.loads(job.job_enrolled_ids),
+                })
+
+    return jsonify(allJobs)
+
+
+@user.route("/get-permanent-job", methods=["POST"])
+@jwt_required()
+def get_permanent_job():
+    data = request.json
+    user_id = data["user_id"]
+    job_id = data["job_id"]
+
+    user_data = Users.query.filter_by(id=user_id).first()
+    job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
+
+    is_user_enrolled = False
+    json_loaded_enrolled_data = json.loads(job_data.job_enrolled_ids)
+    for id_obj in json_loaded_enrolled_data:
+        if id_obj["id"] == user_id:
+            is_user_enrolled = True
+            break
+
+    if int(job_data.job_need_count) == len(json_loaded_enrolled_data):
+        return jsonify({"status": "not-available"})
+
+    if is_user_enrolled == False:
+        return jsonify({
+            "job_id": job_data.job_id,
+            "job_name": job_data.job_name,
+            "job_desc": job_data.job_desc,
+            "job_duration": job_data.job_duration,
+            "job_payment_for_fortnight": job_data.job_payment_for_fortnight,
+            "job_payment_for_day": job_data.job_payment_for_day,
+            "job_location": job_data.job_location,
+            "job_start_time": job_data.job_start_time,
+            "job_timetable": json.loads(job_data.job_timetable),
+            # "job_enrolled_ids": json.loads(job_data.job_enrolled_ids),
+        })
+    return jsonify({"status": "enrolled", "job_id": job_id})
+
+
 # this route for testing purposes
 @user.route("/get-all-permanent-job-workings")
 def get_all_permanent_job_workings():
