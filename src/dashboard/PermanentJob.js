@@ -1,48 +1,85 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TimeTable } from './MyJob';
 import { Button } from '@mui/material';
 import { permanentJob } from './PermanentJobs';
-import { authToken } from '../allFuncs';
+import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
+import axios from 'axios';
+import { GlobalData } from '../GlobalData';
+import { AppContext } from '../Context/AppContext';
 
 const daysToWork = [
-	{
-		time: '07:00-08:00',
-		days: ['Mo', 'Tu', 'We', 'Th', 'Fr', '', ''],
-	},
-	{
-		time: '14:30-15:30',
-		days: ['', '', '', '', '', 'Sa', 'Su'],
-	},
+    {
+        time: '07:00-08:00',
+        days: ['Mo', 'Tu', 'We', 'Th', 'Fr', '', ''],
+    },
+    {
+        time: '14:30-15:30',
+        days: ['', '', '', '', '', 'Sa', 'Su'],
+    },
 ];
 
 function PermanentJob(props) {
-	const jobID = props.match.params.jobID;
-	const history = useHistory();
-	const goBack = () => {
-		history.goBack();
-	};
+    const jobID = props.match.params.jobID;
+    const history = useHistory();
+    const { authState } = useContext(AppContext);
+    const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
+    const goBack = () => {
+        history.goBack();
+    };
 
-	return (
-		<div className='container py-5'>
-			<span className='go-back' onClick={goBack}>
-				<ArrowBackIcon /> Go Back
-			</span>
-			<h1 className='my-4'>{permanentJob.topic}</h1>
-			<h4>Time Duration : {permanentJob.duration}hr</h4>
-			<h4>Start Time : {permanentJob.time}</h4>
-			<h4>Per hour : A${permanentJob.phr}.00</h4>
-			<TimeTable daysToWork={daysToWork} />
-			<h4>Job Details</h4>
-			<p>{permanentJob.details}</p>
-			{permanentJob.location}
-			<Button variant='contained' size='medium'>
-				Enroll for Job
-			</Button>
-		</div>
-	);
+    const [JobData, setJobData] = useState({});
+
+    async function getPermanentJob() {
+        const result = await axios.post(
+            GlobalData.baseUrl + `/api/get-permanent-job`,
+            { user_id: authState.loggedUser.id, job_id: jobID },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+        if (result.status === 200) {
+            if (result.data.status === 'enrolled') {
+                history.push(`/my-jobs/${result.data.job_id}`);
+            } else if (result.data.status === 'not-available') {
+                history.push(`/permanent-jobs`);
+            } else {
+                setJobData(result.data);
+            }
+        }
+    }
+
+    useEffect(() => {
+        getPermanentJob();
+    }, []);
+
+    return (
+        <div>
+            {JobData ? (
+                <div className="container py-5">
+                    <span className="go-back" onClick={goBack}>
+                        <ArrowBackIcon /> Go Back
+                    </span>
+                    <h1 className="my-4">{JobData.job_name}</h1>
+                    <h4>Time Duration : {JobData.job_duration}hr</h4>
+                    <h4>Start Time : {JobData.job_start_time}</h4>
+                    <h4>Per Fortnight : A${JobData.job_payment_for_fortnight}</h4>
+                    {JobData.job_timetable ? <TimeTable daysToWork={JobData.job_timetable} /> : ''}
+                    <h4>Job Details</h4>
+                    <p>{JobData.job_desc}</p>
+                    {/* {permanentJob.location} */}
+                    <Button variant="contained" size="medium" className="my-3">
+                        Request for Job
+                    </Button>
+                </div>
+            ) : (
+                ''
+            )}
+        </div>
+    );
 }
 
 export default PermanentJob;
