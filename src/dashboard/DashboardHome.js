@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import { useHistory } from 'react-router-dom';
 import { authToken, reqToBackend } from '../allFuncs';
+import { userOnlyWrap } from '../components/wraps';
 import { AppContext } from '../Context/AppContext';
 
 // const optionsMonth = {
@@ -174,4 +175,4 @@ function DashboardHome() {
     );
 }
 
-export default DashboardHome;
+export default userOnlyWrap(DashboardHome);

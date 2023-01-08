@@ -79,7 +79,7 @@ def register():
     new_user = Users(
         id=usrID,
         name=usr["name"],
-        role=usr['role'],
+        role="user",
         address=usr["address"],
         zip_code=usr["zip_code"],
         contact_no=usr["contact_no"],
@@ -111,6 +111,7 @@ def register():
         db.session.commit()
         return jsonify("User Created")
     except Exception as e:
+        print(e)
         return str(e), 401
 
 

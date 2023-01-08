@@ -151,7 +151,7 @@ function Register() {
         const result = await axios.post(GlobalData.baseUrl + '/api/auth/register', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
-        console.log(result);
+        // console.log(result);
     };
 
     return (

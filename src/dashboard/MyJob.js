@@ -9,6 +9,7 @@ import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 import { useContext } from 'react';
 import { AppContext } from '../Context/AppContext';
+import { userOnlyWrap } from '../components/wraps';
 
 export function TimeTable({ daysToWork }) {
     return (
@@ -46,7 +47,7 @@ function MyJob(props) {
     const [jobStarted, setJobStarted] = useState();
     const history = useHistory();
     const { authState, setCurrentPermanentJobID } = useContext(AppContext);
-    console.log(authState);
+    // console.log(authState);
 
     const goBack = () => {
         history.goBack();
@@ -67,35 +68,69 @@ function MyJob(props) {
     }
 
     async function startJob() {
-        const result = await axios.post(
-            GlobalData.baseUrl + '/api/start-permanent-job',
-            { user_id: authState.loggedUser.id, job_id: jobID },
-            {
-                headers: {
-                    Authorization: `Bearer ${authTokenData}`,
+        if (window.confirm('Do you want to start the job?') === true) {
+            let latitude = '';
+            let longitude = '';
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+                    axios
+                        .post(
+                            GlobalData.baseUrl + '/api/start-permanent-job',
+                            { user_id: authState.loggedUser.id, job_id: jobID, start_location: `${latitude},${longitude}` },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${authTokenData}`,
+                                },
+                            }
+                        )
+                        .then((result) => {
+                            if (result.status === 200) {
+                                const data = result.data;
+                                setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+                            }
+                        });
                 },
-            }
-        );
-
-        if (result.status === 200) {
-            const data = result.data;
-            setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+                (error) => {
+                    alert(error);
+                }
+            );
         }
     }
     async function finishJob() {
-        const result = await axios.post(
-            GlobalData.baseUrl + '/api/stop-permanent-job',
-            { user_id: authState.loggedUser.id, row_id: authState.loggedUser.current_permanent_job_row_id },
-            {
-                headers: {
-                    Authorization: `Bearer ${authTokenData}`,
+        if (window.confirm('Do you want to finish the job?') === true) {
+            let latitude = '';
+            let longitude = '';
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+                    axios
+                        .post(
+                            GlobalData.baseUrl + '/api/stop-permanent-job',
+                            {
+                                user_id: authState.loggedUser.id,
+                                row_id: authState.loggedUser.current_permanent_job_row_id,
+                                finish_location: `${latitude},${longitude}`,
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${authTokenData}`,
+                                },
+                            }
+                        )
+                        .then((result) => {
+                            if (result.status === 200) {
+                                const data = result.data;
+                                setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+                            }
+                        });
                 },
-            }
-        );
-
-        if (result.status === 200) {
-            const data = result.data;
-            setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+                (error) => {
+                    alert(error);
+                }
+            );
         }
     }
 
@@ -137,4 +172,4 @@ function MyJob(props) {
     );
 }
 
-export default MyJob;
+export default userOnlyWrap(MyJob);

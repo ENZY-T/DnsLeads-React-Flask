@@ -139,3 +139,18 @@ def CheckJwtBlacklisted(jwt):
         return False
     else:
         return True
+
+
+def convert_coordinates(location: str):
+    lat, lon = location.split(",")
+    lat, lon = float(lat), float(lon)
+
+    lat_deg = int(lat)
+    lat_min = int((lat - lat_deg) * 60)
+    lat_sec = int((((lat - lat_deg) * 60) - lat_min) * 60)
+
+    lon_deg = int(lon)
+    lon_min = int((lon - lon_deg) * 60)
+    lon_sec = int((((lon - lon_deg) * 60) - lon_min) * 60)
+
+    return f"{abs(lat_deg)}°{abs(lat_min)}'{abs(lat_sec)}\"S+{abs(lon_deg)}°{abs(lon_min)}'{abs(lon_sec)}\"E"

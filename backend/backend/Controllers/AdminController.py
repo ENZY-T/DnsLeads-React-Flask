@@ -6,10 +6,11 @@ import os
 from uuid import uuid4
 from ..Models import Users, PermanentJobs, CompletedJobs, PermanentJobRequests
 from .. import db
-from ..allFunctions import usersObjToDictArr, userObjToDict
+from ..allFunctions import usersObjToDictArr, userObjToDict, convert_coordinates
 from datetime import timedelta
 import json
 from datetime import datetime
+from sqlalchemy.sql.operators import and_
 
 
 admin = Blueprint("admin", __name__)
@@ -203,7 +204,7 @@ def get_all_contractors():
     jobID = request.json['jobID']
     job_data = PermanentJobs.query.filter_by(job_id=jobID).first()
     users_arr = list(json.loads(job_data.job_enrolled_ids))
-    all_users = db.session.query(Users).all()
+    all_users = Users.query.filter_by(role="user").all()
     allUsers = []
     for usr in all_users:
         to_append = {
@@ -218,7 +219,7 @@ def get_all_contractors():
 
 @admin.route("/get-all-sub-contractors")
 def get_all_contractors_to_show():
-    all_users = db.session.query(Users).all()
+    all_users = Users.query.filter_by(role="user").all()
     allUsers = []
     for usr in all_users:
         to_append = {
@@ -234,6 +235,14 @@ def get_all_contractors_to_show():
 def get_single_contractor(userID):
     user_data = Users.query.filter_by(id=userID).first()
     return userObjToDict(user_data)
+
+
+@admin.route("/remove-subcontractor/<userID>")
+def remove_subcontractor(userID):
+    get_user = Users.query.filter_by(id=userID).first()
+    db.session.delete(get_user)
+    db.session.commit()
+    return "done"
 
 
 @admin.route("/verify-user", methods=["POST"])
@@ -261,26 +270,41 @@ def verify_user():
 def get_done_jobs_by_place():
     data = request.json
     job_id = data["job_id"]
+    filter_by_year = data['year']
+    filter_by_month = int(data['month'])
 
-    job_datas = CompletedJobs.query.filter_by(job_id=job_id)
+    print(f"{filter_by_year}-{filter_by_month}")
+
+    job_datas = CompletedJobs.query.filter(job_id == job_id).all()
     jobDatas = []
 
+    def locationLink(locationtxt):
+        converted = convert_coordinates(locationtxt)
+        print(converted)
+        return f"https://www.google.com.au/maps/place/{converted}/@{locationtxt}/"
+
     for job in job_datas:
-        jobDatas.append({
-            "id": job.id,
-            "user_id": job.user_id,
-            "user_name": job.user_name,
-            "job_id": job.job_id,
-            "job_name": job.job_name,
-            "started_time": job.started_time,
-            "ended_time": job.ended_time,
-            "date": job.date,
-            "job_payment_for_day": job.job_payment_for_day,
-            "job_status": job.job_status,
-            "job_started_location": job.job_started_location,
-            "job_ended_location": job.job_ended_location,
-            "job_duration": job.job_duration,
-        })
+        year, month, date = job.date.split("-")
+        if str(year) == str(filter_by_year) and str(month) == f"{filter_by_month:02d}":
+            end_location = ""
+            if job.job_ended_location != "":
+                end_location = locationLink(job.job_ended_location)
+            jobDatas.append({
+                "id": job.id,
+                "user_id": job.user_id,
+                "user_name": job.user_name,
+                "job_id": job.job_id,
+                "job_name": job.job_name,
+                "started_time": job.started_time,
+                "ended_time": job.ended_time,
+                "date": job.date,
+                "job_payment_for_day": job.job_payment_for_day,
+                "job_status": job.job_status,
+                "job_started_location": locationLink(job.job_started_location),
+                "job_ended_location": end_location,
+                "job_duration": job.job_duration,
+            })
+
     return jsonify(jobDatas)
 
 
@@ -316,6 +340,38 @@ def reject_req_job():
         db.session.commit()
 
     return "done"
+
+
+@admin.route("/accept-req-job", methods=["POST"])
+def accept_req_job():
+    data = request.json
+    user_id = data["user_id"]
+    job_id = data["job_id"]
+    row_id = data["row_id"]
+
+    get_req = PermanentJobRequests.query.filter_by(id=row_id).first()
+
+    job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
+    users_arr = list(json.loads(job_data.job_enrolled_ids))
+
+    get_user = Users.query.filter_by(id=user_id).first()
+    permanent_job_list = list(json.loads(get_user.permanent_jobs))
+
+    users_arr.append({"id": user_id, "name": get_user.name})
+    permanent_job_list.append({
+        "job_id": job_id,
+        "job_name": job_data.job_name,
+        "job_location": job_data.job_location,
+        "job_start_time": job_data.job_start_time,
+        "job_duration": job_data.job_duration
+    })
+    job_data.job_enrolled_ids = json.dumps(users_arr)
+    get_user.permanent_jobs = json.dumps(permanent_job_list)
+
+    db.session.delete(get_req)
+    db.session.commit()
+
+    return users_arr
 
 
 @admin.route("/all-reqs")

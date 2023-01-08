@@ -33,6 +33,7 @@ import { AppContextProvider } from './Context/AppContext';
 import Jobs from './admin/Jobs';
 import SecureRoute from './components/SecureRoute';
 import SubContractor from './admin/SubContractor';
+import SecureAdminRoute from './components/SecureAdminRoute';
 
 function App() {
     return (
@@ -61,13 +62,13 @@ function App() {
                         <SecureRoute path="/quick-jobs/:jobID" exact component={QuickJob} />
 
                         {/* Admin Private Pages */}
-                        <Route path="/admin" exact component={AdminHome} />
-                        <Route path="/admin/sub-contractors" exact component={SubContractors} />
-                        <Route path="/admin/sub-contractors/:userID" exact component={SubContractor} />
-                        <Route path="/admin/create-permanent-job" exact component={CreatePermanentJob} />
-                        <Route path="/admin/create-quick-job" exact component={CreateQuickJob} />
-                        <Route path="/admin/jobs/:jobID" exact component={Jobs} />
-                        <Route component={NotFound} />
+                        <SecureAdminRoute path="/admin" exact component={AdminHome} />
+                        <SecureAdminRoute path="/admin/sub-contractors" exact component={SubContractors} />
+                        <SecureAdminRoute path="/admin/sub-contractors/:userID" exact component={SubContractor} />
+                        <SecureAdminRoute path="/admin/create-permanent-job" exact component={CreatePermanentJob} />
+                        <SecureAdminRoute path="/admin/create-quick-job" exact component={CreateQuickJob} />
+                        <SecureAdminRoute path="/admin/jobs/:jobID" exact component={Jobs} />
+                        <SecureAdminRoute component={NotFound} />
                     </Switch>
                     <Footer />
                 </Router>

@@ -15,7 +15,6 @@ app = Flask(__name__)
 
 
 def create_app():
-    CORS(app)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
     app.config['SECRET_KEY'] = "7c0b1c38-938b-4cce-831d-f3a4dc89e582-4f1ee439-7ee1-4ed2-a44a-5c07f4467a7b"
@@ -24,8 +23,9 @@ def create_app():
     app.config['RBAC_USE_WHITE'] = True
 
     db.init_app(app)
-    bcrypt = Bcrypt(app)
-    jwt = JWTManager(app)
+    CORS(app)
+    Bcrypt(app)
+    JWTManager(app)
 
     from .Views import views
     from .Controllers.AuthController import auth

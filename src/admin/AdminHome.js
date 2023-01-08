@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { adminOnlyWrap } from '../components/wraps';
 import { GlobalData } from '../GlobalData';
 import { adminWrap } from './component/adminWrap';
 import GenTable from './component/GenTable';
@@ -28,7 +29,7 @@ function JobCard({ jobID, jobTitle }) {
     async function getReqCount() {
         const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-req-count', { job_id: jobID });
         if (result.status === 200) {
-            console.log(result.data);
+            // console.log(result.data);
             setReqCount(result.data);
         }
     }
@@ -78,4 +79,4 @@ function AdminHome() {
     );
 }
 
-export default adminWrap(AdminHome);
+export default adminOnlyWrap(adminWrap(AdminHome));

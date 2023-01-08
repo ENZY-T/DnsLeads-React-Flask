@@ -1,4 +1,5 @@
 import React from 'react';
+import { adminOnlyWrap } from '../components/wraps';
 import { adminWrap } from './component/adminWrap';
 
 function CreateQuickJob() {
@@ -9,4 +10,4 @@ function CreateQuickJob() {
     );
 }
 
-export default adminWrap(CreateQuickJob);
+export default adminOnlyWrap(adminWrap(CreateQuickJob));

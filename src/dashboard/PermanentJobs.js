@@ -12,6 +12,7 @@ import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 import { AppContext } from '../Context/AppContext';
 import { useState } from 'react';
+import { userOnlyWrap } from '../components/wraps';
 
 export const permanentJob = {
     id: '2d0b0064-90c0-42aa-82fb-8daa8c9a7a2e',
@@ -80,7 +81,7 @@ function PermanentJobs() {
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
     const { authState } = useContext(AppContext);
     const [allJobData, setAllJobData] = useState([]);
-
+    // console.log(authState);
     async function getAllPermanentJobs() {
         const result = await axios.post(
             GlobalData.baseUrl + '/api/get-all-permanent-jobs',
@@ -114,4 +115,4 @@ function PermanentJobs() {
     );
 }
 
-export default PermanentJobs;
+export default userOnlyWrap(PermanentJobs);

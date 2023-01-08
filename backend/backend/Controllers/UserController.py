@@ -23,6 +23,8 @@ def getTimeAndDate():
     today = str(datetime.now())
     started_date = today.split(" ")[0]
     started_time = today.split(" ")[1].split(".")[0]
+    # started_date = "2024-02-08"
+
     return started_date, started_time
 
 
@@ -185,6 +187,7 @@ def start_permanent_job():
     data = request.json
     user_id = data["user_id"]
     job_id = data['job_id']
+    start_location = data["start_location"]
 
     user_data = Users.query.filter_by(id=user_id).first()
 
@@ -208,7 +211,7 @@ def start_permanent_job():
             date=job_started_date,
             job_payment_for_day=job_data.job_payment_for_day,
             job_status="pending",
-            job_started_location="",
+            job_started_location=str(start_location),
             job_ended_location="",
             job_duration=job_data.job_duration
         )
@@ -227,6 +230,9 @@ def stop_permanent_job():
     data = request.json
     user_id = data["user_id"]
     row_id = data['row_id']
+    finish_location = data["finish_location"]
+
+    print(data)
 
     user_data = Users.query.filter_by(id=user_id).first()
 
@@ -236,6 +242,7 @@ def stop_permanent_job():
 
         job_completed_row.ended_time = job_ended_time
         job_completed_row.job_status = "done"
+        job_completed_row.job_ended_location = str(finish_location)
 
         user_data.current_permanent_job_id = "empty"
         user_data.current_permanent_job_row_id = "empty"
@@ -317,6 +324,7 @@ def get_permanent_job():
 
 
 @user.route("/check-is-req-for-permanent-job", methods=["POST"])
+@jwt_required()
 def check_is_req_for_permanent_job():
     data = request.json
     user_id = data["user_id"]
@@ -366,7 +374,13 @@ def req_for_permanent_job():
         return jsonify({"status": "error", "msg": "You have already requested for this job"})
 
 
-# this route for testing purposes
+@user.route("/admin")
+@AuthorizationRequired("admin")
+def GetAdmin():
+    return "Success", 200
+
+
+############ from here all routes for testing ############
 @user.route("/get-all-permanent-job-workings")
 def get_all_permanent_job_workings():
     all_jobs = db.session.query(CompletedJobs).all()
@@ -390,7 +404,9 @@ def get_all_permanent_job_workings():
     return jsonify(allJobs)
 
 
-@user.route("/admin")
-@AuthorizationRequired("admin")
-def GetAdmin():
-    return "Success", 200
+@user.route("/del-complete-job/<rowID>")
+def del_complete_job(rowID):
+    job_completed_row = CompletedJobs.query.filter_by(id=rowID).first()
+    db.session.delete(job_completed_row)
+    db.session.commit()
+    return f"deleted {rowID}"

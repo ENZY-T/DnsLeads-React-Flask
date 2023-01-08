@@ -7,6 +7,7 @@ import GenTable from './component/GenTable';
 import WarningIcon from '@mui/icons-material/WarningRounded';
 import axios from 'axios';
 import { GlobalData } from '../GlobalData';
+import { adminOnlyWrap } from '../components/wraps';
 
 function JobDataTable({ jobData }) {
     return (
@@ -31,8 +32,22 @@ function JobDataTable({ jobData }) {
                                 <td>{indx}</td>
                                 <td>{jobRow.date}</td>
                                 <td>{jobRow.user_name}</td>
-                                <td>{jobRow.started_time}</td>
-                                <td>{jobRow.ended_time}</td>
+                                <td>
+                                    {jobRow.started_time}
+                                    <a href={jobRow.job_started_location} target="_blank" className="mx-3">
+                                        location
+                                    </a>
+                                </td>
+                                <td>
+                                    {jobRow.ended_time === 'pending' ? '--:--:--' : jobRow.ended_time}
+                                    {jobRow.job_ended_location === '' ? (
+                                        <span className="txt-yellow mx-3">Pending</span>
+                                    ) : (
+                                        <a href={jobRow.job_ended_location} target="_blank" className="mx-3">
+                                            location
+                                        </a>
+                                    )}
+                                </td>
                                 <td>{jobRow.job_duration}hr</td>
                                 <td>A$ {jobRow.job_payment_for_day.split('.')[0]}.00</td>
                                 <td>
@@ -51,7 +66,15 @@ function JobDataTable({ jobData }) {
     );
 }
 
-function SelectOptions({ setSelectedData, selectedData, inputLabel, dropList = [], name = '', emptyVal = false }) {
+function SelectOptions({
+    setSelectedData,
+    selectedData,
+    inputLabel,
+    dropList = [],
+    name = '',
+    emptyVal = false,
+    ifOnChange = (test) => {},
+}) {
     return (
         <FormControl variant="filled" className={`w-100 my-2`}>
             <InputLabel id="select-bank">{inputLabel}</InputLabel>
@@ -59,7 +82,11 @@ function SelectOptions({ setSelectedData, selectedData, inputLabel, dropList = [
                 labelId="select-bank"
                 id="demo-simple-select-filled"
                 value={selectedData}
-                onChange={(e) => setSelectedData(e.target.value)}
+                onChange={(e) => {
+                    // console.log(e.target.value);
+                    setSelectedData(e.target.value);
+                    ifOnChange(e.target.value);
+                }}
                 name={name}
                 required={true}
             >
@@ -192,6 +219,7 @@ async function getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContrac
 }
 
 function RequestedRow({
+    jobID,
     row,
     indx,
     setAllReqUsers,
@@ -202,13 +230,17 @@ function RequestedRow({
     setWorkingSubContractorsInThisJob,
 }) {
     ////////////////////////////////////////////////////////////////////////////////////////
-    // console.log(userData);
-    // console.log(workingSubContractorsInThisJob);
     async function acceptJob() {
-        // const result = await axios.post();
-        setAllReqUsers(allReqUsers.filter((rw) => rw.row_id !== row.row_id));
-        setUserData(userData.filter((itm) => itm.id !== row.user_id));
-        setWorkingSubContractorsInThisJob([...workingSubContractorsInThisJob, { id: row.user_id, name: row.user_name }]);
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/accept-req-job', {
+            job_id: jobID,
+            user_id: row.user_id,
+            row_id: row.row_id,
+        });
+        if (result.status === 200) {
+            setAllReqUsers(allReqUsers.filter((rw) => rw.row_id !== row.row_id));
+            setUserData(userData.filter((itm) => itm.id !== row.user_id));
+            setWorkingSubContractorsInThisJob([...workingSubContractorsInThisJob, { id: row.user_id, name: row.user_name }]);
+        }
     }
 
     async function rejectJob() {
@@ -262,7 +294,6 @@ function Jobs(props) {
         };
         const result = await axios.post(GlobalData.baseUrl + '/api/admin/add-or-remove-user-to-permanent-job', sendData);
         if (result.status === 200) {
-            console.log(result.data);
             setWorkingSubContractorsInThisJob(result.data);
             getAllContractors(setUserData, setLoadingContractors, jobID);
         }
@@ -284,9 +315,38 @@ function Jobs(props) {
     }
 
     async function getAllCompletedJobData() {
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-done-jobs-by-place', { job_id: jobID });
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-done-jobs-by-place', {
+            job_id: jobID,
+            year: currentYear,
+            month: currentMonth + 1,
+        });
         if (result.status === 200) {
-            console.log(result.data);
+            setCompletedJobData(result.data);
+        }
+    }
+
+    async function getAllCompletedJobDataOnChangeMonth(newMonth) {
+        const sendData = {
+            job_id: jobID,
+            year: selectedYear,
+            month: newMonth,
+        };
+        console.log(sendData);
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-done-jobs-by-place', sendData);
+        if (result.status === 200) {
+            setCompletedJobData(result.data);
+        }
+    }
+
+    async function getAllCompletedJobDataOnChangeYear(newYear) {
+        const sendData = {
+            job_id: jobID,
+            year: newYear,
+            month: selectedMonth,
+        };
+        console.log(sendData);
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-done-jobs-by-place', sendData);
+        if (result.status === 200) {
             setCompletedJobData(result.data);
         }
     }
@@ -294,7 +354,6 @@ function Jobs(props) {
     async function getAllReqUsers() {
         const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-all-req-users', { job_id: jobID });
         if (result.status === 200) {
-            console.log(result.data);
             setAllReqUsers(result.data);
         }
     }
@@ -337,6 +396,7 @@ function Jobs(props) {
                             <tbody>
                                 {allReqUsers.map((row, indx) => (
                                     <RequestedRow
+                                        jobID={jobID}
                                         row={row}
                                         indx={indx}
                                         key={indx}
@@ -358,9 +418,21 @@ function Jobs(props) {
                 ''
             )}
             <div className="d-flex">
-                <SelectOptions setSelectedData={setSelectedYear} selectedData={selectedYear} inputLabel="Year" dropList={allYears} />
+                <SelectOptions
+                    setSelectedData={setSelectedYear}
+                    selectedData={selectedYear}
+                    inputLabel="Year"
+                    dropList={allYears}
+                    ifOnChange={getAllCompletedJobDataOnChangeYear}
+                />
                 <span style={{ width: '10px' }}></span>
-                <SelectOptions setSelectedData={setSelectedMonth} selectedData={selectedMonth} inputLabel="Month" dropList={allMonths} />
+                <SelectOptions
+                    setSelectedData={setSelectedMonth}
+                    selectedData={selectedMonth}
+                    inputLabel="Month"
+                    dropList={allMonths}
+                    ifOnChange={getAllCompletedJobDataOnChangeMonth}
+                />
                 {/* <span style={{ width: '10px' }}></span> */}
                 {/* <Button>Download </Button> */}
             </div>
@@ -369,4 +441,4 @@ function Jobs(props) {
     );
 }
 
-export default adminWrap(Jobs);
+export default adminOnlyWrap(adminWrap(Jobs));

@@ -27,27 +27,42 @@ const settings = [
         link: '/account',
     },
 ];
+const adminPaths = [
+    {
+        name: 'Job Places Data',
+        link: '/admin',
+    },
+    {
+        name: 'Sub-Contractors',
+        link: '/admin/sub-contractors',
+    },
+    {
+        name: 'Create Permanent Job',
+        link: '/admin/create-permanent-job',
+    },
+    {
+        name: 'Create Quick Job',
+        link: '/admin/create-quick-job',
+    },
+];
 
-function authForNav() {
-    const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
-
-    if (accessToken) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function WhenLoginProfileMenu({ hideMenuWhenClick }) {
-    const { setLoggedOut } = useContext(AppContext);
+function WhenLoginProfileMenu({ hideMenuWhenClick, setLoggedOut, authState }) {
     const history = useHistory();
     return (
         <>
-            {settings.map((setting, index) => (
-                <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to={setting.link} key={index}>
-                    <li>{setting.name}</li>
-                </Link>
-            ))}
+            {authState.loggedUser.role
+                ? authState.loggedUser.role === 'user'
+                    ? settings.map((setting, index) => (
+                          <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to={setting.link} key={index}>
+                              <li>{setting.name}</li>
+                          </Link>
+                      ))
+                    : adminPaths.map((setting, index) => (
+                          <Link onClick={() => hideMenuWhenClick()} className="profile-popup-link" to={setting.link} key={index}>
+                              <li>{setting.name}</li>
+                          </Link>
+                      ))
+                : ''}
             <Link
                 onClick={() => {
                     removeItemFromLocalStorage(localStoreKeys.authKey);
@@ -69,7 +84,7 @@ function NavigationBar() {
     const [isBuggerClicked, setIsBuggerClicked] = useState(true);
     const [isNavProfileClicked, setIsNavProfileClicked] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const { authState } = useContext(AppContext);
+    const { setLoggedOut, authState } = useContext(AppContext);
     const notificationCount = 10;
 
     const profileMenuHAndle = () => {
@@ -147,8 +162,18 @@ function NavigationBar() {
                                         <li>Register</li>
                                     </Link>
                                 </>
+                            ) : authState.loggedUser ? (
+                                authState.loggedUser.role ? (
+                                    <WhenLoginProfileMenu
+                                        hideMenuWhenClick={hideMenuWhenClick}
+                                        setLoggedOut={setLoggedOut}
+                                        authState={authState}
+                                    />
+                                ) : (
+                                    ''
+                                )
                             ) : (
-                                <WhenLoginProfileMenu hideMenuWhenClick={hideMenuWhenClick} />
+                                ''
                             )}
                         </ul>
                     </div>

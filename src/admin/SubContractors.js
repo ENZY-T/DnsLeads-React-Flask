@@ -3,6 +3,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useHistory } from 'react-router';
+import { adminOnlyWrap } from '../components/wraps';
 import { GlobalData } from '../GlobalData';
 import { adminWrap } from './component/adminWrap';
 
@@ -45,4 +46,4 @@ function SubContractors() {
     );
 }
 
-export default adminWrap(SubContractors);
+export default adminOnlyWrap(adminWrap(SubContractors));

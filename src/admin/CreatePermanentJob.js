@@ -5,6 +5,7 @@ import { adminWrap } from './component/adminWrap';
 import { useRef } from 'react';
 import axios from 'axios';
 import { GlobalData } from '../GlobalData';
+import { adminOnlyWrap } from '../components/wraps';
 
 function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
     const [mo, setMo] = useState(false);
@@ -231,4 +232,4 @@ function CreatePermanentJob() {
     );
 }
 
-export default adminWrap(CreatePermanentJob);
+export default adminOnlyWrap(adminWrap(CreatePermanentJob));

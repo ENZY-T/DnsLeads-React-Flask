@@ -3,6 +3,8 @@ import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { adminOnlyWrap } from '../components/wraps';
 import { GlobalData } from '../GlobalData';
 import { adminWrap } from './component/adminWrap';
 
@@ -69,10 +71,25 @@ function ApproveOrDisprove({ verified, userID, setData, data }) {
 }
 
 function SubContractorPage({ data, setData, userID }) {
+    const history = useHistory();
+    async function removeSubContractor() {
+        if (window.confirm('Do you wan to delete this sub-contractor?') === true) {
+            const result = await axios.get(GlobalData.baseUrl + `/api/admin/remove-subcontractor/${userID}`);
+            if (result.status === 200) {
+                history.push('/admin/sub-contractors');
+            }
+        }
+    }
+
     return (
         <div>
             <ApproveOrDisprove setData={setData} verified={data.verified} userID={userID} data={data} />
-            <h2>Sub-Contractor Details</h2>
+            <h2 style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                Sub-Contractor Details
+                <Button variant="contained" color="error" onClick={removeSubContractor}>
+                    Remove Sub-Contractor
+                </Button>
+            </h2>
             <hr />
 
             <h5>
@@ -157,4 +174,4 @@ function SubContractor(props) {
     );
 }
 
-export default adminWrap(SubContractor);
+export default adminOnlyWrap(adminWrap(SubContractor));

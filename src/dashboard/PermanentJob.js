@@ -8,6 +8,7 @@ import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 import { AppContext } from '../Context/AppContext';
+import { userOnlyWrap } from '../components/wraps';
 
 const daysToWork = [
     {
@@ -64,7 +65,7 @@ function PermanentJob(props) {
                 },
             }
         );
-        console.log(result.data);
+        // console.log(result.data);
         if (result.status === 200) {
             if (result.data === 'done') {
                 setIsRequested(true);
@@ -131,4 +132,4 @@ function PermanentJob(props) {
     );
 }
 
-export default PermanentJob;
+export default userOnlyWrap(PermanentJob);
