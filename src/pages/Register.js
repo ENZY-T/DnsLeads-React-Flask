@@ -6,6 +6,7 @@ import { bankList, GlobalData } from '../GlobalData';
 import axios from 'axios';
 import { v4 as uuid4 } from 'uuid';
 import { getItemFromLocalStorage, localStoreKeys, removeItemFromLocalStorage } from '../allFuncs';
+import { WarningAmberRounded } from '@mui/icons-material';
 
 function UploadBox({ label, name }) {
     const [filename, setFilename] = useState('Upload types : .jpg, .jpeg, .png, .pdf');
@@ -133,25 +134,32 @@ function Register() {
 
     const registerHandler = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        for (let x = 0; x < 19; x++) {
-            let obj = e.target[x];
-            if (
-                obj.name === 'address_proof_img' ||
-                obj.name === 'passport_img' ||
-                obj.name === 'police_check_img' ||
-                obj.name === 'children_check_img' ||
-                obj.name === 'agreement_img'
-            ) {
-                formData.append(obj.name, obj.files[0]);
-            } else {
-                formData.append(obj.name, obj.value);
+        if (window.confirm('Do you filled all fields correctly?') === true) {
+            const formData = new FormData();
+            for (let x = 0; x < 19; x++) {
+                let obj = e.target[x];
+                if (
+                    obj.name === 'address_proof_img' ||
+                    obj.name === 'passport_img' ||
+                    obj.name === 'police_check_img' ||
+                    obj.name === 'children_check_img' ||
+                    obj.name === 'agreement_img'
+                ) {
+                    formData.append(obj.name, obj.files[0]);
+                } else {
+                    formData.append(obj.name, obj.value);
+                }
+            }
+            const result = await axios.post(GlobalData.baseUrl + '/api/auth/register', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            if (result.status === 200) {
+                alert(result.data.msg);
+                if (result.data.status === 'done') {
+                    history.push('/login');
+                }
             }
         }
-        const result = await axios.post(GlobalData.baseUrl + '/api/auth/register', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        // console.log(result);
     };
 
     return (
@@ -161,6 +169,10 @@ function Register() {
                     <div className="register-card py-5">
                         <h2 className="text-center mb-3 display-6">Sub-Contractor Register</h2>
                         <div className="register-form px-4">
+                            <div className="alert alert-warning">
+                                <WarningAmberRounded /> Please fill and submit form carefuly. After the register, if you need to change
+                                something you will need to contact <strong>System Admin</strong>
+                            </div>
                             <h4>Sub-Contractor Details</h4>
                             <hr />
                             <form onSubmit={registerHandler}>

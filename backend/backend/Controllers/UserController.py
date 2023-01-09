@@ -404,6 +404,33 @@ def get_job_data_to_time():
     return jsonify(allDoneJobs)
 
 
+@user.route("/change-pw", methods=["POST"])
+@jwt_required()
+def change_pw():
+    data = request.form
+    current_password = data["current_password"]
+    new_password = data["new_password"]
+    confirm_password = data["confirm_password"]
+    user_id = data['user_id']
+
+    if current_password == "" or new_password == "" or confirm_password == "":
+        return jsonify({"status": "error", "msg": "Empty fields. Please fill all fields."})
+
+    user_data = Users.query.filter_by(id=user_id).first()
+    if check_password_hash(user_data.password, current_password):
+        if new_password != confirm_password:
+            return jsonify({"status": "error", "msg": "New password and confirmation not match."})
+
+        else:
+            user_data.password = generate_password_hash(
+                new_password).decode('utf-8')
+            db.session.commit()
+            return jsonify({"status": "done", "msg": "Password changed successfuly"})
+
+    else:
+        return jsonify({"status": "error", "msg": "Entered Current password wrong"})
+
+
 ############ from here all routes for testing ############
 @user.route("/get-all-permanent-job-workings")
 def get_all_permanent_job_workings():
