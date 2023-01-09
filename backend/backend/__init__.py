@@ -48,8 +48,8 @@ def create_database(app, db):
         with app.app_context():
             try:
                 db.create_all()
-                print("DB Created")
+                print(" * DB Created")
             except Exception as e:
                 print(e)
     else:
-        print('DB Found.')
+        print(' * DB Found.')

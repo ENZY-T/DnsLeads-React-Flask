@@ -380,6 +380,30 @@ def GetAdmin():
     return "Success", 200
 
 
+@user.route("/get-job-data-to-time", methods=["POST"])
+@jwt_required()
+def get_job_data_to_time():
+    data = request.json
+    user_id = data["user_id"]
+    current_year = int(data["year"])
+    current_month = int(data["month"])
+
+    all_done_jobs = CompletedJobs.query.filter_by(user_id=user_id).all()
+    allDoneJobs = []
+
+    for doneJob in all_done_jobs:
+        year, month, day = doneJob.date.split("-")
+        if str(year) == str(current_year) and str(month) == f"{current_month:02d}":
+            allDoneJobs.append({
+                "date": doneJob.date,
+                "place": doneJob.job_name,
+                "duration": doneJob.job_duration,
+                "payment": f"{float(doneJob.job_payment_for_day):.02f}"
+            })
+
+    return jsonify(allDoneJobs)
+
+
 ############ from here all routes for testing ############
 @user.route("/get-all-permanent-job-workings")
 def get_all_permanent_job_workings():

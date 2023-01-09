@@ -275,12 +275,11 @@ def get_done_jobs_by_place():
 
     print(f"{filter_by_year}-{filter_by_month}")
 
-    job_datas = CompletedJobs.query.filter(job_id == job_id).all()
+    job_datas = CompletedJobs.query.filter_by(job_id=job_id).all()
     jobDatas = []
 
     def locationLink(locationtxt):
         converted = convert_coordinates(locationtxt)
-        print(converted)
         return f"https://www.google.com.au/maps/place/{converted}/@{locationtxt}/"
 
     for job in job_datas:
@@ -289,20 +288,38 @@ def get_done_jobs_by_place():
             end_location = ""
             if job.job_ended_location != "":
                 end_location = locationLink(job.job_ended_location)
+
+            job_real_times = PermanentJobs.query.filter_by(
+                job_id=job.job_id).first()
+
+            job_duration = job.job_duration.split(":")
+            must_end_time = datetime.strptime(job_real_times.job_start_time, '%H:%M') + timedelta(
+                hours=int(job_duration[0]), minutes=int(job_duration[1]))
+            must_end_time = must_end_time.strftime("%H:%M")
+            took_duration = ""
+            if job.ended_time != "pending":
+                took_duration = datetime.strptime(
+                    job.ended_time, "%H:%M:%S") - datetime.strptime(job.started_time, "%H:%M:%S")
+
             jobDatas.append({
                 "id": job.id,
                 "user_id": job.user_id,
                 "user_name": job.user_name,
                 "job_id": job.job_id,
                 "job_name": job.job_name,
-                "started_time": job.started_time,
-                "ended_time": job.ended_time,
+                "started_time": job.started_time[:-3],
+                "ended_time": job.ended_time[:-3],
                 "date": job.date,
                 "job_payment_for_day": job.job_payment_for_day,
                 "job_status": job.job_status,
                 "job_started_location": locationLink(job.job_started_location),
                 "job_ended_location": end_location,
-                "job_duration": job.job_duration,
+                "job_duration": str(took_duration)[:-3],
+                "must_time": {
+                    "start_time": job_real_times.job_start_time,
+                    "end_time": str(must_end_time),
+                    "duration": job.job_duration
+                }
             })
 
     return jsonify(jobDatas)

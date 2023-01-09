@@ -1,9 +1,14 @@
-import React, { useContext, useEffect } from 'react';
-import Chart from 'react-apexcharts';
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+// import Chart from 'react-apexcharts';
 import { useHistory } from 'react-router-dom';
-import { authToken, reqToBackend } from '../allFuncs';
+import { allMonths, allYears, SelectOptions } from '../admin/Jobs';
+import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
+// import { authToken, reqToBackend } from '../allFuncs';
 import { userOnlyWrap } from '../components/wraps';
 import { AppContext } from '../Context/AppContext';
+import { GlobalData } from '../GlobalData';
+// import { AppContext } from '../Context/AppContext';
 
 // const optionsMonth = {
 // 	chart: {
@@ -118,8 +123,89 @@ import { AppContext } from '../Context/AppContext';
 // }
 
 function TimeSheet() {
+    const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+
+    const { authState } = useContext(AppContext);
+
+    const [selectedYear, setSelectedYear] = useState(currentYear);
+    const [selectedMonth, setSelectedMonth] = useState((currentMonth + 1).toString().padStart(2, '0'));
+    const [jobData, setJobData] = useState([]);
+
+    async function loadTimeCurrentMonthTimeData() {
+        const sendData = {
+            user_id: authState.loggedUser.id,
+            year: currentYear,
+            month: (currentMonth + 1).toString().padStart(2, '0'),
+        };
+        const result = await axios.post(GlobalData.baseUrl + '/api/get-job-data-to-time', sendData, {
+            headers: {
+                Authorization: `Bearer ${authTokenData}`,
+            },
+        });
+        if (result.status === 200) {
+            setJobData(result.data);
+        }
+    }
+
+    async function loadTimeCurrentMonthTimeDataYear(year) {
+        const sendData = {
+            user_id: authState.loggedUser.id,
+            year: year,
+            month: selectedMonth,
+        };
+        const result = await axios.post(GlobalData.baseUrl + '/api/get-job-data-to-time', sendData, {
+            headers: {
+                Authorization: `Bearer ${authTokenData}`,
+            },
+        });
+        if (result.status === 200) {
+            setJobData(result.data);
+        }
+    }
+
+    async function loadTimeCurrentMonthTimeDataMonth(month) {
+        const sendData = {
+            user_id: authState.loggedUser.id,
+            year: selectedYear,
+            month: month,
+        };
+        const result = await axios.post(GlobalData.baseUrl + '/api/get-job-data-to-time', sendData, {
+            headers: {
+                Authorization: `Bearer ${authTokenData}`,
+            },
+        });
+        if (result.status === 200) {
+            setJobData(result.data);
+        }
+    }
+
+    useEffect(() => {
+        loadTimeCurrentMonthTimeData();
+    }, []);
+
     return (
         <div className="timesheet-container my-3">
+            <div>
+                <SelectOptions
+                    setSelectedData={setSelectedYear}
+                    selectedData={selectedYear}
+                    inputLabel="Year"
+                    dropList={allYears}
+                    ifOnChange={loadTimeCurrentMonthTimeDataYear}
+                />
+                <SelectOptions
+                    setSelectedData={setSelectedMonth}
+                    selectedData={selectedMonth}
+                    inputLabel="Month"
+                    dropList={allMonths}
+                    ifOnChange={loadTimeCurrentMonthTimeDataMonth}
+                />
+                {/* <span style={{ width: '10px' }}></span> */}
+                {/* <Button>Download </Button> */}
+            </div>
+            <br />
             <div className="table-responsive">
                 <table className="table table-bordered">
                     <thead>
@@ -130,32 +216,20 @@ function TimeSheet() {
                             <th scope="col">Payment</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>2022/11/18</td>
-                            <td>Garden Island</td>
-                            <td>1hr</td>
-                            <td>A$25.00</td>
-                        </tr>
-                        <tr>
-                            <td>2022/11/18</td>
-                            <td>Garden Island</td>
-                            <td>1hr</td>
-                            <td>A$25.00</td>
-                        </tr>
-                        <tr>
-                            <td>2022/11/18</td>
-                            <td>Garden Island</td>
-                            <td>1hr</td>
-                            <td>A$25.00</td>
-                        </tr>
-                        <tr>
-                            <td>2022/11/18</td>
-                            <td>Garden Island</td>
-                            <td>1hr</td>
-                            <td>A$25.00</td>
-                        </tr>
-                    </tbody>
+                    {jobData ? (
+                        <tbody>
+                            {jobData.map((jbData, indx) => (
+                                <tr key={indx}>
+                                    <td>{jbData.date}</td>
+                                    <td>{jbData.place}</td>
+                                    <td>{jbData.duration} hr</td>
+                                    <td>A$ {jbData.payment}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    ) : (
+                        ''
+                    )}
                 </table>
             </div>
         </div>
@@ -165,7 +239,7 @@ function TimeSheet() {
 function DashboardHome() {
     return (
         <div className="container py-5">
-            <h1>Earnings</h1>
+            <h1>Earnings as Sub-Contractor</h1>
             <div className="card-container">
                 {/* <EarningChartCard type="bar" topic="2022" options={optionsYear} series={seriesYear} />
                 <EarningChartCard type="line" topic="September" options={optionsMonth} series={seriesMonth} /> */}

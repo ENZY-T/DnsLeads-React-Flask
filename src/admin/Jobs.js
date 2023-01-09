@@ -34,12 +34,13 @@ function JobDataTable({ jobData }) {
                                 <td>{jobRow.user_name}</td>
                                 <td>
                                     {jobRow.started_time}
+                                    {` (${jobRow.must_time.start_time})`}
                                     <a href={jobRow.job_started_location} target="_blank" className="mx-3">
                                         location
                                     </a>
                                 </td>
                                 <td>
-                                    {jobRow.ended_time === 'pending' ? '--:--:--' : jobRow.ended_time}
+                                    {jobRow.ended_time === 'pending' ? '--:--:--' : `${jobRow.ended_time} (${jobRow.must_time.start_time})`}
                                     {jobRow.job_ended_location === '' ? (
                                         <span className="txt-yellow mx-3">Pending</span>
                                     ) : (
@@ -48,7 +49,9 @@ function JobDataTable({ jobData }) {
                                         </a>
                                     )}
                                 </td>
-                                <td>{jobRow.job_duration}hr</td>
+                                <td>
+                                    {jobRow.job_duration} / {jobRow.must_time.duration}
+                                </td>
                                 <td>A$ {jobRow.job_payment_for_day.split('.')[0]}.00</td>
                                 <td>
                                     {jobRow.job_status === 'done' ? (
@@ -66,7 +69,7 @@ function JobDataTable({ jobData }) {
     );
 }
 
-function SelectOptions({
+export function SelectOptions({
     setSelectedData,
     selectedData,
     inputLabel,
@@ -108,8 +111,8 @@ function SelectOptions({
     );
 }
 
-let allYears = [];
-let allMonths = [
+export let allYears = [];
+export let allMonths = [
     {
         name: 'January',
         val: '01',
@@ -321,6 +324,7 @@ function Jobs(props) {
             month: currentMonth + 1,
         });
         if (result.status === 200) {
+            console.log(result.data);
             setCompletedJobData(result.data);
         }
     }
