@@ -14,6 +14,7 @@ import json
 from datetime import datetime
 from backend.middlewares.AuthorizationMiddleware import AuthorizationRequired
 from sqlalchemy.sql.operators import and_
+from .. import app
 
 
 user = Blueprint("user", __name__)
@@ -458,7 +459,7 @@ def del_complete_job(rowID):
 
 
 # Authorize whole user blueprint
-@user.before_request
+# @user.before_request
 @AuthorizationRequired('user')
 def before_request():
     pass

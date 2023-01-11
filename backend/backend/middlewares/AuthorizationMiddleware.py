@@ -13,7 +13,11 @@ def AuthorizationRequired(role="user"):
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Authenticate
-            jwt = GetJwtFromRequest(request)
+            try:
+                jwt = GetJwtFromRequest(request)
+            except Exception as e:
+                return Response('Authentication failed', mimetype='application/json', status=401)
+
             if (CheckJwtBlacklisted(jwt)):
                 return Response('Authentication failed', mimetype='application/json', status=401)
 

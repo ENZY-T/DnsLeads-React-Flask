@@ -1,5 +1,10 @@
 from backend import create_app
+rom backend import create_app
 
-if __name__ == "__main__":
+sslc = "/etc/letsencrypt/live/whonear.xyz/fullchain.pem"
+sslck = "/etc/letsencrypt/live/whonear.xyz/privkey.pem"
+
+if __name__ == "_main_":
     app = create_app()
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0",
+            allow_unsafe_werkzeug=True, ssl_context=(sslc, sslck))
