@@ -11,6 +11,7 @@ from datetime import timedelta
 import json
 from datetime import datetime
 from sqlalchemy.sql.operators import and_
+from ..middlewares.AuthorizationMiddleware import AuthorizationRequired
 
 
 admin = Blueprint("admin", __name__)
@@ -238,6 +239,7 @@ def get_single_contractor(userID):
 
 
 @admin.route("/remove-subcontractor/<userID>")
+@AuthorizationRequired('admin')
 def remove_subcontractor(userID):
     get_user = Users.query.filter_by(id=userID).first()
     db.session.delete(get_user)
@@ -404,3 +406,16 @@ def deleteAll():
         })
 
     return jsonify(allReqs)
+
+
+# Authorize whole admin blueprint
+@admin.before_request
+@AuthorizationRequired('admin')
+def before_request():
+    pass
+
+
+# Testing route
+@admin.route("/test")
+def GetAdmin():
+    return "Success", 200

@@ -374,12 +374,6 @@ def req_for_permanent_job():
         return jsonify({"status": "error", "msg": "You have already requested for this job"})
 
 
-@user.route("/admin")
-@AuthorizationRequired("admin")
-def GetAdmin():
-    return "Success", 200
-
-
 @user.route("/get-job-data-to-time", methods=["POST"])
 @jwt_required()
 def get_job_data_to_time():
@@ -461,3 +455,16 @@ def del_complete_job(rowID):
     db.session.delete(job_completed_row)
     db.session.commit()
     return f"deleted {rowID}"
+
+
+# Authorize whole user blueprint
+@user.before_request
+@AuthorizationRequired('user')
+def before_request():
+    pass
+
+
+# Testing route
+@user.route("/user/test")
+def GetAdmin():
+    return "Success", 200
