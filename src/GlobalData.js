@@ -71,7 +71,8 @@ export const GlobalData = {
 		logo: require('./img/logo.png'),
 	},
 	// baseUrl: 'http://localhost:5000',
-	baseUrl: 'http://whonear.xyz:5000',
+	// baseUrl: 'http://whonear.xyz',
+	baseUrl: 'https://whonear.xyz',
 
 	services: [
 		{
