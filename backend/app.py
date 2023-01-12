@@ -1,5 +1,5 @@
 from backend import create_app
-rom backend import create_app
+from backend import create_app
 
 sslc = "/etc/letsencrypt/live/whonear.xyz/fullchain.pem"
 sslck = "/etc/letsencrypt/live/whonear.xyz/privkey.pem"
