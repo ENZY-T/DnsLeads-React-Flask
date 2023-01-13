@@ -234,11 +234,20 @@ function RequestedRow({
 }) {
     ////////////////////////////////////////////////////////////////////////////////////////
     async function acceptJob() {
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/accept-req-job', {
-            job_id: jobID,
-            user_id: row.user_id,
-            row_id: row.row_id,
-        });
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/admin/accept-req-job',
+            {
+                job_id: jobID,
+                user_id: row.user_id,
+                row_id: row.row_id,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
         if (result.status === 200) {
             setAllReqUsers(allReqUsers.filter((rw) => rw.row_id !== row.row_id));
             setUserData(userData.filter((itm) => itm.id !== row.user_id));
@@ -247,7 +256,16 @@ function RequestedRow({
     }
 
     async function rejectJob() {
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/reject-req-job', { row_id: row.row_id });
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/admin/reject-req-job',
+            { row_id: row.row_id },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
         setAllReqUsers(allReqUsers.filter((rw) => rw.row_id !== row.row_id));
     }
     ////////////////////////////////////////////////////////////////////////////////////////

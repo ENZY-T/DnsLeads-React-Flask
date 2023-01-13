@@ -27,7 +27,16 @@ function JobCard({ jobID, jobTitle }) {
     const [reqCount, setReqCount] = useState(0);
 
     async function getReqCount() {
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-req-count', { job_id: jobID });
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/admin/get-req-count',
+            { job_id: jobID },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
         if (result.status === 200) {
             // console.log(result.data);
             setReqCount(result.data);
@@ -55,7 +64,12 @@ function JobCard({ jobID, jobTitle }) {
 }
 
 async function get_all_jobs(setLoadingJobs, setAllJobs) {
-    const result = await axios.get(GlobalData.baseUrl + '/api/admin/get-permanent-jobs');
+    const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+    const result = await axios.get(GlobalData.baseUrl + '/api/admin/get-permanent-jobs', {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
     if (result.status === 200) {
         setAllJobs(result.data);
         setLoadingJobs(false);

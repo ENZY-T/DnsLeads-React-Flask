@@ -25,7 +25,12 @@ function SubContractors() {
     const [allSubContractors, setAllSubContractors] = useState([]);
 
     async function getAllSubContractors() {
-        const result = await axios.get(GlobalData.baseUrl + '/api/admin/get-all-sub-contractors');
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+        const result = await axios.get(GlobalData.baseUrl + '/api/admin/get-all-sub-contractors', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         if (result.status === 200) {
             setAllSubContractors(result.data);
         }

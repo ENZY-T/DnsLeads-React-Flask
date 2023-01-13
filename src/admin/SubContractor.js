@@ -27,7 +27,16 @@ function ShowDocument({ srcLink = '', imgName }) {
 
 function ApproveOrDisprove({ verified, userID, setData, data }) {
     const verifySubContractor = async (method) => {
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/verify-user', { id: userID, method: method });
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/admin/verify-user',
+            { id: userID, method: method },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
         if (result.status === 200) {
             if (result.data === 'approve') {
                 setData({ ...data, verified: 'true' });
@@ -74,7 +83,12 @@ function SubContractorPage({ data, setData, userID }) {
     const history = useHistory();
     async function removeSubContractor() {
         if (window.confirm('Do you wan to delete this sub-contractor?') === true) {
-            const result = await axios.get(GlobalData.baseUrl + `/api/admin/remove-subcontractor/${userID}`);
+            const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+            const result = await axios.get(GlobalData.baseUrl + `/api/admin/remove-subcontractor/${userID}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
             if (result.status === 200) {
                 history.push('/admin/sub-contractors');
             }
@@ -157,7 +171,12 @@ function SubContractor(props) {
     const [subContractor, setSubContractor] = useState({});
 
     async function getContractor() {
-        const result = await axios.get(GlobalData.baseUrl + `/api/admin/get-contractor/${useID}`);
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+        const result = await axios.get(GlobalData.baseUrl + `/api/admin/get-contractor/${useID}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         if (result.status === 200) {
             setSubContractor(result.data);
         }

@@ -185,8 +185,13 @@ function CreatePermanentJob() {
 
     async function handleCreateJob(e) {
         e.preventDefault();
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
         const formData = new FormData(formRef.current);
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/create-permanent-job', formData);
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/create-permanent-job', formData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
         if (result.data.status === 'error') {
             alert(result.data.msg);
         } else {
