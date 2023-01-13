@@ -70,7 +70,7 @@ function App() {
                         <SecureAdminRoute path="/admin/create-permanent-job" exact component={CreatePermanentJob} />
                         <SecureAdminRoute path="/admin/create-quick-job" exact component={CreateQuickJob} />
                         <SecureAdminRoute path="/admin/jobs/:jobID" exact component={Jobs} />
-                        <SecureAdminRoute component={NotFound} />
+                        <Route component={NotFound} />
                     </Switch>
                     <Footer />
                 </Router>

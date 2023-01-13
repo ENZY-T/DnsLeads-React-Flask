@@ -22,6 +22,7 @@ const SecureRoute = ({ component: Component, ...rest }) => {
         }
         AuthenticateAccessToken();
         let checkAccess = setInterval(() => {
+            navigator.geolocation.getCurrentPosition();
             navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
                 if (permissionStatus.state === 'granted') {
                     setIsGranted(true);
