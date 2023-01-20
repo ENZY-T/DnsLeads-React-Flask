@@ -16,11 +16,11 @@ function ShowDocument({ srcLink = '', imgName }) {
 		<div>
 			<h4>{imgName}</h4>
 			{extenssion === 'pdf' ? (
-				<a href={srcLink} target='_blank'>
+				<a href={`${GlobalData.baseUrl}/${srcLink}`} target='_blank'>
 					{imgName} is PDF Document Click here to Open
 				</a>
 			) : (
-				<iframe src={srcLink} download='false' width='100%' style={{ height: '100vh' }}></iframe>
+				<iframe src={`${GlobalData.baseUrl}/${srcLink}`} download='false' width='100%' style={{ height: '100vh' }}></iframe>
 				// <img src={srcLink} alt='Pic' style={{ height: '100vh' }} />
 			)}
 		</div>
