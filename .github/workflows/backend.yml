@@ -1,0 +1,51 @@
+name: DNS Leads-Backend-flask Build
+
+on:
+  workflow_dispatch
+  # push:
+  #   branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - name: Checking out branch
+        uses: actions/checkout@v2
+        with:
+          ref: 'master'
+
+      - name: Clean remote
+        uses: garygrossgarten/github-action-ssh@v0.3.0
+        with:
+          command: |
+            rm /var/www/whonear.xyz/backend -r;
+
+          host: whonear.xyz
+          username: root
+          password: KaviBoss@123
+
+      - name: Copy to deployment server via scp
+        uses: garygrossgarten/github-action-scp@v0.5.3
+        with:
+          local: ./backend/
+          remote: /var/www/whonear.xyz/backend/
+          host: whonear.xyz
+          username: root
+          password: KaviBoss@123
+          concurrency: 500
+
+      - name: Restart gunicorn service
+        uses: garygrossgarten/github-action-ssh@v0.3.0
+        with:
+          command: |
+            chown -R root:www-data /var/www/whonear.xyz/*;
+            systemctl restart dns_leads_be.service;
+          host: whonear.xyz
+          username: root
+          password: KaviBoss@123

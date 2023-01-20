@@ -70,7 +70,7 @@ export const GlobalData = {
 		},
 		logo: require('./img/logo.png'),
 	},
-	baseUrl: 'http://localhost:5000',
+	baseUrl: process.env.NODE_ENV === 'production' ? 'https://whonear.xyz' : 'http://localhost:5000',
 	// baseUrl: 'http://whonear.xyz',
 	// baseUrl: 'https://whonear.xyz',
 

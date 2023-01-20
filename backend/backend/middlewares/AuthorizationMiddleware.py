@@ -3,8 +3,10 @@ from flask import Response, request, g
 from backend.allFunctions import GetJwtFromRequest, CheckJwtBlacklisted, userObjToDict
 from backend.Services.DbService import DbGetOne
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+from flask_cors import CORS
 
 
+# @CORS
 def AuthorizationRequired(role="user"):
     '''
       Role based access required

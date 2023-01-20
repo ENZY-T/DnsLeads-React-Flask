@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+# from .middlewares.AuthorizationMiddleware import AuthorizationRequired
 
 import os
 
@@ -12,6 +13,7 @@ DB_NAME = 'database.sqlite3'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
+# app.wsgi_app = middleware(app.wsgi_app)
 
 
 def create_app():

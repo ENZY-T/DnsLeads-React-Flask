@@ -10,14 +10,15 @@ def DbGetOne(tableStr, columnStr, searchKey):
         return None
 
     result = []
-    resultProxy = db.session.execute(f"SELECT * FROM '{tableStr}' WHERE {columnStr}='{searchKey}'")
+    resultProxy = db.session.execute(
+        f"SELECT * FROM '{tableStr}' WHERE {columnStr}='{searchKey}'")
     for row in resultProxy:
         result.append(row._mapping)
-    
-    if(len(result)):
+
+    if (len(result)):
         return result[0]
     else:
-        return None        
+        return None
 
 # Get some records from a model/table
 
@@ -35,13 +36,15 @@ def DbGetMany(tableStr, columnStr=None, searchKey=None):
         f"SELECT * FROM {tableStr} { f'WHERE {columnStr}={searchKey}' if (columnStr and searchKey) else ''}")
     for row in resultProxy:
         result.append(row._mapping)
-        
-    if(len(result)):
+
+    if (len(result)):
         return result[0]
     else:
-        return None  
+        return None
 
 # Delete record from a table
+
+
 def DbDelMany(tableStr, columnStr, searchKey):
     if (not (columnStr and searchKey)):
         return None
@@ -53,10 +56,10 @@ def DbDelMany(tableStr, columnStr, searchKey):
     resultProxy = db.session.execute(
         f'DELETE FROM {tableStr} WHERE {columnStr}={searchKey}')
     print(resultProxy)
-    
 
-#add one or many record to a table 
-#records as a array
+
+# add one or many record to a table
+# records as a array
 def DbAddMany(record):
     db.session.add_all(record)
     db.session.commit()
