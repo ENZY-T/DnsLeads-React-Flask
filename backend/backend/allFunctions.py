@@ -6,9 +6,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 def imgPath(cur_path=""):
-    new_path = cur_path.split("\\")
-    new_path = "/".join(new_path[-4:])
-    new_path = url_for('static', filename=new_path, _external=True)
+    new_path = cur_path.split("/var/www/whonear.xyz/backend/backend")
+    new_path = '/api'.join(new_path[-1])
     return new_path
 
 
