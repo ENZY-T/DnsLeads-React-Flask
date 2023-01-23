@@ -34,6 +34,7 @@ import SecureRoute from './components/SecureRoute';
 import SubContractor from './admin/SubContractor';
 import SecureAdminRoute from './components/SecureAdminRoute';
 import Account from './dashboard/Account';
+import Invoice from './components/Invoice';
 
 function App() {
 	return (
@@ -42,6 +43,8 @@ function App() {
 				<Router>
 					<NavigationBar />
 					<Switch>
+						{/* Testing Pages */}
+						<Route path='/invoice' exact component={Invoice} />
 						{/* Public Pages */}
 						<Route path='/' exact component={HomePage} />
 						<Route path='/about-us' exact component={AboutUs} />
