@@ -20,25 +20,17 @@ admin = Blueprint("admin", __name__)
 @admin.route("/create-permanent-job", methods=["POST"])
 def create_permanent_job():
     formData = request.form
+    # print(formData)
     working_day_count = 0
     allItemsFromForm = []
     must_have = [
         "job_title",
         "job_address",
         "job_description",
-        "start_time",
-        "end_time",
-        "payment_per_fortnight",
+        "pay_per_hr",
         "job_need_count",
-    ]
-    days = [
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-        "sunday",
+        "timeline_data",
+        "pay_per_hr_sub_contractor",
     ]
 
     for itm in must_have:
@@ -49,65 +41,110 @@ def create_permanent_job():
                 empty_field = ' '.join(itm.split('_')).capitalize()
                 return jsonify({"status": "error", "msg": f"{empty_field} cannot be empty"})
 
-    for itm in formData:
-        allItemsFromForm.append(itm)
-
-    for itm in must_have:
-        if itm in allItemsFromForm:
-            allItemsFromForm.remove(itm)
-
-    if len(allItemsFromForm) == 0:
-        return jsonify({"status": "error", "msg": "You havent selected any day for the job"})
-
-    daysForTimeTable = []
-
-    for day in days:
-        if day not in allItemsFromForm:
-            daysForTimeTable.append("")
-        else:
-            daysForTimeTable.append(day[:2].capitalize())
-            working_day_count += 1
-
-    t1 = datetime.strptime(formData[must_have[3]], "%H:%M")
-    t2 = datetime.strptime(formData[must_have[4]], "%H:%M")
 
     job_id = str(uuid4())
     job_name = formData[must_have[0]]
     job_desc = formData[must_have[2]]
-    job_duration = f"{t2-t1}"[:-3]
-    job_duration = job_duration.split(" ")[-1]
-    job_payment_for_fortnight = formData[must_have[5]]
-    job_payment_for_day = int(formData[must_have[5]])/(working_day_count*2)
+    
+    # job_payment_for_day = int(formData[must_have[5]])/(working_day_count*2)
     job_location = formData[must_have[1]]
     job_start_time = formData[must_have[3]]
     job_enrolled_ids = json.dumps([])
-    job_need_count = formData[must_have[6]]
+    job_need_count = formData[must_have[4]]
 
-    end_time = formData[must_have[4]]
+    pey_per_mo = 0
+    pey_per_tu = 0
+    pey_per_we = 0
+    pey_per_th = 0
+    pey_per_fr = 0
+    pey_per_sa = 0
+    pey_per_su = 0
 
-    timeTable = [
-        {
-            "time": f"{formData[must_have[3]]}-{end_time}",
-            "days": daysForTimeTable
-        }
-    ]
+    pay_per_hr = float(formData[must_have[3]])
+    pay_per_hr_sub_contractor = float(formData[must_have[6]])
 
-    job_timetable = json.dumps(timeTable)
+    timeTable = formData[must_have[5]]
+    timeTableArr = json.loads(timeTable)
+    pay_per_week = 0.0
+    for timelineindx in range(len(timeTableArr)):
+        startT, endT = timeTableArr[timelineindx]["time"].split("-")
+        
+
+        t1 = datetime.strptime(startT, "%H:%M")
+        t2 = datetime.strptime(endT, "%H:%M")
+        durationT = f"{t2 - t1}"[:-3]
+        timeTableArr[timelineindx]["duration"] = durationT
+        duration_hr, duration_min = durationT.split(":")
+        duration_hr, duration_min = int(duration_hr), int(duration_min)/60
+        duration_num = duration_hr+duration_min
+        pay_per_day_sub_c = duration_num*pay_per_hr_sub_contractor
+        pay_per_day_me = duration_num*pay_per_hr
+        works_per_line = 0
+        for dy in timeTableArr[timelineindx]["days"]:
+            if dy != "":
+                works_per_line+=1
+                if dy == "Mo":
+                    # pey_per_mo = f"{pay_per_day_sub_c}-{pay_per_day_me}"
+                    pey_per_mo += pay_per_day_sub_c
+                if dy == "Tu":
+                    # pey_per_tu = f"{pay_per_day_sub_c}-{pay_per_day_me}"
+                    pey_per_tu += pay_per_day_sub_c
+                if dy == "We":
+                    # pey_per_we = f"{pay_per_day_sub_c}-{pay_per_day_me}"
+                    pey_per_we += pay_per_day_sub_c
+                if dy == "Th":
+                    # pey_per_th = f"{pay_per_day_sub_c}-{pay_per_day_me}"
+                    pey_per_th += pay_per_day_sub_c
+                if dy == "Fr":
+                    # pey_per_fr = f"{pay_per_day_sub_c}-{pay_per_day_me}"
+                    pey_per_fr += pay_per_day_sub_c
+                if dy == "Sa":
+                    # pey_per_sa = f"{pay_per_day_sub_c}-{pay_per_day_me}"
+                    pey_per_sa += pay_per_day_sub_c
+                if dy == "Su":
+                    # pey_per_su = f"{pay_per_day_sub_c}-{pay_per_day_me}"
+                    pey_per_su += pay_per_day_sub_c
+
+        pay_per_week += works_per_line*pay_per_day_sub_c
+        
+    job_payment_for_fortnight = pay_per_week*2
+
+    pey_per_mo = f"{pey_per_mo}-{(pey_per_mo/pay_per_day_sub_c)*pay_per_day_me}"
+    pey_per_tu = f"{pey_per_tu}-{(pey_per_tu/pay_per_day_sub_c)*pay_per_day_me}"
+    pey_per_we = f"{pey_per_we}-{(pey_per_we/pay_per_day_sub_c)*pay_per_day_me}"
+    pey_per_th = f"{pey_per_th}-{(pey_per_th/pay_per_day_sub_c)*pay_per_day_me}"
+    pey_per_fr = f"{pey_per_fr}-{(pey_per_fr/pay_per_day_sub_c)*pay_per_day_me}"
+    pey_per_sa = f"{pey_per_sa}-{(pey_per_sa/pay_per_day_sub_c)*pay_per_day_me}"
+    pey_per_su = f"{pey_per_su}-{(pey_per_su/pay_per_day_sub_c)*pay_per_day_me}"
+
+    print(pey_per_mo)
+    print(pey_per_tu)
+    print(pey_per_we)
+    print(pey_per_th)
+    print(pey_per_fr)
+    print(pey_per_sa)
+    print(pey_per_su)
+    job_timetable = json.dumps(timeTableArr)
 
     new_job = PermanentJobs(
         job_id=job_id,
         job_name=job_name,
         job_desc=job_desc,
-        job_duration=job_duration,
         job_payment_for_fortnight=job_payment_for_fortnight,
-        job_payment_for_day=job_payment_for_day,
         job_location=job_location,
         job_start_time=job_start_time,
         job_timetable=job_timetable,
         job_enrolled_ids=job_enrolled_ids,
-        job_need_count=job_need_count
+        job_need_count=job_need_count,
+        pey_per_mo = pey_per_mo,
+        pey_per_tu = pey_per_tu,
+        pey_per_we = pey_per_we,
+        pey_per_th = pey_per_th,
+        pey_per_fr = pey_per_fr,
+        pey_per_sa = pey_per_sa,
+        pey_per_su = pey_per_su,
     )
-
+    
     try:
         db.session.add(new_job)
         db.session.commit()
@@ -126,13 +163,17 @@ def get_permanent_jobs():
             "job_id": jb.job_id,
             "job_name": jb.job_name,
             "job_desc": jb.job_desc,
-            "job_duration": jb.job_duration,
             "job_payment_for_fortnight": jb.job_payment_for_fortnight,
-            "job_payment_for_day": jb.job_payment_for_day,
             "job_location": jb.job_location,
-            "job_start_time": jb.job_start_time,
             "job_timetable": json.loads(jb.job_timetable),
             "job_enrolled_ids": json.loads(jb.job_enrolled_ids),
+            "pey_per_mo":jb.pey_per_mo,
+            "pey_per_tu":jb.pey_per_tu,
+            "pey_per_we":jb.pey_per_we,
+            "pey_per_th":jb.pey_per_th,
+            "pey_per_fr":jb.pey_per_fr,
+            "pey_per_sa":jb.pey_per_sa,
+            "pey_per_su":jb.pey_per_su,
         })
     return jsonify(return_data)
 
@@ -144,13 +185,17 @@ def get_a_permanent_job(jobID):
         "job_id": job_data.job_id,
         "job_name": job_data.job_name,
         "job_desc": job_data.job_desc,
-        "job_duration": job_data.job_duration,
         "job_payment_for_fortnight": job_data.job_payment_for_fortnight,
-        "job_payment_for_day": job_data.job_payment_for_day,
         "job_location": job_data.job_location,
-        "job_start_time": job_data.job_start_time,
         "job_timetable": json.loads(job_data.job_timetable),
         "job_enrolled_ids": json.loads(job_data.job_enrolled_ids),
+        "pey_per_mo":job_data.pey_per_mo,
+        "pey_per_tu":job_data.pey_per_tu,
+        "pey_per_we":job_data.pey_per_we,
+        "pey_per_th":job_data.pey_per_th,
+        "pey_per_fr":job_data.pey_per_fr,
+        "pey_per_sa":job_data.pey_per_sa,
+        "pey_per_su":job_data.pey_per_su,
     }
     return jsonify(return_data)
 
@@ -178,8 +223,6 @@ def add_user_to_permanent_job():
             "job_id": job_id,
             "job_name": job_data.job_name,
             "job_location": job_data.job_location,
-            "job_start_time": job_data.job_start_time,
-            "job_duration": job_data.job_duration
         })
 
     elif method == "remove":
@@ -280,6 +323,8 @@ def get_done_jobs_by_place():
     job_datas = CompletedJobs.query.filter_by(job_id=job_id).all()
     jobDatas = []
 
+    job_real_times = PermanentJobs.query.filter_by(job_id=job_id).first()
+
     def locationLink(locationtxt):
         converted = convert_coordinates(locationtxt)
         return f"https://www.google.com.au/maps/place/{converted}/@{locationtxt}/"
@@ -291,37 +336,20 @@ def get_done_jobs_by_place():
             if job.job_ended_location != "":
                 end_location = locationLink(job.job_ended_location)
 
-            job_real_times = PermanentJobs.query.filter_by(
-                job_id=job.job_id).first()
-
-            job_duration = job.job_duration.split(":")
-            must_end_time = datetime.strptime(job_real_times.job_start_time, '%H:%M') + timedelta(
-                hours=int(job_duration[0]), minutes=int(job_duration[1]))
-            must_end_time = must_end_time.strftime("%H:%M")
-            took_duration = ""
-            if job.ended_time != "pending":
-                took_duration = datetime.strptime(
-                    job.ended_time, "%H:%M:%S") - datetime.strptime(job.started_time, "%H:%M:%S")
-
             jobDatas.append({
                 "id": job.id,
                 "user_id": job.user_id,
                 "user_name": job.user_name,
                 "job_id": job.job_id,
                 "job_name": job.job_name,
-                "started_time": job.started_time[:-3],
-                "ended_time": job.ended_time[:-3],
                 "date": job.date,
                 "job_payment_for_day": job.job_payment_for_day,
                 "job_status": job.job_status,
                 "job_started_location": locationLink(job.job_started_location),
                 "job_ended_location": end_location,
-                "job_duration": str(took_duration)[:-3],
-                "must_time": {
-                    "start_time": job_real_times.job_start_time,
-                    "end_time": str(must_end_time),
-                    "duration": job.job_duration
-                }
+                "start_time":job.started_time,
+                "end_time":job.ended_time,
+                "job_counts_per_day":job.job_counts_per_day
             })
 
     return jsonify(jobDatas)
@@ -381,8 +409,6 @@ def accept_req_job():
         "job_id": job_id,
         "job_name": job_data.job_name,
         "job_location": job_data.job_location,
-        "job_start_time": job_data.job_start_time,
-        "job_duration": job_data.job_duration
     })
     job_data.job_enrolled_ids = json.dumps(users_arr)
     get_user.permanent_jobs = json.dumps(permanent_job_list)

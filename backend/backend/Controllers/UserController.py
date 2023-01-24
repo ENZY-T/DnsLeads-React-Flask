@@ -11,7 +11,7 @@ from datetime import timedelta
 from ..Services.DbService import *
 from ..allFunctions import userObjToDict, GetJwtFromRequest, CheckJwtBlacklisted
 import json
-from datetime import datetime
+from datetime import datetime, date
 from backend.middlewares.AuthorizationMiddleware import AuthorizationRequired
 from sqlalchemy.sql.operators import and_
 from .. import app
@@ -36,6 +36,15 @@ def returnUsers(id=None):
     else:
         all_users = Users.query.filter_by(id=id)
     return usersObjToDictArr(all_users)
+
+
+def get_day_txt():
+    daysArr = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+    today, _ = getTimeAndDate()
+    year, month, day = today.split("-")
+    year, month, day = int(year), int(month), int(day)
+    dayIndex = date(year, month, day)
+    return daysArr[dayIndex.weekday()]
 
 
 def getUserFromEmail(email):
@@ -167,15 +176,15 @@ def GetUser():
 @jwt_required()
 def get_a_permanent_job(jobID):
     job_data = PermanentJobs.query.filter_by(job_id=jobID).first()
+    job_start_time = ""
     return_data = {
         "job_id": job_data.job_id,
         "job_name": job_data.job_name,
         "job_desc": job_data.job_desc,
-        "job_duration": job_data.job_duration,
         "job_payment_for_fortnight": job_data.job_payment_for_fortnight,
         # "job_payment_for_day": job_data.job_payment_for_day,
         "job_location": job_data.job_location,
-        "job_start_time": job_data.job_start_time,
+        "job_start_time": job_start_time,
         "job_timetable": json.loads(job_data.job_timetable),
         # "job_enrolled_ids": json.loads(job_data.job_enrolled_ids),
     }
@@ -191,35 +200,67 @@ def start_permanent_job():
     start_location = data["start_location"]
 
     user_data = Users.query.filter_by(id=user_id).first()
-
+    
     if user_data.current_permanent_job_id == "empty":
         job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
 
         started_job_id = str(uuid4())
-        user_data.current_permanent_job_row_id = started_job_id
-        user_data.current_permanent_job_id = job_id
 
         job_started_date, job_started_time = getTimeAndDate()
 
-        started_job = CompletedJobs(
-            id=started_job_id,
-            user_id=user_id,
-            user_name=user_data.name,
-            job_id=job_id,
-            job_name=job_data.job_name,
-            started_time=job_started_time,
-            ended_time="pending",
-            date=job_started_date,
-            job_payment_for_day=job_data.job_payment_for_day,
-            job_status="pending",
-            job_started_location=str(start_location),
-            job_ended_location="",
-            job_duration=job_data.job_duration
-        )
-        db.session.add(started_job)
-        db.session.commit()
+        job_is_already_done = CompletedJobs.query.filter_by(job_id=job_id).filter_by(date=job_started_date).first()
 
-        return jsonify({"status": "done", "msg": "Job started", "started_row_id": started_job_id, "started_job_id": job_id})
+        dayTXT = get_day_txt()
+
+        pay_for_days = {
+            'Mo':job_data.pey_per_mo,
+            'Tu':job_data.pey_per_tu,
+            'We':job_data.pey_per_we,
+            'Th':job_data.pey_per_th,
+            'Fr':job_data.pey_per_fr,
+            'Sa':job_data.pey_per_sa,
+            'Su':job_data.pey_per_su
+        }
+        job_payment_for_day = pay_for_days[dayTXT]
+
+        jobTimeTable = json.loads(job_data.job_timetable)
+        counts_per_day = 0
+
+        for timeline in jobTimeTable:
+            for dy in timeline["days"]:
+                if dy == dayTXT:
+                    counts_per_day+=1
+        if job_is_already_done == None and counts_per_day > 0:
+            counts_per_day -= 1
+            user_data.current_permanent_job_row_id = started_job_id
+            user_data.current_permanent_job_id = job_id
+            started_job = CompletedJobs(
+                id=started_job_id,
+                user_id=user_id,
+                user_name=user_data.name,
+                job_id=job_id,
+                job_name=job_data.job_name,
+                started_time=job_started_time,
+                ended_time="pending",
+                date=job_started_date,
+                job_payment_for_day=job_payment_for_day,
+                job_status="pending",
+                job_started_location=str(start_location),
+                job_ended_location="",
+                job_counts_per_day=counts_per_day
+            )
+            db.session.add(started_job)
+            db.session.commit()
+            return jsonify({"status": "done", "msg": "Job started", "started_row_id": started_job_id, "started_job_id": job_id})
+        elif int(job_is_already_done.job_counts_per_day) > 0:
+            user_data.current_permanent_job_row_id = job_is_already_done.id
+            user_data.current_permanent_job_id = job_id
+            available_counts_per_day = int(job_is_already_done.job_counts_per_day) - 1
+            job_is_already_done.job_counts_per_day = str(available_counts_per_day)
+            db.session.commit()
+            return jsonify({"status": "done", "msg": "Job started", "started_row_id": job_is_already_done.id, "started_job_id": job_is_already_done.job_id})
+        else:
+            return jsonify({"status":"error", "msg":"You done jobs that you have left for day."})
 
     else:
         return jsonify({"status": "error", "msg": "You already have started job"})
@@ -233,8 +274,6 @@ def stop_permanent_job():
     row_id = data['row_id']
     finish_location = data["finish_location"]
 
-    print(data)
-
     user_data = Users.query.filter_by(id=user_id).first()
 
     if user_data.current_permanent_job_row_id == row_id:
@@ -244,10 +283,8 @@ def stop_permanent_job():
         job_completed_row.ended_time = job_ended_time
         job_completed_row.job_status = "done"
         job_completed_row.job_ended_location = str(finish_location)
-
         user_data.current_permanent_job_id = "empty"
         user_data.current_permanent_job_row_id = "empty"
-
         db.session.commit()
 
         return jsonify({"status": "done", "msg": "Job started", "started_row_id": "empty", "started_job_id": "empty"})
@@ -276,7 +313,6 @@ def get_all_permanent_jobs():
                     "job_id": job.job_id,
                     "job_name": job.job_name,
                     # "job_desc": job.job_desc,
-                    "job_duration": job.job_duration,
                     "job_payment_for_fortnight": job.job_payment_for_fortnight,
                     # "job_payment_for_day": job.job_payment_for_day,
                     "job_location": job.job_location,
@@ -309,18 +345,17 @@ def get_permanent_job():
         return jsonify({"status": "not-available"})
 
     if is_user_enrolled == False:
-        return jsonify({
+        ret_data = {
             "job_id": job_data.job_id,
             "job_name": job_data.job_name,
             "job_desc": job_data.job_desc,
-            "job_duration": job_data.job_duration,
+            # "job_duration": job_data.job_duration,
             "job_payment_for_fortnight": job_data.job_payment_for_fortnight,
-            "job_payment_for_day": job_data.job_payment_for_day,
             "job_location": job_data.job_location,
-            "job_start_time": job_data.job_start_time,
             "job_timetable": json.loads(job_data.job_timetable),
             # "job_enrolled_ids": json.loads(job_data.job_enrolled_ids),
-        })
+        }
+        return jsonify(ret_data)
     return jsonify({"status": "enrolled", "job_id": job_id})
 
 
@@ -392,8 +427,8 @@ def get_job_data_to_time():
             allDoneJobs.append({
                 "date": doneJob.date,
                 "place": doneJob.job_name,
-                "duration": doneJob.job_duration,
-                "payment": f"{float(doneJob.job_payment_for_day):.02f}"
+                # "duration": doneJob.job_duration,
+                "payment": f"{float(str(doneJob.job_payment_for_day).split('-')[0]):.02f}"
             })
 
     return jsonify(allDoneJobs)
@@ -469,3 +504,22 @@ def before_request():
 @user.route("/user/test")
 def GetAdmin():
     return "Success", 200
+
+
+@user.route("/get-duration-start-time", methods=["POST"])
+@jwt_required()
+def get_duration_start_time():
+    data = request.json
+    job_id = data["job_id"]
+
+    jobData = PermanentJobs.query.filter_by(job_id=job_id).first()
+    start_times = []
+    timeTable = json.loads(jobData.job_timetable)
+    
+    todayTxt = get_day_txt()
+    for timeline in timeTable:
+        for dy in timeline["days"]:
+            if todayTxt == dy:
+                start_times.append(timeline["time"])
+
+    return jsonify(start_times)

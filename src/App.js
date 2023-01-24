@@ -34,6 +34,7 @@ import SecureRoute from './components/SecureRoute';
 import SubContractor from './admin/SubContractor';
 import SecureAdminRoute from './components/SecureAdminRoute';
 import Account from './dashboard/Account';
+import AccountNotVerified from './pages/AccountNotVerified';
 
 function App() {
 	return (
@@ -61,6 +62,7 @@ function App() {
 						{/* <SecureRoute path="/quick-jobs" exact component={QuickJobs} />
                         <SecureRoute path="/quick-jobs/:jobID" exact component={QuickJob} /> */}
 						<SecureRoute path='/account' exact component={Account} />
+						<SecureRoute path='/not-verified' exact component={AccountNotVerified} />
 
 						{/* Admin Private Pages */}
 						<SecureAdminRoute path='/admin' exact component={AdminHome} />
@@ -69,6 +71,7 @@ function App() {
 						<SecureAdminRoute path='/admin/create-permanent-job' exact component={CreatePermanentJob} />
 						<SecureAdminRoute path='/admin/create-quick-job' exact component={CreateQuickJob} />
 						<SecureAdminRoute path='/admin/jobs/:jobID' exact component={Jobs} />
+
 						<Route component={NotFound} />
 					</Switch>
 					<Footer />

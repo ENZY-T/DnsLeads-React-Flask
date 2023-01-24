@@ -3,11 +3,15 @@ from .Services.DbService import DbGetOne
 import json
 from flask import url_for, g
 from flask_jwt_extended import jwt_required, get_jwt_identity
+import platform
 
 
 def imgPath(cur_path=""):
-    new_path = cur_path.split("/var/www/whonear.xyz/backend/backend")
-    new_path = '/api'.join(new_path[-1])
+    new_path = cur_path.split("static")
+    if platform.system() == 'Windows':
+        new_path = f"static{new_path[-1]}"
+    else:
+        new_path = f"/api/static{new_path[-1]}"
     return new_path
 
 

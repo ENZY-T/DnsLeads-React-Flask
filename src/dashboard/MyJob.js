@@ -146,9 +146,7 @@ function MyJob(props) {
                         <ArrowBackIcon /> Go Back
                     </span>
                     <h1 className="my-3">{jobData.job_name}</h1>
-                    <h4>Time Duration : {jobData.job_duration}</h4>
-                    <h4>Start time : {jobData.job_start_time}</h4>
-                    <h4>Per Fortnight : A$.{jobData.job_payment_for_fortnight}.00</h4>
+                    <h4>Per Fortnight : A${jobData.job_payment_for_fortnight}0</h4>
                     <div className="d-flex">
                         {authState.loggedUser.current_permanent_job_row_id !== 'empty' ? (
                             <Button variant="contained" className="bg-theme" onClick={finishJob}>

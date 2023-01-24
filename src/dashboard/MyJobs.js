@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import FlagIcon from '@mui/icons-material/Flag';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { Button } from '@mui/material';
 import { Link, useHistory } from 'react-router-dom';
@@ -15,9 +16,26 @@ import { userOnlyWrap } from '../components/wraps';
 function JobCard({ job }) {
     const { authState, setCurrentPermanentJobID } = useContext(AppContext);
     const [jobStarted, setJobStarted] = useState();
+    const [jobData, setJobData] = useState();
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
 
     const jobID = job.job_id;
+
+    async function getMyJobCardData() {
+        const result = await axios.post(
+            GlobalData.baseUrl + '/api/get-duration-start-time',
+            { user_id: authState.loggedUser.id, job_id: jobID },
+            {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                },
+            }
+        );
+        console.log(result.data);
+        if (result.status === 200) {
+            setJobData(result.data);
+        }
+    }
 
     async function startJob() {
         if (window.confirm('Do you want to start the job?') === true) {
@@ -40,6 +58,7 @@ function JobCard({ job }) {
                         .then((result) => {
                             if (result.status === 200) {
                                 const data = result.data;
+                                alert(data.msg);
                                 setCurrentPermanentJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
                             }
                         });
@@ -87,6 +106,7 @@ function JobCard({ job }) {
     }
 
     useEffect(() => {
+        getMyJobCardData();
         setJobStarted(
             authState.loggedUser.current_job_id === 'empty' ? false : authState.loggedUser.current_job_id === job.job_id ? true : false
         );
@@ -109,10 +129,20 @@ function JobCard({ job }) {
                 {/* <h5>
                     <CalendarMonthIcon /> {job.nextWorkDate}
                 </h5> */}
-                <h5>
+                {/* <h5>
                     <ScheduleIcon /> Duration : {job.job_duration}
+                </h5> */}
+                <h5>
+                    <FlagIcon /> Job times :{' '}
+                    {jobData
+                        ? jobData.map((tm, indx) => (
+                              <span key={indx}>
+                                  {tm}
+                                  <br />
+                              </span>
+                          ))
+                        : ''}
                 </h5>
-                <h5 className="mx-4">Start time : {job.job_start_time}</h5>
                 {authState.loggedUser.current_permanent_job_id === job.job_id ? (
                     <Button variant="contained" className="bg-theme" onClick={finishJob}>
                         Finished

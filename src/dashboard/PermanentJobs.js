@@ -59,14 +59,14 @@ function JobCard({ job }) {
                 {/* <div>
                     <CalendarMonthIcon /> <p>{job.daysCount} days for a week</p>
                 </div> */}
-                <div>
+                {/* <div>
                     <ScheduleIcon /> <p>Duration : {job.job_duration}hr</p>
                 </div>
                 <div>
                     <FlagIcon /> <p>Start Time : {job.job_start_time}</p>
-                </div>
+                </div> */}
                 <div>
-                    <PaidIcon /> <p>A${job.job_payment_for_fortnight}.00/fortnight</p>
+                    <PaidIcon /> <p>A${job.job_payment_for_fortnight}/fortnight</p>
                 </div>
                 <Button variant="contained" className="my-3" onClick={() => goToJob()}>
                     See Details

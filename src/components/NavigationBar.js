@@ -18,10 +18,10 @@ const settings = [
         name: 'Permanent Jobs',
         link: '/permanent-jobs',
     },
-    // {
-    //     name: 'Quick Jobs',
-    //     link: '/quick-jobs',
-    // },
+    {
+        name: 'Quick Jobs',
+        link: '/quick-jobs',
+    },
     {
         name: 'Account',
         link: '/account',
@@ -40,10 +40,10 @@ const adminPaths = [
         name: 'Create Permanent Job',
         link: '/admin/create-permanent-job',
     },
-    // {
-    //     name: 'Create Quick Job',
-    //     link: '/admin/create-quick-job',
-    // },
+    {
+        name: 'Create Quick Job',
+        link: '/admin/create-quick-job',
+    },
 ];
 
 function WhenLoginProfileMenu({ hideMenuWhenClick, setLoggedOut, authState }) {

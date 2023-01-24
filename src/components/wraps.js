@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { AppContext } from '../Context/AppContext';
 
@@ -24,6 +24,12 @@ export function userOnlyWrap(WrappedComponent) {
                 history.push('/admin');
             }
         }
+        useEffect(() => {
+            console.log(authState);
+            if (authState.loggedUser.verified === 'false') {
+                history.push('/not-verified');
+            }
+        }, []);
         return <WrappedComponent {...props} />;
     };
 }
