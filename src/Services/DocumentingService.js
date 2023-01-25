@@ -1,8 +1,7 @@
-const PDFDocument = require('pdfkit');
-
 export const GeneratePdfFromHtml = (htmlElement, readyCallback) => {
-	var pdf = new PDFDocument();
-	pdf.addHTML(document.body, function () {});
-
-	pdf.save('web.pdf');
+	const element = htmlElement;
+	const newWindow = window();
+	newWindow.document.write(element.innerHTML);
+	window.document = newWindow.document;
+	window.print();
 };

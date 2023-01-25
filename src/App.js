@@ -21,8 +21,6 @@ import MyJobs from './dashboard/MyJobs';
 import MyJob from './dashboard/MyJob';
 import PermanentJobs from './dashboard/PermanentJobs';
 import PermanentJob from './dashboard/PermanentJob';
-import QuickJobs from './dashboard/QuickJobs';
-import QuickJob from './dashboard/QuickJob';
 import NavigationBar from './components/NavigationBar';
 import AdminHome from './admin/AdminHome';
 import SubContractors from './admin/SubContractors';
@@ -34,7 +32,7 @@ import SecureRoute from './components/SecureRoute';
 import SubContractor from './admin/SubContractor';
 import SecureAdminRoute from './components/SecureAdminRoute';
 import Account from './dashboard/Account';
-import Invoice from './components/Invoice';
+import InvoicePage from './pages/InvoicePage';
 
 function App() {
 	return (
@@ -44,7 +42,8 @@ function App() {
 					<NavigationBar />
 					<Switch>
 						{/* Testing Pages */}
-						<Route path='/invoice' exact component={Invoice} />
+						{/* <Route path='/invoice' exact component={Invoice} /> */}
+						<Route path='/invoice' exact component={InvoicePage} />
 						{/* Public Pages */}
 						<Route path='/' exact component={HomePage} />
 						<Route path='/about-us' exact component={AboutUs} />
