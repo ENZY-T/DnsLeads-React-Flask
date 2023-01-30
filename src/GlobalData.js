@@ -39,7 +39,27 @@ import eq12 from './img/equipments/eq12.jpg';
 import eq13 from './img/equipments/eq13.jpg';
 
 export const GlobalData = {
-	CompanyDetails: {},
+	CompanyDetails: {
+		name: 'DNS Leads Services Pty Ltd',
+		ABN: '77608871085',
+		Tel: '+61 4 5065 4356',
+		fax: '+61 8 7225 9002',
+		bankDetails: {
+			accountName: 'DNS Leads Services',
+			bsb: '065102',
+			accountNo: '10383660',
+		},
+		Address: {
+			street: '08 Brett Street',
+			place: 'Melrose Park',
+			city: ', Adelaide',
+			postalCode: '5039',
+			country: ', SA',
+		},
+		web: 'www.dnsleads.com.au',
+		email: ['info@dnsleads.com.au', 'dush@dnsleads.com.au'],
+		logo: require('./img/logo.png'),
+	},
 	media: {
 		home: {
 			slides: [
@@ -69,7 +89,6 @@ export const GlobalData = {
 			],
 			who_we_are: require('./img/home_who_we_are.jpg'),
 		},
-		logo: require('./img/logo.png'),
 	},
 	baseUrl: process.env.NODE_ENV === 'production' ? 'https://whonear.xyz' : 'http://localhost:5000',
 	// baseUrl: 'http://whonear.xyz',

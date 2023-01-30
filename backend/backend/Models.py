@@ -83,6 +83,24 @@ class CompletedJobs(db.Model):
     job_ended_location = db.Column(db.String(50))
     job_duration = db.Column(db.String(10))
 
+# class Invoice(db.Model):
+#     __tablename__ = 'Invoices'
+
+#     id = db.Column(db.String(50), primary_key=True)
+#     purchase_order_number = db.Column(db.String(50))
+#     issuer = db.Column(db.String(50))
+#     issuer_address = db.Column(db.String(200))
+#     receiver = db.Column(db.String(50))
+#     receiver_address = db.Column(db.String(200))
+#     job_id = db.Column(db.String(50))
+#     job_name = db.Column(db.String(150))
+#     date = db.Column(db.String(20))
+#     pay_rate = db.Column(db.String(10))
+#     job_duration = db.Column(db.String(10))
+#     sub_total = db.Column(db.String(10))
+#     gst = db.Column(db.String(10))
+#     total = db.Column(db.String(10))
+
 
 class BlacklistedAccessTokens(db.Model):
     __tablename__ = "BlacklistedAccessTokens"
