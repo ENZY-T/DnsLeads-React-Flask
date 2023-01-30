@@ -1,8 +1,5 @@
-import time
-from datetime import datetime
+from flask_bcrypt import generate_password_hash
+from uuid import uuid4
 
-today = str(datetime.now())
-date = today.split(" ")[0]
-now = today.split(" ")[1].split(".")[0]
-print(date)
-print(now)
+print(generate_password_hash("asdf1234").decode('utf-8'))
+print(uuid4())

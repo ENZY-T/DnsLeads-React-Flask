@@ -44,12 +44,14 @@ function PermanentJob(props) {
                 },
             }
         );
+        console.log(result);
         if (result.status === 200) {
             if (result.data.status === 'enrolled') {
                 history.push(`/my-jobs/${result.data.job_id}`);
             } else if (result.data.status === 'not-available') {
                 history.push(`/permanent-jobs`);
             } else {
+                console.log(result);
                 setJobData(result.data);
             }
         }
@@ -108,8 +110,6 @@ function PermanentJob(props) {
                         <ArrowBackIcon /> Go Back
                     </span>
                     <h1 className="my-4">{JobData.job_name}</h1>
-                    <h4>Time Duration : {JobData.job_duration}hr</h4>
-                    <h4>Start Time : {JobData.job_start_time}</h4>
                     <h4>Per Fortnight : A${JobData.job_payment_for_fortnight}</h4>
                     {JobData.job_timetable ? <TimeTable daysToWork={JobData.job_timetable} /> : ''}
                     <h4>Job Details</h4>

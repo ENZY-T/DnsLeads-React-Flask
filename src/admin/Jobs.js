@@ -10,7 +10,7 @@ import { GlobalData } from '../GlobalData';
 import { adminOnlyWrap } from '../components/wraps';
 import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 
-function JobDataTable({ jobData }) {
+export function JobDataTable({ jobData }) {
     return (
         <div>
             <div className="table-responsive">
@@ -20,9 +20,9 @@ function JobDataTable({ jobData }) {
                             <th>ID</th>
                             <th>Date</th>
                             <th>Done By</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Duration</th>
+                            <th>Start Time - End Time</th>
+                            {/* <th>Duration</th> */}
+                            <th>Pay-C/day</th>
                             <th>Pay/day</th>
                             <th>Status</th>
                         </tr>
@@ -34,29 +34,37 @@ function JobDataTable({ jobData }) {
                                 <td>{jobRow.date}</td>
                                 <td>{jobRow.user_name}</td>
                                 <td>
-                                    {jobRow.started_time}
-                                    {` (${jobRow.must_time.start_time})`}
-                                    <a href={jobRow.job_started_location} target="_blank" className="mx-3">
-                                        location
-                                    </a>
+                                    <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                            <span>{jobRow.start_time}</span>
+                                            <a href={jobRow.job_started_location} target="_blank" className="mx-3">
+                                                location
+                                            </a>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                            {jobRow.ended_time === 'pending' ? '--:--:--' : `${jobRow.end_time}`}
+                                            {jobRow.job_ended_location === '' ? (
+                                                <span className="txt-yellow mx-3">Pending</span>
+                                            ) : (
+                                                <a href={jobRow.job_ended_location} target="_blank" className="mx-3">
+                                                    location
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
                                 </td>
-                                <td>
-                                    {jobRow.ended_time === 'pending' ? '--:--:--' : `${jobRow.ended_time} (${jobRow.must_time.start_time})`}
-                                    {jobRow.job_ended_location === '' ? (
-                                        <span className="txt-yellow mx-3">Pending</span>
-                                    ) : (
-                                        <a href={jobRow.job_ended_location} target="_blank" className="mx-3">
-                                            location
-                                        </a>
-                                    )}
-                                </td>
-                                <td>
+                                {/* <td>
                                     {jobRow.job_duration} / {jobRow.must_time.duration}
-                                </td>
-                                <td>A$ {jobRow.job_payment_for_day.split('.')[0]}.00</td>
+                                </td> */}
+                                <td>A$ {jobRow.job_payment_for_day.split('-')[0]}</td>
+                                <td>A$ {jobRow.job_payment_for_day.split('-')[1]}</td>
                                 <td>
                                     {jobRow.job_status === 'done' ? (
-                                        <span className="txt-green">Done</span>
+                                        parseInt(jobRow.job_counts_per_day) === 0 ? (
+                                            <span className="txt-green">Done</span>
+                                        ) : (
+                                            <span className="txt-yellow">{jobRow.job_counts_per_day} Pending</span>
+                                        )
                                     ) : (
                                         <span className="txt-yellow">Pending</span>
                                     )}
@@ -185,7 +193,7 @@ function UserTableRow({ row, addOrRemoveUser, jobID }) {
     );
 }
 
-function UsersTable({ usersData = [], addOrRemoveUser, jobID }) {
+export function UsersTable({ usersData = [], addOrRemoveUser, jobID }) {
     return (
         <div className="table-responsive">
             {usersData.length === 0 ? (
@@ -227,7 +235,7 @@ async function getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContrac
     }
 }
 
-function RequestedRow({
+export function RequestedRow({
     jobID,
     row,
     indx,

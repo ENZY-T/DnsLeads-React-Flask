@@ -18,10 +18,10 @@ const settings = [
         name: 'Permanent Jobs',
         link: '/permanent-jobs',
     },
-    // {
-    //     name: 'Quick Jobs',
-    //     link: '/quick-jobs',
-    // },
+    {
+        name: 'Quick Jobs',
+        link: '/quick-jobs',
+    },
     {
         name: 'Account',
         link: '/account',
@@ -29,8 +29,16 @@ const settings = [
 ];
 const adminPaths = [
     {
+        name: 'My Jobs',
+        link: '/admin/my-jobs',
+    },
+    {
         name: 'Job Places Data',
         link: '/admin',
+    },
+    {
+        name: 'Quick Jobs Data',
+        link: '/admin/quick-job-data',
     },
     {
         name: 'Sub-Contractors',
@@ -40,10 +48,10 @@ const adminPaths = [
         name: 'Create Permanent Job',
         link: '/admin/create-permanent-job',
     },
-    // {
-    //     name: 'Create Quick Job',
-    //     link: '/admin/create-quick-job',
-    // },
+    {
+        name: 'Create Quick Job',
+        link: '/admin/create-quick-job',
+    },
 ];
 
 function WhenLoginProfileMenu({ hideMenuWhenClick, setLoggedOut, authState }) {

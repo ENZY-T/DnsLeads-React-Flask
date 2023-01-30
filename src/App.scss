@@ -842,3 +842,114 @@ html p {
 .txt-yellow{
 	color: rgb(232, 192, 30) !important;
 }
+.galary-container {
+	width: 100%;
+	display: flex;
+	flex-flow: row wrap;
+
+	.clicked {
+		.inner {
+			border: 5px solid $themeColor !important;
+		}
+	}
+
+	.img-box {
+		width: 25%;
+		height: 300px;
+		background-color: white;
+		padding: 5px;
+		border: 2px solid white;
+
+		.inner {
+			width: 100%;
+			height: 290px;
+			background-color: #959595;
+			position: relative;
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: center center;
+				cursor: pointer;
+			}
+
+			.close-btn {
+				position: absolute;
+				border-radius: 50%;
+				background-color: red;
+				color: white;
+				padding: 2px;
+				right: -7px;
+				top: -7px;
+				cursor: pointer;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	.galary-container {
+		.img-box {
+			width: 33.33%;
+		}
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.galary-container {
+		.img-box {
+			width: 50%;
+		}
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.galary-container {
+		.img-box {
+			width: 100%;
+			height: 400px;
+
+			.inner {
+				height: 390px;
+			}
+		}
+	}
+}
+
+.show-img-container {
+	position: fixed;
+	width: 100%;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99999 !important;
+
+	.img-window {
+		position: relative;
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		img {
+			max-width: 90%;
+			max-height: 90vh;
+			z-index: 99999 !important;
+		}
+	}
+
+	.img-bg {
+		position: absolute;
+		width: 100%;
+		height: 100vh;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.8);
+	}
+}

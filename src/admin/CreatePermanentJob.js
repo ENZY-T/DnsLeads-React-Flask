@@ -1,5 +1,5 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { adminWrap } from './component/adminWrap';
 import { useRef } from 'react';
@@ -7,235 +7,218 @@ import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 import { adminOnlyWrap } from '../components/wraps';
 import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
+import { Add as AddIcon } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 
-function SelectDaysHaveToWork({ setAllDaysData, allDaysData }) {
-	const [mo, setMo] = useState(false);
-	const [tu, setTu] = useState(false);
-	const [we, setWe] = useState(false);
-	const [th, setTh] = useState(false);
-	const [fr, setFr] = useState(false);
-	const [sa, setSa] = useState(false);
-	const [su, setSu] = useState(false);
-
-	const [s_time, set_s_time] = useState(allDaysData.s_time);
-	const [e_time, set_e_time] = useState(allDaysData.e_time);
-
-	return (
-		<div>
-			<table className='select-days-to-work'>
-				<thead>
-					<tr>
-						<td style={{ width: '200px' }}>
-							<label htmlFor='time'>Time</label>
-						</td>
-						<td>
-							<label htmlFor='monday'>Mo</label>
-						</td>
-						<td>
-							<label htmlFor='tuesday'>Tu</label>
-						</td>
-						<td>
-							<label htmlFor='wednesday'>We</label>
-						</td>
-						<td>
-							<label htmlFor='thursday'>Th</label>
-						</td>
-						<td>
-							<label htmlFor='friday'>Fr</label>
-						</td>
-						<td>
-							<label htmlFor='saturday'>Sa</label>
-						</td>
-						<td>
-							<label htmlFor='sunday'>Su</label>
-						</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							<div className='d-flex'>
-								<input
-									type='time'
-									style={{ margin: '0' }}
-									name='start_time'
-									onChange={(e) => set_s_time(e.target.value)}
-									value={s_time}
-									required
-								/>
-								<div>to</div>
-								<input
-									type='time'
-									style={{ margin: '0' }}
-									name='end_time'
-									onChange={(e) => set_e_time(e.target.value)}
-									value={e_time}
-									required
-								/>
-							</div>
-						</td>
-						<td>
-							<input type='checkbox' id='monday' name='monday' />
-						</td>
-						<td>
-							<input type='checkbox' id='tuesday' name='tuesday' />
-						</td>
-						<td>
-							<input type='checkbox' id='wednesday' name='wednesday' />
-						</td>
-						<td>
-							<input type='checkbox' id='thursday' name='thursday' />
-						</td>
-						<td>
-							<input type='checkbox' id='friday' name='friday' />
-						</td>
-						<td>
-							<input type='checkbox' id='saturday' name='saturday' />
-						</td>
-						<td>
-							<input type='checkbox' id='sunday' name='sunday' />
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	);
+function CheckBoxCell({ dayCell, absday, dayTimeLines, setDayTimeLines, dayTimeLineIndx, dayCellIndx }) {
+    function cellClicked() {
+        setDayTimeLines((prevVal) => {
+            if (prevVal[dayTimeLineIndx].days[dayCellIndx] === absday) {
+                prevVal[dayTimeLineIndx].days[dayCellIndx] = '';
+            } else {
+                prevVal[dayTimeLineIndx].days[dayCellIndx] = absday;
+            }
+            return [...prevVal];
+        });
+    }
+    return (
+        <td>
+            <input type="checkbox" value={absday} onChange={cellClicked} />
+        </td>
+    );
 }
 
-function SelectTime({ hr, setHr, min, setMin }) {
-	let hrs = [];
-	let mins = [];
+function DayTimeLine({ dayTimeLines, setDayTimeLines, dayTimeLine, dayTimeLineIndx }) {
+    const daysArr = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    function timeOnChangeS(e) {
+        setDayTimeLines((prevVal) => {
+            let st = prevVal[dayTimeLineIndx].time.split('-');
+            prevVal[dayTimeLineIndx].time = e.target.value + '-' + st[1];
+            return [...prevVal];
+        });
+    }
+    function timeOnChangeE(e) {
+        setDayTimeLines((prevVal) => {
+            let st = prevVal[dayTimeLineIndx].time.split('-');
+            prevVal[dayTimeLineIndx].time = st[0] + '-' + e.target.value;
+            return [...prevVal];
+        });
+    }
+    function removeLine() {
+        setDayTimeLines((prevVal) => {
+            prevVal.splice(dayTimeLineIndx, 1);
+            return [...prevVal];
+        });
+    }
+    useEffect(() => {
+        console.log(dayTimeLines);
+    }, [dayTimeLines]);
+    return (
+        <tr>
+            <td>
+                <div className="d-flex">
+                    <input type="time" style={{ margin: '1px' }} onChange={timeOnChangeS} />
+                    <div>to</div>
+                    <input type="time" style={{ margin: '1px' }} onChange={timeOnChangeE} />
+                </div>
+            </td>
+            {dayTimeLine.days.map((dayCell, indx) => (
+                <CheckBoxCell
+                    dayCellIndx={indx}
+                    dayCell={dayCell}
+                    absday={daysArr[indx]}
+                    key={indx}
+                    dayTimeLines={dayTimeLines}
+                    setDayTimeLines={setDayTimeLines}
+                    dayTimeLineIndx={dayTimeLineIndx}
+                />
+            ))}
+            <td>
+                {dayTimeLine.isRemove ? (
+                    <Button variant="contained" color="error" onClick={removeLine}>
+                        <CloseIcon />
+                    </Button>
+                ) : (
+                    ''
+                )}
+            </td>
+        </tr>
+    );
+}
 
-	for (let i = 0; i < 60; i++) {
-		mins.push(i.toString().padStart(2, '0'));
-	}
+function SelectDaysHaveToWork({ dayTimeLines, setDayTimeLines, initdaytime }) {
+    function addNewDayTimeLine() {
+        setDayTimeLines([...dayTimeLines, initdaytime]);
+    }
 
-	for (let i = 0; i < 24; i++) {
-		hrs.push(i.toString().padStart(2, '0'));
-	}
-
-	return (
-		<div className='time-date-line mb-3'>
-			{/* <h5 className="w-100">Select Time Duration</h5> */}
-			<FormControl variant='filled' className='fw-33 my-2 mr-2' style={{ minWidth: '70px' }}>
-				<InputLabel id=''>Hr</InputLabel>
-				<Select
-					labelId=''
-					id='demo-simple-select-filled'
-					value={hr}
-					required
-					onChange={(e) => setHr(e.target.value)}
-					name='duration_hrs'
-				>
-					<MenuItem value=''>
-						<em>Hours</em>
-					</MenuItem>
-					{hrs.map((thr, indx) => (
-						<MenuItem key={indx} value={thr}>
-							{thr}
-						</MenuItem>
-					))}
-				</Select>
-			</FormControl>
-			<FormControl variant='filled' className='fw-33 my-2' style={{ minWidth: '70px' }}>
-				<InputLabel id=''>Min</InputLabel>
-				<Select
-					labelId=''
-					id='demo-simple-select-filled'
-					value={min}
-					onChange={(e) => setMin(e.target.value)}
-					name='duration_mins'
-					required={true}
-				>
-					<MenuItem value=''>
-						<em>Min</em>
-					</MenuItem>
-					{mins.map((tmin, indx) => (
-						<MenuItem key={indx} value={tmin}>
-							{tmin}
-						</MenuItem>
-					))}
-				</Select>
-			</FormControl>
-		</div>
-	);
+    return (
+        <div className="table-responsive">
+            <table className="select-days-to-work">
+                <thead>
+                    <tr>
+                        <td style={{ width: '200px' }}>
+                            <label>Time</label>
+                        </td>
+                        <td>
+                            <label>Mo</label>
+                        </td>
+                        <td>
+                            <label>Tu</label>
+                        </td>
+                        <td>
+                            <label>We</label>
+                        </td>
+                        <td>
+                            <label>Th</label>
+                        </td>
+                        <td>
+                            <label>Fr</label>
+                        </td>
+                        <td>
+                            <label>Sa</label>
+                        </td>
+                        <td>
+                            <label>Su</label>
+                        </td>
+                        <td>
+                            <label>Action</label>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {dayTimeLines
+                        ? dayTimeLines.map((dayTimeLine, indx) => (
+                              <DayTimeLine
+                                  dayTimeLines={dayTimeLines}
+                                  setDayTimeLines={setDayTimeLines}
+                                  dayTimeLine={dayTimeLine}
+                                  dayTimeLineIndx={indx}
+                                  key={indx}
+                              />
+                          ))
+                        : ''}
+                    <tr>
+                        <td colSpan="9">
+                            <Button className="w-100" onClick={addNewDayTimeLine}>
+                                <AddIcon />
+                            </Button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    );
 }
 
 function CreatePermanentJob() {
-	const [hr, setHr] = useState('');
-	const [min, setMin] = useState('');
-	const [day, setDay] = useState(null);
-	const [value, setValue] = useState(null);
+    const formRef = useRef(null);
+    const initdaytimeA = {
+        time: '00:00-00:00',
+        days: ['', '', '', '', '', '', ''],
+        isRemove: false,
+    };
+    const initdaytime = {
+        time: '00:00-00:00',
+        days: ['', '', '', '', '', '', ''],
+        isRemove: true,
+    };
 
-	const formRef = useRef(null);
+    const [dayTimeLines, setDayTimeLines] = useState([initdaytimeA]);
 
-	const currentHour = new Date().getHours();
-	const currentMin = new Date().getMinutes();
+    async function handleCreateJob(e) {
+        e.preventDefault();
+        const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
+        const formData = new FormData(formRef.current);
+        formData.append('timeline_data', JSON.stringify(dayTimeLines));
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/create-permanent-job', formData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        if (result.data.status === 'error') {
+            alert(result.data.msg);
+        } else {
+            alert(result.data.msg);
+            // formRef.current.reset();
+        }
+    }
 
-	const [allDaysData, setAllDaysData] = useState({
-		s_time: `${currentHour}:${currentMin}`,
-		e_time: `${currentHour + 2}:${currentMin}`,
-		monday: false,
-		tuesday: false,
-		wednesday: false,
-		thursday: false,
-		friday: false,
-		saturday: false,
-		sunday: false,
-	});
-
-	async function handleCreateJob(e) {
-		e.preventDefault();
-		const accessToken = getItemFromLocalStorage(localStoreKeys.authKey);
-		const formData = new FormData(formRef.current);
-		const result = await axios.post(GlobalData.baseUrl + '/api/admin/create-permanent-job', formData, {
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
-		if (result.data.status === 'error') {
-			alert(result.data.msg);
-		} else {
-			alert(result.data.msg);
-			// formRef.current.reset();
-		}
-	}
-
-	return (
-		<div>
-			<h3>Create Permanent Job</h3>
-			<div>
-				<form ref={formRef} onSubmit={handleCreateJob}>
-					<TextField required className='w-100 my-3' label='Job Title' name='job_title' variant='filled' />
-					<TextField required className='w-100 my-3' label='Job Address' name='job_address' variant='filled' />
-					<TextField
-						required
-						className='w-100 my-3'
-						label='Sub-Contractors Count for Job'
-						name='job_need_count'
-						type='number'
-						variant='filled'
-						min='1'
-					/>
-					<TextField
-						required
-						className='w-100 my-3'
-						label='Payment per fortnight'
-						name='payment_per_fortnight'
-						type='number'
-						variant='filled'
-					/>
-					<h6>Job Time Duration</h6>
-					{/* <SelectTime hr={hr} setHr={setHr} min={min} setMin={setMin} /> */}
-					<TextField required className='w-100 my-3' name='job_description' label='Job Description' variant='filled' />
-					<SelectDaysHaveToWork setAllDaysData={setAllDaysData} allDaysData={allDaysData} />
-					<Button type='submit' variant='contained' className='mt-3' onClick={handleCreateJob}>
-						Create Job
-					</Button>
-				</form>
-			</div>
-		</div>
-	);
+    return (
+        <div>
+            <h3>Create Permanent Job</h3>
+            <div>
+                <form ref={formRef} onSubmit={handleCreateJob}>
+                    <TextField required className="w-100 my-3" label="Job Title" name="job_title" variant="filled" />
+                    <TextField required className="w-100 my-3" label="Job Address" name="job_address" variant="filled" />
+                    <TextField
+                        required
+                        className="w-100 my-3"
+                        label="Sub-Contractors Count for Job"
+                        name="job_need_count"
+                        type="number"
+                        variant="filled"
+                        min="1"
+                    />
+                    <TextField required className="w-100 my-3" label="Pay per Hr for me" name="pay_per_hr" variant="filled" type="number" />
+                    <TextField
+                        required
+                        className="w-100 my-3"
+                        label="Pay per Hr for Sub-contractor"
+                        name="pay_per_hr_sub_contractor"
+                        variant="filled"
+                        type="number"
+                    />
+                    <h6>Job Time Duration</h6>
+                    {/* <SelectTime hr={hr} setHr={setHr} min={min} setMin={setMin} /> */}
+                    <TextField required className="w-100 my-3" name="job_description" label="Job Description" variant="filled" />
+                    <SelectDaysHaveToWork dayTimeLines={dayTimeLines} setDayTimeLines={setDayTimeLines} initdaytime={initdaytime} />
+                    <Button type="submit" variant="contained" className="mt-3" size="large" onClick={handleCreateJob}>
+                        Create Job
+                    </Button>
+                </form>
+            </div>
+        </div>
+    );
 }
 
 export default adminOnlyWrap(adminWrap(CreatePermanentJob));

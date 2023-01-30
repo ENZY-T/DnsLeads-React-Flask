@@ -158,4 +158,28 @@
     width: 100%;
   }
 }
+
+.quick-job-container {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+}
+
+.quick-job-container .quick-job-card {
+  width: 33.33%;
+  padding: 8px;
+}
+
+.quick-job-container .quick-job-card .inner {
+  padding: 15px;
+  width: 100%;
+  border-radius: 5px;
+  -webkit-box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.1);
+          box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.1);
+}
 /*# sourceMappingURL=index.css.map */

@@ -9,7 +9,8 @@ import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 import { useContext } from 'react';
 import { AppContext } from '../Context/AppContext';
-import { userOnlyWrap } from '../components/wraps';
+import { adminOnlyWrap, userOnlyWrap } from '../components/wraps';
+import { adminWrap } from './component/adminWrap';
 
 export function TimeTable({ daysToWork }) {
     return (
@@ -40,7 +41,7 @@ export function TimeTable({ daysToWork }) {
     );
 }
 
-function MyJob(props) {
+function AdminMyJob(props) {
     const jobID = props.match.params.jobID;
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
     const [jobData, setJobData] = useState({});
@@ -171,4 +172,4 @@ function MyJob(props) {
     );
 }
 
-export default userOnlyWrap(MyJob);
+export default adminOnlyWrap(adminWrap(AdminMyJob));
