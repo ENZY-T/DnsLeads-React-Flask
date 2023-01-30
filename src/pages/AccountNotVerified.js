@@ -10,6 +10,9 @@ function AccountNotVerified() {
       if(authState.loggedUser.verified === "true"){
           history.push("/login")
       }
+      if (authState.loggedUser.role === 'admin') {
+          history.push('/admin');
+      }
   },[])
   return (
     <div className='container' style={{height:'60vh', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'}}>

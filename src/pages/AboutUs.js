@@ -30,8 +30,8 @@ const AboutUs = () => {
             <PageHeader headertxt="ABOUT US" />
             <div className="container">
                 <div className="our-story">
-                    <img src={mainImage} />
-                    <div className="story">
+                    <img src={mainImage} data-aos="fade-right" data-aos-delay="200" />
+                    <div className="story" data-aos="fade-left" data-aos-delay="400">
                         <h2>OUR STORY</h2>
                         <p>
                             DNS Leads services private limited is a fast-growing company which provides commercial cleaning with a wide
@@ -46,7 +46,7 @@ const AboutUs = () => {
                 </div>
                 <AboutPageLine />
                 <div className="our-focus">
-                    <div className="left">
+                    <div className="left" data-aos="fade-right" data-aos-delay="200">
                         <h3>OUR FOCUS</h3>
                         <p>
                             Through a consistent process for improvement in diverse range of facility services, DNS continuously refine its
@@ -73,7 +73,7 @@ const AboutUs = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="right">
+                    <div className="right" data-aos="fade-left" data-aos-delay="400">
                         <h3>CAPACITY TO PROVIDE A 24 x 365 SERVICE</h3>
                         <p>
                             DNS has got the expertise and capacity to provide a 24/365 service with an excellent degree of agility and

@@ -5,15 +5,15 @@ import { AboutPageLine } from './AboutUs';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
-const HalfElm = ({ obj }) => {
+const HalfElm = ({ obj, animDir }) => {
     return (
         <>
             {obj.type === 'img' ? (
-                <div className="half">
+                <div className="half" data-aos={animDir}>
                     <img src={obj.data} alt="" />
                 </div>
             ) : (
-                <div className="half">
+                <div className="half" data-aos={animDir}>
                     <div className="icon">{obj.data.icon}</div>
                     <h3>{obj.data.topic}</h3>
                     <p>{obj.data.para}</p>
@@ -25,6 +25,7 @@ const HalfElm = ({ obj }) => {
 
 function HalfContainer({ leftRightData, indx, line, prp }) {
     const allLeftRight = [leftRightData.left, leftRightData.right];
+    const animDirs = ['fade-right', 'fade-left'];
     const objRef = useRef();
     useEffect(() => {
         if (prp.location.hash === `#${leftRightData.id}`) {
@@ -35,8 +36,8 @@ function HalfContainer({ leftRightData, indx, line, prp }) {
     return (
         <>
             <div className="two-side-container" ref={objRef} id={leftRightData.id}>
-                <HalfElm obj={allLeftRight[indx % 2]} />
-                <HalfElm obj={allLeftRight[(indx + 1) % 2]} />
+                <HalfElm obj={allLeftRight[indx % 2]} animDir={animDirs[indx % 2]} />
+                <HalfElm obj={allLeftRight[(indx + 1) % 2]} animDir={animDirs[(indx + 1) % 2]} />
             </div>
             {line ? <AboutPageLine /> : ''}
         </>

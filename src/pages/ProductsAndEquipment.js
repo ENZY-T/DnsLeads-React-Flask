@@ -9,9 +9,9 @@ import { AboutPageLine } from './AboutUs';
 import eq1 from '../img/equipments/eq1.jpg';
 import { useState } from 'react';
 
-function ProductBox({ data }) {
+function ProductBox({ data, indx }) {
     return (
-        <div className="product-box">
+        <div className="product-box" data-aos="fade-up" data-aos-delay={`${(indx % 3) * 200}`}>
             <div className="img">
                 <img src={data.img} />
             </div>
@@ -24,12 +24,18 @@ function ProductBox({ data }) {
     );
 }
 
-function EquipmentBox({ equipment, setImgData }) {
+function EquipmentBox({ equipment, setImgData, indx }) {
     const showImg = () => {
         setImgData({ iseOpen: true, img: equipment.img, name: '' });
     };
     return (
-        <div className="eq-img" onClick={showImg} style={{ backgroundImage: `url(${equipment.img})` }}>
+        <div
+            className="eq-img"
+            data-aos="flip-left"
+            data-aos-delay={(indx % 4) * 200}
+            onClick={showImg}
+            style={{ backgroundImage: `url(${equipment.img})` }}
+        >
             <span></span>
         </div>
     );
@@ -66,7 +72,7 @@ function ProductsAndEquipment() {
                 </h1>
                 <div className="products-container py-3">
                     {allProducts.map((product, index) => (
-                        <ProductBox data={product} key={index} />
+                        <ProductBox data={product} key={index} indx={index} />
                     ))}
                 </div>
                 <AboutPageLine />
@@ -76,7 +82,7 @@ function ProductsAndEquipment() {
                 </h1>
                 <div className="equipments-container py-5">
                     {allEquipments.map((eqpmnt, index) => (
-                        <EquipmentBox equipment={eqpmnt} setImgData={setShowImageData} key={index} />
+                        <EquipmentBox equipment={eqpmnt} setImgData={setShowImageData} indx={index} key={index} />
                     ))}
                 </div>
             </div>

@@ -29,8 +29,16 @@ const settings = [
 ];
 const adminPaths = [
     {
+        name: 'My Jobs',
+        link: '/admin/my-jobs',
+    },
+    {
         name: 'Job Places Data',
         link: '/admin',
+    },
+    {
+        name: 'Quick Jobs Data',
+        link: '/admin/quick-job-data',
     },
     {
         name: 'Sub-Contractors',

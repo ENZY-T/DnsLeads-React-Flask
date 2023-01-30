@@ -123,3 +123,20 @@ $themeColor:#ab1e05;
         }
     }
 }
+.quick-job-container {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+
+    .quick-job-card {
+        width: 33.33%;
+        padding: 8px;
+
+        .inner {
+            padding: 15px;
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.1);
+        }
+    }
+}

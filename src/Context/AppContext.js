@@ -21,6 +21,13 @@ export const AppContextProvider = (props) => {
         }));
     };
 
+    const setCurrentQuickJobID = (data) => {
+        setAuthState((prev) => ({
+            ...prev,
+            loggedUser: { ...prev.loggedUser, current_quick_job_id: data.job_id, current_quick_job_row_id: data.row_id },
+        }));
+    };
+
     useEffect(() => {
         if (isError) {
             setTimeout(() => {
@@ -30,7 +37,18 @@ export const AppContextProvider = (props) => {
     }, [isError]);
 
     return (
-        <AppContext.Provider value={{ authState, setAuthState, isError, setIsError, setLogged, setLoggedOut, setCurrentPermanentJobID }}>
+        <AppContext.Provider
+            value={{
+                authState,
+                setAuthState,
+                isError,
+                setIsError,
+                setLogged,
+                setLoggedOut,
+                setCurrentPermanentJobID,
+                setCurrentQuickJobID,
+            }}
+        >
             {props.children}
         </AppContext.Provider>
     );

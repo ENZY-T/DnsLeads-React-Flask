@@ -1,5 +1,5 @@
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { adminWrap } from './component/adminWrap';
 import { useRef } from 'react';
@@ -8,6 +8,7 @@ import { GlobalData } from '../GlobalData';
 import { adminOnlyWrap } from '../components/wraps';
 import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 import { Add as AddIcon } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 
 function CheckBoxCell({ dayCell, absday, dayTimeLines, setDayTimeLines, dayTimeLineIndx, dayCellIndx }) {
     function cellClicked() {
@@ -19,7 +20,6 @@ function CheckBoxCell({ dayCell, absday, dayTimeLines, setDayTimeLines, dayTimeL
             }
             return [...prevVal];
         });
-        console.log(dayTimeLines);
     }
     return (
         <td>
@@ -36,7 +36,6 @@ function DayTimeLine({ dayTimeLines, setDayTimeLines, dayTimeLine, dayTimeLineIn
             prevVal[dayTimeLineIndx].time = e.target.value + '-' + st[1];
             return [...prevVal];
         });
-        console.log(setDayTimeLines);
     }
     function timeOnChangeE(e) {
         setDayTimeLines((prevVal) => {
@@ -44,8 +43,16 @@ function DayTimeLine({ dayTimeLines, setDayTimeLines, dayTimeLine, dayTimeLineIn
             prevVal[dayTimeLineIndx].time = st[0] + '-' + e.target.value;
             return [...prevVal];
         });
-        console.log(setDayTimeLines);
     }
+    function removeLine() {
+        setDayTimeLines((prevVal) => {
+            prevVal.splice(dayTimeLineIndx, 1);
+            return [...prevVal];
+        });
+    }
+    useEffect(() => {
+        console.log(dayTimeLines);
+    }, [dayTimeLines]);
     return (
         <tr>
             <td>
@@ -66,6 +73,15 @@ function DayTimeLine({ dayTimeLines, setDayTimeLines, dayTimeLine, dayTimeLineIn
                     dayTimeLineIndx={dayTimeLineIndx}
                 />
             ))}
+            <td>
+                {dayTimeLine.isRemove ? (
+                    <Button variant="contained" color="error" onClick={removeLine}>
+                        <CloseIcon />
+                    </Button>
+                ) : (
+                    ''
+                )}
+            </td>
         </tr>
     );
 }
@@ -76,7 +92,7 @@ function SelectDaysHaveToWork({ dayTimeLines, setDayTimeLines, initdaytime }) {
     }
 
     return (
-        <div>
+        <div className="table-responsive">
             <table className="select-days-to-work">
                 <thead>
                     <tr>
@@ -104,6 +120,9 @@ function SelectDaysHaveToWork({ dayTimeLines, setDayTimeLines, initdaytime }) {
                         <td>
                             <label>Su</label>
                         </td>
+                        <td>
+                            <label>Action</label>
+                        </td>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,7 +138,7 @@ function SelectDaysHaveToWork({ dayTimeLines, setDayTimeLines, initdaytime }) {
                           ))
                         : ''}
                     <tr>
-                        <td colSpan="8">
+                        <td colSpan="9">
                             <Button className="w-100" onClick={addNewDayTimeLine}>
                                 <AddIcon />
                             </Button>
@@ -133,12 +152,18 @@ function SelectDaysHaveToWork({ dayTimeLines, setDayTimeLines, initdaytime }) {
 
 function CreatePermanentJob() {
     const formRef = useRef(null);
+    const initdaytimeA = {
+        time: '00:00-00:00',
+        days: ['', '', '', '', '', '', ''],
+        isRemove: false,
+    };
     const initdaytime = {
         time: '00:00-00:00',
         days: ['', '', '', '', '', '', ''],
+        isRemove: true,
     };
 
-    const [dayTimeLines, setDayTimeLines] = useState([initdaytime]);
+    const [dayTimeLines, setDayTimeLines] = useState([initdaytimeA]);
 
     async function handleCreateJob(e) {
         e.preventDefault();
@@ -187,7 +212,7 @@ function CreatePermanentJob() {
                     {/* <SelectTime hr={hr} setHr={setHr} min={min} setMin={setMin} /> */}
                     <TextField required className="w-100 my-3" name="job_description" label="Job Description" variant="filled" />
                     <SelectDaysHaveToWork dayTimeLines={dayTimeLines} setDayTimeLines={setDayTimeLines} initdaytime={initdaytime} />
-                    <Button type="submit" variant="contained" className="mt-3" onClick={handleCreateJob}>
+                    <Button type="submit" variant="contained" className="mt-3" size="large" onClick={handleCreateJob}>
                         Create Job
                     </Button>
                 </form>

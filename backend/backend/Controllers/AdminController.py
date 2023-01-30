@@ -4,17 +4,22 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
-from ..Models import Users, PermanentJobs, CompletedJobs, PermanentJobRequests
+from ..Models import Users, PermanentJobs, CompletedJobs, JobRequests, QuickJobs, GalleryList
 from .. import db
-from ..allFunctions import usersObjToDictArr, userObjToDict, convert_coordinates
+from ..allFunctions import usersObjToDictArr, userObjToDict, convert_coordinates, imgPath
 from datetime import timedelta
 import json
 from datetime import datetime
 from sqlalchemy.sql.operators import and_
 from ..middlewares.AuthorizationMiddleware import AuthorizationRequired
+from .. import BASE_DIR
 
 
 admin = Blueprint("admin", __name__)
+
+def locationLink(locationtxt):
+    converted = convert_coordinates(locationtxt)
+    return f"https://www.google.com.au/maps/place/{converted}/@{locationtxt}/"
 
 
 @admin.route("/create-permanent-job", methods=["POST"])
@@ -211,11 +216,18 @@ def add_user_to_permanent_job():
     user_id = data["added_id"]
     added_user_name = data["added_name"]
 
-    job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
-    users_arr = list(json.loads(job_data.job_enrolled_ids))
-
     get_user = Users.query.filter_by(id=user_id).first()
-    permanent_job_list = list(json.loads(get_user.permanent_jobs))
+    job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
+    job_type = ""
+    if job_data:
+        permanent_job_list = list(json.loads(get_user.permanent_jobs))
+        job_type = "permanent"
+    else:
+        job_data = QuickJobs.query.filter_by(job_id=job_id).first()
+        permanent_job_list = list(json.loads(get_user.quick_jobs))
+        job_type = "quick"
+
+    users_arr = list(json.loads(job_data.job_enrolled_ids))
 
     if method == "add":
         users_arr.append({"id": user_id, "name": added_user_name})
@@ -237,7 +249,12 @@ def add_user_to_permanent_job():
                 break
 
     job_data.job_enrolled_ids = json.dumps(users_arr)
-    get_user.permanent_jobs = json.dumps(permanent_job_list)
+
+    if job_type == "permanent":
+        get_user.permanent_jobs = json.dumps(permanent_job_list)
+    else:
+        get_user.quick_jobs = json.dumps(permanent_job_list)
+
 
     db.session.commit()
     return jsonify(users_arr)
@@ -248,7 +265,7 @@ def get_all_contractors():
     jobID = request.json['jobID']
     job_data = PermanentJobs.query.filter_by(job_id=jobID).first()
     users_arr = list(json.loads(job_data.job_enrolled_ids))
-    all_users = Users.query.filter_by(role="user").all()
+    all_users = Users.query.all()
     allUsers = []
     for usr in all_users:
         to_append = {
@@ -325,10 +342,6 @@ def get_done_jobs_by_place():
 
     job_real_times = PermanentJobs.query.filter_by(job_id=job_id).first()
 
-    def locationLink(locationtxt):
-        converted = convert_coordinates(locationtxt)
-        return f"https://www.google.com.au/maps/place/{converted}/@{locationtxt}/"
-
     for job in job_datas:
         year, month, date = job.date.split("-")
         if str(year) == str(filter_by_year) and str(month) == f"{filter_by_month:02d}":
@@ -358,13 +371,13 @@ def get_done_jobs_by_place():
 @admin.route("/get-req-count", methods=["POST"])
 def get_req_count():
     job_id = request.json["job_id"]
-    return str(len(PermanentJobRequests.query.filter_by(job_id=job_id).all()))
+    return str(len(JobRequests.query.filter_by(job_id=job_id).all()))
 
 
 @admin.route("/get-all-req-users", methods=["POST"])
 def get_all_req_users():
     job_id = request.json["job_id"]
-    all_reqs = PermanentJobRequests.query.filter_by(job_id=job_id).all()
+    all_reqs = JobRequests.query.filter_by(job_id=job_id).all()
     allReqs = []
 
     for req in all_reqs:
@@ -381,7 +394,7 @@ def get_all_req_users():
 @admin.route("/reject-req-job", methods=["POST"])
 def reject_req_job():
     row_id = request.json["row_id"]
-    get_req = PermanentJobRequests.query.filter_by(id=row_id).first()
+    get_req = JobRequests.query.filter_by(id=row_id).first()
     if get_req:
         db.session.delete(get_req)
         db.session.commit()
@@ -396,22 +409,27 @@ def accept_req_job():
     job_id = data["job_id"]
     row_id = data["row_id"]
 
-    get_req = PermanentJobRequests.query.filter_by(id=row_id).first()
+    get_req = JobRequests.query.filter_by(id=row_id).first()
 
     job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
+    get_user = Users.query.filter_by(id=user_id).first()        
+
+    if job_data:
+        job_list = list(json.loads(get_user.permanent_jobs))
+    else:
+        job_data = QuickJobs.query.filter_by(job_id=job_id).first()
+        job_list = list(json.loads(get_user.quick_jobs))
+
     users_arr = list(json.loads(job_data.job_enrolled_ids))
 
-    get_user = Users.query.filter_by(id=user_id).first()
-    permanent_job_list = list(json.loads(get_user.permanent_jobs))
-
     users_arr.append({"id": user_id, "name": get_user.name})
-    permanent_job_list.append({
+    job_list.append({
         "job_id": job_id,
         "job_name": job_data.job_name,
         "job_location": job_data.job_location,
     })
     job_data.job_enrolled_ids = json.dumps(users_arr)
-    get_user.permanent_jobs = json.dumps(permanent_job_list)
+    get_user.permanent_jobs = json.dumps(job_list)
 
     db.session.delete(get_req)
     db.session.commit()
@@ -421,7 +439,7 @@ def accept_req_job():
 
 @admin.route("/all-reqs")
 def deleteAll():
-    all_reqs = db.session.query(PermanentJobRequests).all()
+    all_reqs = db.session.query(JobRequests).all()
     allReqs = []
 
     for req in all_reqs:
@@ -445,3 +463,234 @@ def before_request():
 @admin.route("/test")
 def GetAdmin():
     return "Success", 200
+
+
+@admin.route("/create-quick-job", methods=["POST"])
+def create_quick_job():
+    data = request.form
+    must_have = [
+        "job_title",
+        "job_desc",
+        "job_address",
+        "c_count_for_job",
+        "pay_per_hr_for_me",
+        "pay_per_hr_for_c",
+        "job_date",
+        "job_time"
+    ]
+
+    for field in must_have:
+        if field not in data:
+            txt = (" ".join(field.split("_"))).capitalize()
+            return jsonify({"status":"error", "msg":f"{txt} field cannot be missing"})
+        if data[field] == "":
+            return jsonify({"status":"error", "msg":f"{txt} field cannot be empty"})
+
+    job_id = str(uuid4())
+
+    new_job = QuickJobs(
+        job_id=job_id,
+        job_name=str(data[must_have[0]]),
+        job_desc=str(data[must_have[1]]),
+        job_location=str(data[must_have[2]]),
+        job_start_time=str(data[must_have[7]]),
+        job_date=str(data[must_have[6]]),
+        pay_per_hr_for_c=str(data[must_have[5]]),
+        pay_per_hr_for_me=str(data[must_have[4]]),
+        job_enrolled_ids=str(json.dumps([])),
+        job_need_count=str(data[must_have[3]]),
+        job_available="true"
+    )
+    db.session.add(new_job)
+    db.session.commit()
+    print(f"[JOB-CREATED] {job_id}")
+    return ({"status":"done", "msg":f"done"})
+
+
+@admin.route("/get-quick-jobs")
+def get_quick_jobs():
+    all_jobs = QuickJobs.query.all()
+    allJobs = []
+
+    for job in all_jobs:
+        allJobs.append({
+            "job_id":job.job_id,
+            "job_name":job.job_name,
+            "job_desc":job.job_desc,
+            "job_location":job.job_location,
+            "job_start_time":job.job_start_time,
+            "job_date":job.job_date,
+            "pay_per_hr_for_c":job.pay_per_hr_for_c,
+            "pay_per_hr_for_me":job.pay_per_hr_for_me,
+            "job_enrolled_ids":job.job_enrolled_ids,
+            "job_need_count":job.job_need_count,
+            "job_available":job.job_available,
+        })
+    
+    return jsonify(allJobs)
+
+
+@admin.route("/quick-job-data/<jobID>")
+def get_quick_job_data(jobID):
+    get_job_id = QuickJobs.query.filter_by(job_id=jobID).first()
+    job_data = {
+        "job_id":get_job_id.job_id,
+        "job_name":get_job_id.job_name,
+        "job_desc":get_job_id.job_desc,
+        "job_location":get_job_id.job_location,
+        "job_start_time":get_job_id.job_start_time,
+        "job_date":get_job_id.job_date,
+        "pay_per_hr_for_c":get_job_id.pay_per_hr_for_c,
+        "pay_per_hr_for_me":get_job_id.pay_per_hr_for_me,
+        "job_enrolled_ids":json.loads(get_job_id.job_enrolled_ids),
+        "job_need_count":get_job_id.job_need_count,
+        "job_available":get_job_id.job_available,
+    }
+    return jsonify(job_data)
+
+
+@admin.route("/get-contractors-quick-jobs", methods=["POST"])
+def get_all_contractors_quick_jobs():
+    jobID = request.json['jobID']
+    job_data = QuickJobs.query.filter_by(job_id=jobID).first()
+    users_arr = list(json.loads(job_data.job_enrolled_ids))
+    all_users = Users.query.all()
+    allUsers = []
+    for usr in all_users:
+        to_append = {
+            "id": usr.id,
+            "name": usr.name
+        }
+        if to_append not in users_arr:
+            allUsers.append(to_append)
+
+    return jsonify(allUsers)
+
+
+@admin.route("/add-or-remove-user-to-quick-job", methods=["POST"])
+def add_user_to_quick_job():
+    data = request.json
+    if "id" not in data or "added_id" not in data or "added_name" not in data or "method" not in data:
+        return jsonify({"status": "error", "msg": "Details missing"})
+
+    method = data["method"]
+    job_id = data["id"]
+    user_id = data["added_id"]
+    added_user_name = data["added_name"]
+
+    job_data = QuickJobs.query.filter_by(job_id=job_id).first()
+    users_arr = list(json.loads(job_data.job_enrolled_ids))
+
+    get_user = Users.query.filter_by(id=user_id).first()
+    quick_job_list = list(json.loads(get_user.quick_jobs))
+
+    if method == "add":
+        users_arr.append({"id": user_id, "name": added_user_name})
+        quick_job_list.append({
+            "job_id": job_id,
+            "job_name": job_data.job_name,
+            "job_location": job_data.job_location,
+        })
+
+    elif method == "remove":
+        for usr in users_arr:
+            if usr["id"] == user_id:
+                users_arr.pop(users_arr.index(usr))
+                break
+
+        for jb in quick_job_list:
+            if jb["job_id"] == job_id:
+                quick_job_list.pop(quick_job_list.index(jb))
+                break
+
+    job_data.job_enrolled_ids = json.dumps(users_arr)
+    get_user.quick_jobs = json.dumps(quick_job_list)
+
+    db.session.commit()
+    return jsonify(users_arr)
+
+
+@admin.route("get-done-quick-jobs-by-place", methods=["POST"])
+def get_done_quick_jobs_by_place():
+    data = request.json
+    jobs_data = CompletedJobs.query.filter_by(job_id=data["job_id"]).all()
+    jobsData = []
+    for job in jobs_data:
+        jobsData.append({
+            "id": job.id,
+            "user_id": job.user_id,
+            "user_name": job.user_name,
+            "job_id": job.job_id,
+            "job_name": job.job_name,
+            "date": job.date,
+            "job_payment_for_day": job.job_payment_for_day,
+            "job_status": job.job_status,
+            "job_started_location": locationLink(job.job_started_location),
+            "job_ended_location": locationLink(job.job_ended_location),
+            "start_time":job.started_time,
+            "end_time":job.ended_time,
+            "job_counts_per_day":job.job_counts_per_day
+        })
+
+    return jsonify(jobsData)
+
+
+@admin.route("/upload-image-for-gallery", methods=["POST"])
+def upload_image_for_gallery():
+    IMG_ID = str(uuid4())
+    path_static = os.path.join(BASE_DIR, "static")
+    path_static_img = os.path.join(path_static, "img")
+    path_static_img_gallery = os.path.join(path_static_img, "gallery")
+
+    if not os.path.exists(path_static):
+        os.mkdir(path_static)
+
+    if not os.path.exists(path_static_img):
+        os.mkdir(path_static_img)
+
+    if not os.path.exists(path_static_img_gallery):
+        os.mkdir(path_static_img_gallery)
+
+    img_file = request.files["upload_img"]
+    save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(img_file.filename).split('.')[-1]}")
+    # print(save_file_path)
+
+    save_img = GalleryList(
+        id=IMG_ID,
+        img_path=save_file_path,
+        category=""
+    )
+    try:
+        db.session.add(save_img)
+        db.session.commit()
+        img_file.save(save_file_path)
+        return jsonify({"id":IMG_ID, "img_path":imgPath(save_file_path).replace("\\", "/")})
+    except Exception as e:
+        return jsonify({"status": "error", "msg": "Something went wrong please try again letter. If you getting this msg many times please contact system admin."})
+
+
+@admin.route("/get-gallery-imgs")
+def get_gallery_imgs():
+    all_imgs = GalleryList.query.all()
+    allImgs = []
+
+    for img in all_imgs:
+        allImgs.append({
+            "id":img.id,
+            "img_path":imgPath(img.img_path).replace("\\", "/")
+        })
+
+    return jsonify(allImgs)
+
+
+@admin.route("/remove-gallery-img", methods=["POST"])
+def remove_gallery_img():
+    img_data = GalleryList.query.filter_by(id=request.json["img_id"]).first()
+    
+    if img_data:
+        os.remove(img_data.img_path)
+        db.session.delete(img_data)
+        db.session.commit()
+        return ""
+    else:
+        return "", 404

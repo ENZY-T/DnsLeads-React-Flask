@@ -13,5 +13,6 @@ sslck = "/etc/letsencrypt/live/whonear.xyz/privkey.pem"
 # app.run(debug=True, host="0.0.0.0", allow_unsafe_werkzeug=True, ssl_context=(sslc, sslck))
 #    app.run(debug=True, host="0.0.0.0", ssl_context=(sslc, sslck))
 
-app = create_app()
-app.run(host="0.0.0.0", debug=True)
+if __name__ == "__main__":
+    app = create_app()
+    app.run(host="0.0.0.0", debug=True)

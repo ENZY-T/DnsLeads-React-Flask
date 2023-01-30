@@ -100,26 +100,30 @@ export const GlobalData = {
 };
 
 export const pagesData = [
-	{
-		name: 'HOME',
-		link: '/',
-	},
-	{
-		name: 'SERVICES',
-		link: '/services',
-	},
-	{
-		name: 'PRODUCTS & EQUIPMENT',
-		link: '/products-and-equipments',
-	},
-	{
-		name: 'ABOUT US',
-		link: '/about-us',
-	},
-	{
-		name: 'CONTACT US',
-		link: '/contact-us',
-	},
+    {
+        name: 'HOME',
+        link: '/',
+    },
+    {
+        name: 'SERVICES',
+        link: '/services',
+    },
+    {
+        name: 'PRODUCTS & EQUIPMENT',
+        link: '/products-and-equipments',
+    },
+    {
+        name: 'GALLERY',
+        link: '/gallery',
+    },
+    {
+        name: 'ABOUT US',
+        link: '/about-us',
+    },
+    {
+        name: 'CONTACT US',
+        link: '/contact-us',
+    },
 ];
 
 export const services = [

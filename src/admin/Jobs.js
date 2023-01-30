@@ -10,7 +10,7 @@ import { GlobalData } from '../GlobalData';
 import { adminOnlyWrap } from '../components/wraps';
 import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 
-function JobDataTable({ jobData }) {
+export function JobDataTable({ jobData }) {
     return (
         <div>
             <div className="table-responsive">
@@ -59,11 +59,13 @@ function JobDataTable({ jobData }) {
                                 <td>A$ {jobRow.job_payment_for_day.split('-')[0]}</td>
                                 <td>A$ {jobRow.job_payment_for_day.split('-')[1]}</td>
                                 <td>
-                                    {jobRow.job_status === 'done' ? 
-                                        parseInt(jobRow.job_counts_per_day) === 0?
-                                    (<span className="txt-green">Done</span>) :
-                                    <span className="txt-yellow">{jobRow.job_counts_per_day} Pending</span>
-                                    : (
+                                    {jobRow.job_status === 'done' ? (
+                                        parseInt(jobRow.job_counts_per_day) === 0 ? (
+                                            <span className="txt-green">Done</span>
+                                        ) : (
+                                            <span className="txt-yellow">{jobRow.job_counts_per_day} Pending</span>
+                                        )
+                                    ) : (
                                         <span className="txt-yellow">Pending</span>
                                     )}
                                 </td>
@@ -191,7 +193,7 @@ function UserTableRow({ row, addOrRemoveUser, jobID }) {
     );
 }
 
-function UsersTable({ usersData = [], addOrRemoveUser, jobID }) {
+export function UsersTable({ usersData = [], addOrRemoveUser, jobID }) {
     return (
         <div className="table-responsive">
             {usersData.length === 0 ? (
@@ -233,7 +235,7 @@ async function getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContrac
     }
 }
 
-function RequestedRow({
+export function RequestedRow({
     jobID,
     row,
     indx,

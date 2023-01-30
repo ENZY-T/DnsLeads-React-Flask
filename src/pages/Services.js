@@ -13,7 +13,7 @@ function Services() {
                 <div className="container">
                     <div className="d-flex flex-column flex-md-row flex-wrap justify-content-between align-items-center align-items-md-stretch">
                         {services.map((serviceItem, index) => (
-                            <ServiceCard key={uuidv4()} serviceItem={serviceItem} />
+                            <ServiceCard key={uuidv4()} serviceItem={serviceItem} dalayINDX={index} />
                         ))}
                     </div>
                 </div>
