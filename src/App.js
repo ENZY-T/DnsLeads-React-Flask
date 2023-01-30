@@ -21,8 +21,6 @@ import MyJobs from './dashboard/MyJobs';
 import MyJob from './dashboard/MyJob';
 import PermanentJobs from './dashboard/PermanentJobs';
 import PermanentJob from './dashboard/PermanentJob';
-import QuickJobs from './dashboard/QuickJobs';
-import QuickJob from './dashboard/QuickJob';
 import NavigationBar from './components/NavigationBar';
 import AdminHome from './admin/AdminHome';
 import SubContractors from './admin/SubContractors';
@@ -43,6 +41,8 @@ import AdminMyJobs from './admin/AdminMyJobs';
 import Aos from 'aos';
 import { useEffect } from 'react';
 import Gallery from './pages/Gallery';
+import QuickJobs from './dashboard/QuickJobs';
+import QuickJob from './dashboard/QuickJob';
 
 function App() {
     useEffect(() => {

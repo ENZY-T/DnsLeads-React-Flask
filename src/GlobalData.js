@@ -39,6 +39,7 @@ import eq12 from './img/equipments/eq12.jpg';
 import eq13 from './img/equipments/eq13.jpg';
 
 export const GlobalData = {
+	CompanyDetails: {},
 	media: {
 		home: {
 			slides: [
