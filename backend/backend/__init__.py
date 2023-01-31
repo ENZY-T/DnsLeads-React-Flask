@@ -15,6 +15,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_USERNAME = "root"
 DB_HOST = "localhost"
 DB_PASSWORD = "LKAS1209kavindu"
+# DB_PASSWORD = "UChome@123"
 DB_PORT = 3306
 DB_NAME = "dns_db"
 # DB_NAME = 'database.sqlite3'
@@ -33,7 +34,7 @@ def create_app():
     app.config['RBAC_USE_WHITE'] = True
 
     db.init_app(app)
-    
+
     CORS(app)
     Bcrypt(app)
     JWTManager(app)

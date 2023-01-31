@@ -1,15 +1,18 @@
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { adminHomeData } from './AdminHome';
 import { adminWrap } from './component/adminWrap';
 import GenTable from './component/GenTable';
-
+import { useReactToPrint } from 'react-to-print';
 import WarningIcon from '@mui/icons-material/WarningRounded';
 import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 import { adminOnlyWrap } from '../components/wraps';
 import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 import GoBackArrow from '../components/GoBackArrow';
+import NewInvoice from '../components/NewInvoice';
+import { AppContext } from '../Context/AppContext';
+import { useHistory } from 'react-router-dom';
 
 export function JobDataTable({ jobData }) {
     return (
@@ -89,14 +92,13 @@ export function SelectOptions({
     ifOnChange = (test) => {},
 }) {
     return (
-        <FormControl variant="filled" className={`w-100 my-2`}>
+        <FormControl variant="filled" className={`w-100 my-4`}>
             <InputLabel id="select-bank">{inputLabel}</InputLabel>
             <Select
                 labelId="select-bank"
                 id="demo-simple-select-filled"
                 value={selectedData}
                 onChange={(e) => {
-                    // console.log(e.target.value);
                     setSelectedData(e.target.value);
                     ifOnChange(e.target.value);
                 }}
@@ -378,7 +380,6 @@ function Jobs(props) {
             }
         );
         if (result.status === 200) {
-            console.log(result.data);
             setCompletedJobData(result.data);
         }
     }
@@ -389,7 +390,6 @@ function Jobs(props) {
             year: selectedYear,
             month: newMonth,
         };
-        console.log(sendData);
         const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-done-jobs-by-place', sendData, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -431,6 +431,48 @@ function Jobs(props) {
         }
     }
 
+    const invoiceRef = useRef();
+    const [data, setData] = useState({
+        invoice_number: '',
+        to_name: '',
+        to_address: '',
+        sub_total: '',
+        gst: '',
+        total: '',
+        duration: '',
+    });
+
+    const handlePrint = useReactToPrint({
+        content: () => invoiceRef.current,
+    });
+
+    const [isPdf, setIsPdf] = useState(false);
+    const { setInvoiceDataForPDF, invoiceData } = useContext(AppContext);
+    const history = useHistory();
+
+    async function downloadPdf() {
+        const sendData = {
+            job_id: jobID,
+            year: selectedYear,
+            month: selectedMonth,
+        };
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/req-invoice-data', sendData, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        if (result.status === 200) {
+            console.log(result.data)
+            setInvoiceDataForPDF(result.data);
+            setTimeout(() => {
+                history.push(`/invoice`);
+            }, 1000);
+        }
+        else{
+            alert(result.data.msg)
+        }
+    }
+
     useEffect(() => {
         getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob);
         getAllContractors(setUserData, setLoadingContractors, jobID);
@@ -440,6 +482,8 @@ function Jobs(props) {
 
     return (
         <div>
+            {isPdf ? <NewInvoice invoiceRef={invoiceRef} data={data} /> : ''}
+
             <GoBackArrow />
             <h2 className="mt-3">{jobData.job_name}</h2>
             <UsersTable usersData={workingSubContractorsInThisJob} addOrRemoveUser={addOrRemoveUser} jobID={jobID} />
@@ -491,7 +535,7 @@ function Jobs(props) {
             ) : (
                 ''
             )}
-            <div className="d-flex">
+            <div className="d-flex" style={{ alignItems: 'center' }}>
                 <SelectOptions
                     setSelectedData={setSelectedYear}
                     selectedData={selectedYear}
@@ -507,8 +551,10 @@ function Jobs(props) {
                     dropList={allMonths}
                     ifOnChange={getAllCompletedJobDataOnChangeMonth}
                 />
-                {/* <span style={{ width: '10px' }}></span> */}
-                {/* <Button>Download </Button> */}
+                <span style={{ width: '10px' }}></span>
+                <Button onClick={downloadPdf} variant="contained" color="primary" style={{ height: '50px' }}>
+                    Download Invoice
+                </Button>
             </div>
             {completedJobData ? <JobDataTable jobData={completedJobData} /> : ''}
         </div>

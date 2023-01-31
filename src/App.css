@@ -1246,4 +1246,37 @@ html p {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.8);
 }
+
+.new-invoice-container {
+  position: relative;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999 !important;
+}
+
+.new-invoice-container .inner-page {
+  width: 100%;
+  background-color: white;
+  padding: 50px 0;
+}
+
+.new-invoice-container .inner-page .header {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.txt-right {
+  text-align: right;
+}
 /*# sourceMappingURL=App.css.map */

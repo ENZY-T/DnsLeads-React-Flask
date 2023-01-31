@@ -45,10 +45,10 @@ import QuickJobs from './dashboard/QuickJobs';
 import QuickJob from './dashboard/QuickJob';
 
 function App() {
-    useEffect(() => {
-        Aos.init({ duration: 500, offset: 450 });
-    }, []);
-    return (
+	useEffect(() => {
+		Aos.init({ duration: 500, offset: 450 });
+	}, []);
+	return (
         <AppContextProvider>
             <div style={{ color: ThemeColors.textColor }}>
                 <Router>

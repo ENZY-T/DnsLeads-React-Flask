@@ -122,9 +122,9 @@ def register():
     try:
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"status": "done", "msg": "You have registered successfully. Wait for admin to review your account and verify the details"})
+        return 200
     except Exception as e:
-        return jsonify({"status": "error", "msg": "Spmething went wrong please try again letter. If you getting this msg many times please contact system admin."})
+        return f'Error. Check wether this details have a account already. If error exist ever, please contact the owner', 400
 
 
 @auth.route("/logout", methods=["POST"])
