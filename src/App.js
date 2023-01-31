@@ -45,58 +45,58 @@ import QuickJobs from './dashboard/QuickJobs';
 import QuickJob from './dashboard/QuickJob';
 
 function App() {
-    useEffect(() => {
-        Aos.init({ duration: 500, offset: 450 });
-    }, []);
-    return (
-        <AppContextProvider>
-            <div style={{ color: ThemeColors.textColor }}>
-                <Router>
-                    <NavigationBar />
-                    <Switch>
-                        {/* Testing Pages */}
-                        <Route path="/invoice" exact component={Invoice} />
-                        {/* Public Pages */}
-                        <Route path="/" exact component={HomePage} />
-                        <Route path="/about-us" exact component={AboutUs} />
-                        <Route path="/services" exact component={Services} />
-                        <Route path="/services/details" exact component={ServiceDetails} />
-                        <Route path="/products-and-equipments" exact component={ProductsAndEquipment} />
-                        <Route path="/contact-us" exact component={ContactUs} />
-                        <Route path="/gallery" exact component={Gallery} />
-                        <Route path="/login" exact component={Login} />
-                        <Route path="/register" exact component={Register} />
+	useEffect(() => {
+		Aos.init({ duration: 500, offset: 450 });
+	}, []);
+	return (
+		<AppContextProvider>
+			<div style={{ color: ThemeColors.textColor }}>
+				<Router>
+					<NavigationBar />
+					<Switch>
+						{/* Testing Pages */}
+						<Route path='/invoice' exact component={Invoice} />
+						{/* Public Pages */}
+						<Route path='/' exact component={HomePage} />
+						<Route path='/about-us' exact component={AboutUs} />
+						<Route path='/services' exact component={Services} />
+						<Route path='/services/details' exact component={ServiceDetails} />
+						<Route path='/products-and-equipments' exact component={ProductsAndEquipment} />
+						<Route path='/contact-us' exact component={ContactUs} />
+						<Route path='/gallery' exact component={Gallery} />
+						<Route path='/login' exact component={Login} />
+						<Route path='/register' exact component={Register} />
 
-                        {/* User Private Pages */}
-                        <SecureRoute path="/dashboard" exact component={DashboardHome} />
-                        <SecureRoute path="/my-jobs" exact component={MyJobs} />
-                        <SecureRoute path="/my-jobs/:jobID" exact component={MyJob} />
-                        <SecureRoute path="/permanent-jobs" exact component={PermanentJobs} />
-                        <SecureRoute path="/permanent-jobs/:jobID" exact component={PermanentJob} />
-                        <SecureRoute path="/quick-jobs" exact component={QuickJobs} />
-                        <SecureRoute path="/quick-jobs/:jobID" exact component={QuickJob} />
-                        <SecureRoute path="/account" exact component={Account} />
-                        <SecureRoute path="/not-verified" exact component={AccountNotVerified} />
+						{/* User Private Pages */}
+						<SecureRoute path='/dashboard' exact component={DashboardHome} />
+						<SecureRoute path='/my-jobs' exact component={MyJobs} />
+						<SecureRoute path='/my-jobs/:jobID' exact component={MyJob} />
+						<SecureRoute path='/permanent-jobs' exact component={PermanentJobs} />
+						<SecureRoute path='/permanent-jobs/:jobID' exact component={PermanentJob} />
+						<SecureRoute path='/quick-jobs' exact component={QuickJobs} />
+						<SecureRoute path='/quick-jobs/:jobID' exact component={QuickJob} />
+						<SecureRoute path='/account' exact component={Account} />
+						<SecureRoute path='/not-verified' exact component={AccountNotVerified} />
 
-                        {/* Admin Private Pages */}
-                        <SecureAdminRoute path="/admin" exact component={AdminHome} />
-                        <SecureAdminRoute path="/admin/sub-contractors" exact component={SubContractors} />
-                        <SecureAdminRoute path="/admin/sub-contractors/:userID" exact component={SubContractor} />
-                        <SecureAdminRoute path="/admin/create-permanent-job" exact component={CreatePermanentJob} />
-                        <SecureAdminRoute path="/admin/create-quick-job" exact component={CreateQuickJob} />
-                        <SecureAdminRoute path="/admin/jobs/:jobID" exact component={Jobs} />
-                        <SecureAdminRoute path="/admin/quick-job-data" exact component={QuickJobsData} />
-                        <SecureAdminRoute path="/admin/quick-job-data/:jobID" exact component={QuickJobDataPage} />
-                        <SecureAdminRoute path="/admin/my-jobs" exact component={AdminMyJobs} />
-                        <SecureAdminRoute path="/admin/my-jobs/:jobID" exact component={AdminMyJob} />
+						{/* Admin Private Pages */}
+						<SecureAdminRoute path='/admin' exact component={AdminHome} />
+						<SecureAdminRoute path='/admin/sub-contractors' exact component={SubContractors} />
+						<SecureAdminRoute path='/admin/sub-contractors/:userID' exact component={SubContractor} />
+						<SecureAdminRoute path='/admin/create-permanent-job' exact component={CreatePermanentJob} />
+						<SecureAdminRoute path='/admin/create-quick-job' exact component={CreateQuickJob} />
+						<SecureAdminRoute path='/admin/jobs/:jobID' exact component={Jobs} />
+						<SecureAdminRoute path='/admin/quick-job-data' exact component={QuickJobsData} />
+						<SecureAdminRoute path='/admin/quick-job-data/:jobID' exact component={QuickJobDataPage} />
+						<SecureAdminRoute path='/admin/my-jobs' exact component={AdminMyJobs} />
+						<SecureAdminRoute path='/admin/my-jobs/:jobID' exact component={AdminMyJob} />
 
-                        <Route component={NotFound} />
-                    </Switch>
-                    <Footer />
-                </Router>
-            </div>
-        </AppContextProvider>
-    );
+						<Route component={NotFound} />
+					</Switch>
+					<Footer />
+				</Router>
+			</div>
+		</AppContextProvider>
+	);
 }
 
 export default App;

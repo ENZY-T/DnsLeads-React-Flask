@@ -4,7 +4,7 @@ import { GlobalData } from '../GlobalData';
 const Logo = ({ height, width }) => {
 	return (
 		<div className='logo'>
-			<img height={height} width={width} src={GlobalData.media.logo} alt='Logo' />
+			<img height={height} width={width} src={GlobalData.CompanyDetails.logo} alt='Logo' />
 		</div>
 	);
 };
