@@ -9,6 +9,7 @@ import axios from 'axios';
 import { GlobalData } from '../GlobalData';
 import { adminOnlyWrap } from '../components/wraps';
 import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
+import GoBackArrow from '../components/GoBackArrow';
 
 export function JobDataTable({ jobData }) {
     return (
@@ -439,7 +440,8 @@ function Jobs(props) {
 
     return (
         <div>
-            <h2>{jobData.job_name}</h2>
+            <GoBackArrow />
+            <h2 className="mt-3">{jobData.job_name}</h2>
             <UsersTable usersData={workingSubContractorsInThisJob} addOrRemoveUser={addOrRemoveUser} jobID={jobID} />
             <div className="d-flex p-3" style={{ alignItems: 'center' }}>
                 <SelectOptions
