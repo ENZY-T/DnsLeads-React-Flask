@@ -668,10 +668,14 @@ def get_done_quick_jobs_by_place():
 
 @admin.route("/upload-image-for-gallery", methods=["POST"])
 def upload_image_for_gallery():
-    IMG_ID = str(uuid4())
+    before_imgs = request.files.getlist("before_imgs")
+    after_imgs = request.files.getlist("after_imgs")
+
     path_static = os.path.join(BASE_DIR, "static")
     path_static_img = os.path.join(path_static, "img")
     path_static_img_gallery = os.path.join(path_static_img, "gallery")
+    
+    ROW_ID = str(uuid4())
 
     if not os.path.exists(path_static):
         os.mkdir(path_static)
@@ -681,21 +685,57 @@ def upload_image_for_gallery():
 
     if not os.path.exists(path_static_img_gallery):
         os.mkdir(path_static_img_gallery)
+    
+    before_img_paths = []
+    before_img_data = []
 
-    img_file = request.files["upload_img"]
-    save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(img_file.filename).split('.')[-1]}")
-    # print(save_file_path)
+    after_img_paths = []
+    after_img_data = []
 
+    for b_file in before_imgs:
+        IMG_ID = str(uuid4())
+        save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(b_file.filename).split('.')[-1]}")
+        before_img_paths.append({"id":IMG_ID,"path":save_file_path})
+        before_img_data.append({"id":IMG_ID, "img":b_file, "save_path":save_file_path})
+
+    for a_file in after_imgs:
+        IMG_ID = str(uuid4())
+        save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(a_file.filename).split('.')[-1]}")
+        after_img_paths.append({"id":IMG_ID,"path":save_file_path})
+        after_img_data.append({"id":IMG_ID, "img":a_file, "save_path":save_file_path})
+
+    images_data = {
+        "before":before_img_paths,
+        "after":after_img_paths
+    }
+    catergory = str(request.form["catergory"])
     save_img = GalleryList(
-        id=IMG_ID,
-        img_path=save_file_path,
-        category=""
+        id=ROW_ID,
+        img_paths=json.dumps(images_data),
+        category=catergory
     )
+
     try:
         db.session.add(save_img)
         db.session.commit()
-        img_file.save(save_file_path)
-        return jsonify({"id":IMG_ID, "img_path":imgPath(save_file_path).replace("\\", "/")})
+
+        ret_before_imgs = []
+        ret_after_imgs = []
+
+        for b_imgData in before_img_data:
+            b_imgData["img"].save(b_imgData["save_path"])
+            ret_before_imgs.append({"id":b_imgData["id"], "img_path":imgPath(b_imgData["save_path"])})
+
+        for a_imgData in after_img_data:
+            a_imgData["img"].save(a_imgData["save_path"])
+            ret_after_imgs.append({"id":a_imgData["id"], "img_path":imgPath(a_imgData["save_path"])})
+        
+        ret_data = {
+            "before":ret_before_imgs,
+            "after":ret_after_imgs
+        }
+
+        return jsonify({"id":ROW_ID, "imgs":ret_data, "catergory":catergory})
     except Exception as e:
         return jsonify({"status": "error", "msg": "Something went wrong please try again letter. If you getting this msg many times please contact system admin."})
 
@@ -706,25 +746,58 @@ def get_gallery_imgs():
     allImgs = []
 
     for img in all_imgs:
+        allImgsData = json.loads(img.img_paths)
+        beforeImgsData = []
+        afterImgsData = []
+
+        for b_img_obj in allImgsData["before"]:
+            beforeImgsData.append({
+                "id":b_img_obj["id"],
+                "img_path":imgPath(b_img_obj["path"])
+            })
+
+        for a_img_obj in allImgsData["after"]:
+            afterImgsData.append({
+                "id":a_img_obj["id"],
+                "img_path":imgPath(a_img_obj["path"])
+            })
+
         allImgs.append({
             "id":img.id,
-            "img_path":imgPath(img.img_path).replace("\\", "/")
+            "imgs":{
+                "before":beforeImgsData,
+                "after":afterImgsData
+            },
+            "catergory":img.category
         })
 
     return jsonify(allImgs)
 
 
-@admin.route("/remove-gallery-img", methods=["POST"])
+@admin.route("/remove-gallery-collection", methods=["POST"])
 def remove_gallery_img():
-    img_data = GalleryList.query.filter_by(id=request.json["img_id"]).first()
+    img_data = GalleryList.query.filter_by(id=request.json["collection_id"]).first()
     
+    img_data_dict = json.loads(img_data.img_paths)
+
     if img_data:
-        os.remove(img_data.img_path)
+        before_imgs = img_data_dict["before"]
+        after_imgs = img_data_dict["after"]
+
+        for imgObj in before_imgs:
+            if os.path.exists(imgObj["path"]):
+                os.remove(imgObj["path"])
+
+        for imgObj in after_imgs:
+            if os.path.exists(imgObj["path"]):
+                os.remove(imgObj["path"])
+
         db.session.delete(img_data)
         db.session.commit()
+
         return ""
     else:
-        return "", 404
+        return "", 400
     
 
 @admin.route("/req-invoice-data", methods=["POST"])
@@ -811,7 +884,6 @@ def req_invoice_data():
                 "total": f"{total:.2f}",
                 "duration": f"01 to {lastDay} {MONTH_DATA[int(filter_by_month)]}",
             }
-            # print(ret_data)
 
             return jsonify(ret_data)
 

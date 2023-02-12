@@ -152,5 +152,5 @@ class GalleryList(db.Model):
     __tablename__ = "GalleryList"
 
     id = db.Column(db.String(50), primary_key=True)
-    img_path = db.Column(db.String(500))
+    img_paths = db.Column(db.Text())
     category = db.Column(db.String(100))

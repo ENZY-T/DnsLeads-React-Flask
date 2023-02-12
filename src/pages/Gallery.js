@@ -6,6 +6,102 @@ import { GlobalData } from '../GlobalData';
 import CloseIcon from '@mui/icons-material/Close';
 import { AppContext } from '../Context/AppContext';
 
+function PreviewImgBox({ img_path, setArrayTo, imgArray }) {
+    function removeImg(e) {
+        setArrayTo(imgArray.filter((e) => e !== img_path));
+    }
+    return (
+        <div className={`img-box`}>
+            <div className="inner">
+                <span className="close-btn" onClick={removeImg}>
+                    <CloseIcon />
+                </span>
+                <img src={img_path} />
+            </div>
+        </div>
+    );
+}
+
+function CreateAlbum({ setCreateCollectionShow, uploadPhoto, uploadForm }) {
+    const [beforeImgs, setBeforeImgs] = useState([]);
+    const [afterImgs, setAfterImgs] = useState([]);
+
+    function setToShowList(e, setAfterOrBefore) {
+        console.log(e.target.files);
+        const selectedFilesArray = Array.from(e.target.files);
+        setAfterOrBefore(
+            selectedFilesArray.map((file) => {
+                return URL.createObjectURL(file);
+            })
+        );
+    }
+
+    return (
+        <div className="collection-form p-3">
+            <Button onClick={() => setCreateCollectionShow(false)} variant="outlined">
+                hide collection form
+            </Button>
+            <form ref={uploadForm} onSubmit={uploadPhoto} className="py-3">
+                <TextField name="catergory" label="Tag name for collection" className="w-100 my-3" required />
+                <div className="before-imgs">
+                    <h4>Before ({beforeImgs.length})</h4>
+                    <label htmlFor="before_imgs" className="btn btn-outline-success">
+                        Select Before images
+                    </label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        name="before_imgs"
+                        id="before_imgs"
+                        onChange={(e) => setToShowList(e, setBeforeImgs)}
+                        required
+                        multiple
+                        style={{ display: 'none' }}
+                    />
+                    <div className="img-show-container galary-container">
+                        {beforeImgs
+                            ? beforeImgs.length > 0
+                                ? beforeImgs.map((img_path, indx) => (
+                                      <PreviewImgBox img_path={img_path} key={indx} setArrayTo={setBeforeImgs} imgArray={beforeImgs} />
+                                  ))
+                                : ''
+                            : ''}
+                    </div>
+                </div>
+                <hr />
+                <div className="after-imgs">
+                    <h4>After ({afterImgs.length})</h4>
+                    <label htmlFor="after_imgs" className="btn btn-outline-success">
+                        Select After images
+                    </label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        name="after_imgs"
+                        id="after_imgs"
+                        onChange={(e) => setToShowList(e, setAfterImgs)}
+                        required
+                        multiple
+                        style={{ display: 'none' }}
+                    />
+                    <div className="img-show-container galary-container">
+                        {afterImgs
+                            ? afterImgs.length > 0
+                                ? afterImgs.map((img_path, indx) => (
+                                      <PreviewImgBox img_path={img_path} key={indx} setArrayTo={setAfterImgs} imgArray={afterImgs} />
+                                  ))
+                                : ''
+                            : ''}
+                    </div>
+                </div>
+                <Button className="w-100 my-3" variant="contained" type="submit">
+                    Create new Collection
+                </Button>
+            </form>
+        </div>
+    );
+}
+
 function ShowImgWindow({ closeImageWindow, clickedImg }) {
     return (
         <div className="show-img-container">
@@ -23,37 +119,50 @@ function ImgBox({ setAllPhotos, imgData, openImageWindow }) {
 
     const IMG_PATH = `${GlobalData.baseUrl}/${imgData.img_path}`;
 
-    async function removeImg() {
-        const result = await axios.post(
-            GlobalData.baseUrl + '/api/admin/remove-gallery-img',
-            { img_id: imgData.id },
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
+    return (
+        <div className={`img-box`}>
+            <div className="inner">
+                <img onClick={() => openImageWindow(IMG_PATH)} src={IMG_PATH} alt="" />
+            </div>
+        </div>
+    );
+}
+
+function CollectionGallery({ imgObj, openImageWindow, setAllPhotos }) {
+    const { authState } = useContext(AppContext);
+    async function removeCollection(){
+        if(window.confirm(`Do you want to delete ${imgObj.catergory} collection?`)){
+            const result = await axios.post(
+                GlobalData.baseUrl+
+                "/api/admin/remove-gallery-collection",
+                {
+                    collection_id:imgObj.id
                 },
+    
+            )
+            if(result.status === 200){
+                setAllPhotos((prevState) => {
+                    const index = prevState.indexOf(imgObj);
+                    if (index > -1) {
+                        prevState.splice(index, 1);
+                    }
+                    return [...prevState];
+                });
             }
-        );
-        if (result.status === 200) {
-            setAllPhotos((prevState) => {
-                const index = prevState.indexOf(imgData);
-                if (index > -1) {
-                    prevState.splice(index, 1);
-                }
-                return [...prevState];
-            });
         }
     }
 
     return (
-        <div className={`img-box`}>
-            <div className="inner">
+        <div className="collection-form my-3 p-3">
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <h3 style={{ width: 'max-content' }}>{imgObj.catergory}</h3>
                 {authState ? (
                     authState.isLogged ? (
                         authState.loggedUser ? (
                             authState.loggedUser.role === 'admin' ? (
-                                <span className="close-btn" onClick={removeImg}>
-                                    <CloseIcon />
-                                </span>
+                                <Button onClick={removeCollection} color="error" variant="contained">
+                                    Delete Collection
+                                </Button>
                             ) : (
                                 ''
                             )
@@ -66,7 +175,22 @@ function ImgBox({ setAllPhotos, imgData, openImageWindow }) {
                 ) : (
                     ''
                 )}
-                <img onClick={() => openImageWindow(IMG_PATH)} src={IMG_PATH} alt="" />
+            </div>
+            <div>
+                <h4>Before</h4>
+                <div className="img-show-container galary-container">
+                    {imgObj.imgs.before.map((imgdata, indx) => (
+                        <ImgBox imgData={imgdata} key={indx} openImageWindow={openImageWindow} />
+                    ))}
+                </div>
+            </div>
+            <div>
+                <h4>After</h4>
+                <div className="img-show-container galary-container">
+                    {imgObj.imgs.after.map((imgdata, indx) => (
+                        <ImgBox imgData={imgdata} key={indx} openImageWindow={openImageWindow} />
+                    ))}
+                </div>
             </div>
         </div>
     );
@@ -80,6 +204,8 @@ function Gallery() {
 
     const [clickedImg, setClickedImg] = useState('');
     const [isClicked, setIsClicked] = useState(false);
+
+    const [createCollectionShow, setCreateCollectionShow] = useState(false);
 
     function openImageWindow(imgPath) {
         setClickedImg(imgPath);
@@ -96,10 +222,12 @@ function Gallery() {
         const formData = new FormData(uploadForm.current);
         const result = await axios.post(GlobalData.baseUrl + '/api/admin/upload-image-for-gallery', formData, {
             headers: {
+                'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${accessToken}`,
             },
         });
         if (result.status === 200) {
+            console.log(result.data);
             setAllPhotos([...allPhotos, result.data]);
             uploadForm.current.reset();
         }
@@ -111,6 +239,7 @@ function Gallery() {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
+        console.log(result);
         if (result.status === 200) {
             setAllPhotos(result.data);
         }
@@ -128,20 +257,19 @@ function Gallery() {
                 authState.isLogged ? (
                     authState.loggedUser ? (
                         authState.loggedUser.role === 'admin' ? (
-                            <form onSubmit={uploadPhoto} ref={uploadForm}>
-                                <div className="d-flex" style={{ alignItems: 'center' }}>
-                                    <TextField type="file" className="w-100 my-2" name="upload_img" required />
-                                    <Button
-                                        className="mx-2"
-                                        variant="contained"
-                                        type="submit"
-                                        size="small"
-                                        style={{ height: '50px', width: '120px' }}
-                                    >
-                                        Upload
+                            <div className="py-3">
+                                {createCollectionShow ? (
+                                    <CreateAlbum
+                                        setCreateCollectionShow={setCreateCollectionShow}
+                                        uploadPhoto={uploadPhoto}
+                                        uploadForm={uploadForm}
+                                    />
+                                ) : (
+                                    <Button variant="outlined" onClick={() => setCreateCollectionShow(true)}>
+                                        Create Collection
                                     </Button>
-                                </div>
-                            </form>
+                                )}
+                            </div>
                         ) : (
                             ''
                         )
@@ -158,7 +286,7 @@ function Gallery() {
                 {allPhotos ? (
                     allPhotos.length > 0 ? (
                         allPhotos.map((imgData, indx) => (
-                            <ImgBox setAllPhotos={setAllPhotos} imgData={imgData} key={indx} openImageWindow={openImageWindow} />
+                            <CollectionGallery imgObj={imgData} key={indx} openImageWindow={openImageWindow} setAllPhotos={setAllPhotos} />
                         ))
                     ) : (
                         <h4>No photos available</h4>
