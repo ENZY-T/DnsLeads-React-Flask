@@ -15,8 +15,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # DB_USERNAME = "dns_user"
 # DB_PASSWORD = "dns.123"
 DB_USERNAME = "root"
-DB_PASSWORD = "LKAS1209kavindu"
-DB_HOST = "mysql"
+DB_PASSWORD = "UChome@123"
+DB_HOST = "localhost"
 DB_NAME = "dns_db"
 
 DB_PORT = 3306
