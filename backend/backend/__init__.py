@@ -12,9 +12,11 @@ db = SQLAlchemy()
 # DB_NAME = 'database.sqlite3'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DB_USERNAME = "dns_user"
+# DB_USERNAME = "dns_user"
+# DB_PASSWORD = "dns.123"
+DB_USERNAME = "root"
+DB_PASSWORD = "LKAS1209kavindu"
 DB_HOST = "mysql"
-DB_PASSWORD = "dns.123"
 DB_NAME = "dns_db"
 
 DB_PORT = 3306
