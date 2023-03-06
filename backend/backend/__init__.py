@@ -23,6 +23,10 @@ DB_USERNAME = os.environ['MYSQL_USER'],
 DB_PASSWORD = os.environ['MYSQL_PASSWORD'],
 DB_NAME = os.environ['MYSQL_DB']
 
+print(DB_HOST)
+print(DB_USERNAME)
+print(DB_PASSWORD)
+print(DB_NAME)
 # DB_NAME = 'database.sqlite3'
 
 app = Flask(__name__)
