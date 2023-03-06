@@ -21,7 +21,7 @@ DB_PORT = 3306
 DB_HOST = os.environ['MYSQL_HOST'],
 DB_USERNAME = os.environ['MYSQL_USER'],
 DB_PASSWORD = os.environ['MYSQL_PASSWORD'],
-DB_NAME = os.environ['MYSQL_DATABASE']
+DB_NAME = os.environ['MYSQL_DB']
 
 # DB_NAME = 'database.sqlite3'
 
