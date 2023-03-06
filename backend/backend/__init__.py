@@ -23,10 +23,10 @@ DB_PORT = 3306
 # DB_PASSWORD = os.environ['MYSQL_PASSWORD'],
 # DB_NAME = os.environ['MYSQL_DB']
 
-print(DB_HOST)
-print(DB_USERNAME)
-print(DB_PASSWORD)
-print(DB_NAME)
+# print(DB_HOST)
+# print(DB_USERNAME)
+# print(DB_PASSWORD)
+# print(DB_NAME)
 # DB_NAME = 'database.sqlite3'
 
 app = Flask(__name__)
@@ -73,5 +73,7 @@ def create_database(app, db):
             print(" * DB Created")
         except Exception as e:
             print(e)
+            print('Retrying....')
+            create_database(app, db)
     # else:
     #     print(' * DB Found.')
