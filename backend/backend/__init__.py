@@ -12,12 +12,17 @@ db = SQLAlchemy()
 # DB_NAME = 'database.sqlite3'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DB_USERNAME = "dns_user"
-DB_HOST = "localhost"
-DB_PASSWORD = "dns.123"
+# DB_USERNAME = "dns_user"
+# DB_HOST = "localhost"
+# DB_PASSWORD = "dns.123"
+# DB_NAME = "dns_db"
 
 DB_PORT = 3306
-DB_NAME = "dns_db"
+DB_HOST = os.environ['MYSQL_HOST'],
+DB_USERNAME = os.environ['MYSQL_USER'],
+DB_PASSWORD = os.environ['MYSQL_PASSWORD'],
+DB_NAME = os.environ['MYSQL_DATABASE']
+
 # DB_NAME = 'database.sqlite3'
 
 app = Flask(__name__)
