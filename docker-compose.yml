@@ -1,7 +1,15 @@
+version: '3'
+
 services:
-  app:
-    container_name: DnsLeads-fe-container
-    image: DnsLeads-fe-image
-    build:
-      context: .
-    ports: -8080:80
+  web:
+    build: .
+    ports:
+      - '3000:80'
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
