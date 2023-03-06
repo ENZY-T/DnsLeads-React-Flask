@@ -592,7 +592,7 @@ def get_all_quick_jobs():
 
 @user.route("/quick-job-data/<jobID>")
 def get_quick_job_data(jobID):
-    print(jobID)
+    # print(jobID)
     get_job_id = QuickJobs.query.filter_by(job_id=jobID).first()
     if get_job_id:
         job_data = {

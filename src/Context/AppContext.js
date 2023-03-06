@@ -4,7 +4,20 @@ export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
     const [authState, setAuthState] = useState({ isLogged: false, loggedUser: null, accessToken: null });
+    const [invoiceData, setInvoiceData] = useState({
+        invoice_number: '',
+        to_name: '',
+        to_address: '',
+        sub_total: '',
+        gst: '',
+        total: '',
+        duration: '',
+    });
     const [isError, setIsError] = useState(null);
+
+    const setInvoiceDataForPDF = (data) => {
+        setInvoiceData(data);
+    };
 
     const setLogged = (user) => {
         setAuthState((prev) => ({ ...prev, isLogged: true, loggedUser: user }));
@@ -47,6 +60,8 @@ export const AppContextProvider = (props) => {
                 setLoggedOut,
                 setCurrentPermanentJobID,
                 setCurrentQuickJobID,
+                setInvoiceDataForPDF,
+                invoiceData,
             }}
         >
             {props.children}

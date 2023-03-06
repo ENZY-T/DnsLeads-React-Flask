@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from werkzeug.utils import secure_filename
 import os
 from uuid import uuid4
-from ..Models import Users, PermanentJobs, CompletedJobs, JobRequests, QuickJobs, GalleryList
+from ..Models import Users, PermanentJobs, CompletedJobs, JobRequests, QuickJobs, GalleryList, Invoice
 from .. import db
 from ..allFunctions import usersObjToDictArr, userObjToDict, convert_coordinates, imgPath
 from datetime import timedelta
@@ -13,9 +13,39 @@ from datetime import datetime
 from sqlalchemy.sql.operators import and_
 from ..middlewares.AuthorizationMiddleware import AuthorizationRequired
 from .. import BASE_DIR
+import calendar
+from sqlalchemy import func
 
 
 admin = Blueprint("admin", __name__)
+
+def get_month_dates(year, month):
+    num_dates = calendar.monthrange(year, month)[1]
+    return num_dates
+
+def getTimeAndDate():
+    today = str(datetime.now())
+    started_date = today.split(" ")[0]
+    started_time = today.split(" ")[1].split(".")[0]
+
+    return started_date, started_time
+
+MONTH_DATA = [
+    "",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+]
+
 
 def locationLink(locationtxt):
     converted = convert_coordinates(locationtxt)
@@ -36,6 +66,7 @@ def create_permanent_job():
         "job_need_count",
         "timeline_data",
         "pay_per_hr_sub_contractor",
+        "job_location"
     ]
 
     for itm in must_have:
@@ -53,6 +84,7 @@ def create_permanent_job():
     
     # job_payment_for_day = int(formData[must_have[5]])/(working_day_count*2)
     job_location = formData[must_have[1]]
+    job_address = formData[must_have[7]]
     job_start_time = formData[must_have[3]]
     job_enrolled_ids = json.dumps([])
     job_need_count = formData[must_have[4]]
@@ -122,13 +154,13 @@ def create_permanent_job():
     pey_per_sa = f"{pey_per_sa}-{(pey_per_sa/pay_per_day_sub_c)*pay_per_day_me}"
     pey_per_su = f"{pey_per_su}-{(pey_per_su/pay_per_day_sub_c)*pay_per_day_me}"
 
-    print(pey_per_mo)
-    print(pey_per_tu)
-    print(pey_per_we)
-    print(pey_per_th)
-    print(pey_per_fr)
-    print(pey_per_sa)
-    print(pey_per_su)
+    # print(pey_per_mo)
+    # print(pey_per_tu)
+    # print(pey_per_we)
+    # print(pey_per_th)
+    # print(pey_per_fr)
+    # print(pey_per_sa)
+    # print(pey_per_su)
     job_timetable = json.dumps(timeTableArr)
 
     new_job = PermanentJobs(
@@ -137,6 +169,7 @@ def create_permanent_job():
         job_desc=job_desc,
         job_payment_for_fortnight=job_payment_for_fortnight,
         job_location=job_location,
+        job_address=job_address,
         job_start_time=job_start_time,
         job_timetable=job_timetable,
         job_enrolled_ids=job_enrolled_ids,
@@ -153,7 +186,7 @@ def create_permanent_job():
     try:
         db.session.add(new_job)
         db.session.commit()
-        print(f"[DONE] Job Created Successfully\n[ID] {job_id}")
+        # print(f"[DONE] Job Created Successfully\n[ID] {job_id}")
         return jsonify({"status": "done", "msg": "Job Created Successful"})
     except Exception as e:
         return jsonify({"status": "error", "msg": str(e)})
@@ -335,8 +368,6 @@ def get_done_jobs_by_place():
     filter_by_year = data['year']
     filter_by_month = int(data['month'])
 
-    print(f"{filter_by_year}-{filter_by_month}")
-
     job_datas = CompletedJobs.query.filter_by(job_id=job_id).all()
     jobDatas = []
 
@@ -503,7 +534,7 @@ def create_quick_job():
     )
     db.session.add(new_job)
     db.session.commit()
-    print(f"[JOB-CREATED] {job_id}")
+    # print(f"[JOB-CREATED] {job_id}")
     return ({"status":"done", "msg":f"done"})
 
 
@@ -637,10 +668,14 @@ def get_done_quick_jobs_by_place():
 
 @admin.route("/upload-image-for-gallery", methods=["POST"])
 def upload_image_for_gallery():
-    IMG_ID = str(uuid4())
+    before_imgs = request.files.getlist("before_imgs")
+    after_imgs = request.files.getlist("after_imgs")
+
     path_static = os.path.join(BASE_DIR, "static")
     path_static_img = os.path.join(path_static, "img")
     path_static_img_gallery = os.path.join(path_static_img, "gallery")
+    
+    ROW_ID = str(uuid4())
 
     if not os.path.exists(path_static):
         os.mkdir(path_static)
@@ -650,21 +685,57 @@ def upload_image_for_gallery():
 
     if not os.path.exists(path_static_img_gallery):
         os.mkdir(path_static_img_gallery)
+    
+    before_img_paths = []
+    before_img_data = []
 
-    img_file = request.files["upload_img"]
-    save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(img_file.filename).split('.')[-1]}")
-    # print(save_file_path)
+    after_img_paths = []
+    after_img_data = []
 
+    for b_file in before_imgs:
+        IMG_ID = str(uuid4())
+        save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(b_file.filename).split('.')[-1]}")
+        before_img_paths.append({"id":IMG_ID,"path":save_file_path})
+        before_img_data.append({"id":IMG_ID, "img":b_file, "save_path":save_file_path})
+
+    for a_file in after_imgs:
+        IMG_ID = str(uuid4())
+        save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(a_file.filename).split('.')[-1]}")
+        after_img_paths.append({"id":IMG_ID,"path":save_file_path})
+        after_img_data.append({"id":IMG_ID, "img":a_file, "save_path":save_file_path})
+
+    images_data = {
+        "before":before_img_paths,
+        "after":after_img_paths
+    }
+    catergory = str(request.form["catergory"])
     save_img = GalleryList(
-        id=IMG_ID,
-        img_path=save_file_path,
-        category=""
+        id=ROW_ID,
+        img_paths=json.dumps(images_data),
+        category=catergory
     )
+
     try:
         db.session.add(save_img)
         db.session.commit()
-        img_file.save(save_file_path)
-        return jsonify({"id":IMG_ID, "img_path":imgPath(save_file_path).replace("\\", "/")})
+
+        ret_before_imgs = []
+        ret_after_imgs = []
+
+        for b_imgData in before_img_data:
+            b_imgData["img"].save(b_imgData["save_path"])
+            ret_before_imgs.append({"id":b_imgData["id"], "img_path":imgPath(b_imgData["save_path"])})
+
+        for a_imgData in after_img_data:
+            a_imgData["img"].save(a_imgData["save_path"])
+            ret_after_imgs.append({"id":a_imgData["id"], "img_path":imgPath(a_imgData["save_path"])})
+        
+        ret_data = {
+            "before":ret_before_imgs,
+            "after":ret_after_imgs
+        }
+
+        return jsonify({"id":ROW_ID, "imgs":ret_data, "catergory":catergory})
     except Exception as e:
         return jsonify({"status": "error", "msg": "Something went wrong please try again letter. If you getting this msg many times please contact system admin."})
 
@@ -675,22 +746,146 @@ def get_gallery_imgs():
     allImgs = []
 
     for img in all_imgs:
+        allImgsData = json.loads(img.img_paths)
+        beforeImgsData = []
+        afterImgsData = []
+
+        for b_img_obj in allImgsData["before"]:
+            beforeImgsData.append({
+                "id":b_img_obj["id"],
+                "img_path":imgPath(b_img_obj["path"])
+            })
+
+        for a_img_obj in allImgsData["after"]:
+            afterImgsData.append({
+                "id":a_img_obj["id"],
+                "img_path":imgPath(a_img_obj["path"])
+            })
+
         allImgs.append({
             "id":img.id,
-            "img_path":imgPath(img.img_path).replace("\\", "/")
+            "imgs":{
+                "before":beforeImgsData,
+                "after":afterImgsData
+            },
+            "catergory":img.category
         })
 
     return jsonify(allImgs)
 
 
-@admin.route("/remove-gallery-img", methods=["POST"])
+@admin.route("/remove-gallery-collection", methods=["POST"])
 def remove_gallery_img():
-    img_data = GalleryList.query.filter_by(id=request.json["img_id"]).first()
+    img_data = GalleryList.query.filter_by(id=request.json["collection_id"]).first()
     
+    img_data_dict = json.loads(img_data.img_paths)
+
     if img_data:
-        os.remove(img_data.img_path)
+        before_imgs = img_data_dict["before"]
+        after_imgs = img_data_dict["after"]
+
+        for imgObj in before_imgs:
+            if os.path.exists(imgObj["path"]):
+                os.remove(imgObj["path"])
+
+        for imgObj in after_imgs:
+            if os.path.exists(imgObj["path"]):
+                os.remove(imgObj["path"])
+
         db.session.delete(img_data)
         db.session.commit()
+
         return ""
     else:
-        return "", 404
+        return "", 400
+    
+
+@admin.route("/req-invoice-data", methods=["POST"])
+def req_invoice_data():
+    data = request.json
+    job_id = data["job_id"]
+    filter_by_year = data['year']
+    filter_by_month = int(data['month'])
+
+    invoice = Invoice.query.filter_by(job_id=job_id).filter_by(invoice_for_year=filter_by_year).filter_by(invoice_for_month=filter_by_month).first()
+
+    if invoice:
+        lastDay = get_month_dates(int(filter_by_year), int(filter_by_month))
+        ret_data = {
+            "invoice_number": invoice.invoice_number,
+            "to_name": invoice.job_name,
+            "to_address": invoice.receiver_address,
+            "sub_total": invoice.sub_total,
+            "gst": invoice.gst,
+            "total": invoice.total,
+            "duration": f"01 to {lastDay} {MONTH_DATA[int(filter_by_month)]}",
+        }
+
+        return jsonify(ret_data)
+    else:
+        job_datas = CompletedJobs.query.filter_by(job_id=job_id).all()
+        job_real_times = PermanentJobs.query.filter_by(job_id=job_id).first()
+        total_for_month = 0
+
+        for job in job_datas:
+            year, month, date = job.date.split("-")
+            if str(year) == str(filter_by_year) and str(month) == f"{filter_by_month:02d}":
+                end_location = ""
+                if job.job_ended_location != "":
+                    end_location = locationLink(job.job_ended_location)
+
+                total_for_month_data = job.job_payment_for_day.split("-")
+                total_for_month += float(total_for_month_data[1])
+        
+        # print("Total : ", total_for_month)
+        sub_total = float(total_for_month)
+        gst = float(sub_total*0.1)
+        total = float(sub_total+gst)
+
+        lastDay = get_month_dates(int(filter_by_year), int(filter_by_month))
+        INVOICE_ID = str(uuid4())
+        today, today_time = getTimeAndDate()
+        new_invoice_number = int(db.session.query(func.max(Invoice.invoice_number)).scalar())+1
+
+        month_end_date = f"{filter_by_year}-{filter_by_month}-{lastDay}"
+
+        day01 = datetime.strptime(month_end_date, "%Y-%m-%d")
+        day02 = datetime.strptime(today, "%Y-%m-%d")
+
+        if day02 > day01:
+            new_invoice = Invoice(
+                id=INVOICE_ID,
+                invoice_number=new_invoice_number,
+                job_id=job_real_times.job_id,
+                job_name=job_real_times.job_name,
+                receiver_address=job_real_times.job_address,
+                issue_date=today,
+
+                invoice_from_date=f"{filter_by_year}-{filter_by_month}-01",
+                invoice_to_date=month_end_date,
+
+                invoice_for_month=filter_by_month,
+                invoice_for_year=filter_by_year,
+
+                sub_total=f"{sub_total:.2f}",
+                gst=f"{gst:.2f}",
+                total=f"{total:.2f}",
+            )
+
+            db.session.add(new_invoice)
+            db.session.commit()
+
+            ret_data = {
+                "invoice_number": new_invoice_number,
+                "to_name": job_real_times.job_name,
+                "to_address": job_real_times.job_address,
+                "sub_total": f"{sub_total:.2f}",
+                "gst": f"{gst:.2f}",
+                "total": f"{total:.2f}",
+                "duration": f"01 to {lastDay} {MONTH_DATA[int(filter_by_month)]}",
+            }
+
+            return jsonify(ret_data)
+
+        else:
+            return jsonify({"msg":"Invoice requested month is not complete"}), 400

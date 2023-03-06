@@ -25,17 +25,17 @@ const SecureRoute = ({ component: Component, ...rest }) => {
                 (position) => {},
                 (error) => {}
             );
-            navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
-                if (permissionStatus.state === 'granted') {
-                    setIsGranted(true);
-                    clearInterval(checkAccess);
-                    // alert('Location access has been granted');
-                } else if (permissionStatus.state === 'denied') {
-                    alert('Location access has not enabled. We need location access for this system. Please anable location access.');
-                } else if (permissionStatus.state === 'prompt') {
-                    alert('Location access has not enabled. We need location access for this system. Please anable location access.');
-                }
-            });
+            // navigator.permissions.query({ name: 'geolocation' }).then((permissionStatus) => {
+            //     if (permissionStatus.state === 'granted') {
+            //         setIsGranted(true);
+            //         clearInterval(checkAccess);
+            //         // alert('Location access has been granted');
+            //     } else if (permissionStatus.state === 'denied') {
+            //         alert('Location access has not enabled. We need location access for this system. Please anable location access.');
+            //     } else if (permissionStatus.state === 'prompt') {
+            //         alert('Location access has not enabled. We need location access for this system. Please anable location access.');
+            //     }
+            // });
         }, 1000);
         if (isGranted) {
             clearInterval(checkAccess);

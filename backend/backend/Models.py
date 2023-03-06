@@ -52,6 +52,7 @@ class PermanentJobs(db.Model):
     pey_per_sa = db.Column(db.String(10))
     pey_per_su = db.Column(db.String(10))
     job_location = db.Column(db.String(500))
+    job_address = db.Column(db.String(500))
     job_start_time = db.Column(db.String(30))
     job_timetable = db.Column(db.String(500))
     job_enrolled_ids = db.Column(db.String(10000))
@@ -110,23 +111,25 @@ class CompletedQuickJobs(db.Model):
     job_ended_location = db.Column(db.String(50))
 
 
-# class Invoice(db.Model):
-#     __tablename__ = 'Invoices'
+class Invoice(db.Model):
+    __tablename__ = 'Invoices'
 
-#     id = db.Column(db.String(50), primary_key=True)
-#     purchase_order_number = db.Column(db.String(50))
-#     issuer = db.Column(db.String(50))
-#     issuer_address = db.Column(db.String(200))
-#     receiver = db.Column(db.String(50))
-#     receiver_address = db.Column(db.String(200))
-#     job_id = db.Column(db.String(50))
-#     job_name = db.Column(db.String(150))
-#     date = db.Column(db.String(20))
-#     pay_rate = db.Column(db.String(10))
-#     job_duration = db.Column(db.String(10))
-#     sub_total = db.Column(db.String(10))
-#     gst = db.Column(db.String(10))
-#     total = db.Column(db.String(10))
+    id = db.Column(db.String(50), primary_key=True)
+    invoice_number = db.Column(db.String(50))
+    job_id = db.Column(db.String(50))
+    job_name = db.Column(db.String(200))
+    receiver_address = db.Column(db.String(200))
+    issue_date = db.Column(db.String(20))
+
+    invoice_from_date = db.Column(db.String(20))
+    invoice_to_date = db.Column(db.String(20))
+
+    invoice_for_month = db.Column(db.String(20))
+    invoice_for_year = db.Column(db.String(20))
+
+    sub_total = db.Column(db.String(10))
+    gst = db.Column(db.String(10))
+    total = db.Column(db.String(10))
 
 
 class BlacklistedAccessTokens(db.Model):
@@ -149,5 +152,5 @@ class GalleryList(db.Model):
     __tablename__ = "GalleryList"
 
     id = db.Column(db.String(50), primary_key=True)
-    img_path = db.Column(db.String(500))
+    img_paths = db.Column(db.Text())
     category = db.Column(db.String(100))

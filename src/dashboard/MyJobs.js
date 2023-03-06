@@ -41,32 +41,33 @@ function QuickJobCard({ job }) {
         if (window.confirm('Do you want to start the job?') === true) {
             let latitude = '';
             let longitude = '';
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    latitude = position.coords.latitude;
-                    longitude = position.coords.longitude;
-                    axios
-                        .post(
-                            GlobalData.baseUrl + '/api/start-quick-job',
-                            { user_id: authState.loggedUser.id, job_id: jobID, start_location: `${latitude},${longitude}` },
-                            {
-                                headers: {
-                                    Authorization: `Bearer ${authTokenData}`,
-                                },
-                            }
-                        )
-                        .then((result) => {
-                            if (result.status === 200) {
-                                const data = result.data;
-                                alert(data.msg);
-                                setCurrentQuickJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
-                            }
-                        });
-                },
-                (error) => {
-                    alert(error);
-                }
-            );
+            axios
+                .post(
+                    GlobalData.baseUrl + '/api/start-quick-job',
+                    { user_id: authState.loggedUser.id, job_id: jobID, start_location: `${latitude},${longitude}` },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${authTokenData}`,
+                        },
+                    }
+                )
+                .then((result) => {
+                    if (result.status === 200) {
+                        const data = result.data;
+                        alert(data.msg);
+                        setCurrentQuickJobID({ row_id: data.started_row_id, job_id: data.started_job_id });
+                    }
+                });
+            // navigator.geolocation.getCurrentPosition(
+            //     (position) => {
+            //         latitude = position.coords.latitude;
+            //         longitude = position.coords.longitude;
+
+            //     },
+            //     (error) => {
+            //         alert(error);
+            //     }
+            // );
         }
     }
     async function finishJob() {

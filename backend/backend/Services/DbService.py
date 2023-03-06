@@ -55,7 +55,7 @@ def DbDelMany(tableStr, columnStr, searchKey):
 
     resultProxy = db.session.execute(
         f'DELETE FROM {tableStr} WHERE {columnStr}={searchKey}')
-    print(resultProxy)
+    # print(resultProxy)
 
 
 # add one or many record to a table
