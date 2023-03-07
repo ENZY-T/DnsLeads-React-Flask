@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
+import time
 # from .middlewares.AuthorizationMiddleware import AuthorizationRequired
 
 
@@ -76,6 +77,7 @@ def create_database(app, db):
         except Exception as e:
             print(e)
             print('Retrying....')
+            time.sleep(3)
             create_database(app, db)
     # else:
     #     print(' * DB Found.')
