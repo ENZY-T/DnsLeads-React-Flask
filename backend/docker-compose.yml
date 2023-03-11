@@ -7,20 +7,25 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - '3306:3306'
+      - 3306:3306
     env_file:
       - .env
-  web:
+    volumes:
+      - dnsleads-vol:/my/own/datadir
+  web-api:
     build: .
     command: python app.py
     ports:
-      - '5000:5000'
+      - 5000:5000
     depends_on:
       - mysql
     environment:
-      MYSQL_HOST: mysql
+      MYSQL_HOST: 'mysql'
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DB: ${MYSQL_DB}
     env_file:
       - .env
+
+volumes:
+  dnsleads-col:
