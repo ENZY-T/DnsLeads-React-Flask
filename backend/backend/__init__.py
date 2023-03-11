@@ -4,19 +4,30 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
-import time
+import time, logging
 # from .middlewares.AuthorizationMiddleware import AuthorizationRequired
 
+logger = logging.getLogger(__name__)
+if (os.environ['ENV'] == 'DEBUG'):
+    logger.setLevel(logging.DEBUG)
+else:
+    logger.setLevel(logging.WARNING)
+    
+handler = logging.FileHandler('logfile.log')
+if (os.environ['ENV'] == 'DEBUG'):
+    handler.setLevel(logging.DEBUG)
+else:
+    handler.setLevel(logging.WARNING)
+    
+logger.addHandler(handler)
 
 db = SQLAlchemy()
 
 # DB_NAME = 'database.sqlite3'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# DB_USERNAME = "dns_user"
-# DB_PASSWORD = "dns.123"
-DB_USERNAME = "root"
-DB_PASSWORD = "UChome@123"
+DB_USERNAME = "dns_user"
+DB_PASSWORD = "dns123"
 DB_HOST = "mysql"
 DB_NAME = "dns_db"
 
@@ -26,10 +37,10 @@ DB_PORT = 3306
 # DB_PASSWORD = os.environ['MYSQL_PASSWORD'],
 # DB_NAME = os.environ['MYSQL_DB']
 
-print(DB_HOST)
-print(DB_USERNAME)
-print(DB_PASSWORD)
-print(DB_NAME)
+logger.debug(DB_HOST)
+logger.debug(DB_USERNAME)
+logger.debug(DB_PASSWORD)
+logger.debug(DB_NAME)
 # DB_NAME = 'database.sqlite3'
 
 app = Flask(__name__)
@@ -74,11 +85,11 @@ def create_database(app, db):
     with app.app_context():
         try:
             db.create_all()
-            print(" * DB Created")
+            logger.debug(" * DB Created")
         except Exception as e:
-            print(e)
-            print('Retrying....')
+            logger.debug(e)
+            logger.debug('Retrying....')
             time.sleep(3)
             create_database(app, db)
     # else:
-    #     print(' * DB Found.')
+    #     logger.debug(' * DB Found.')
