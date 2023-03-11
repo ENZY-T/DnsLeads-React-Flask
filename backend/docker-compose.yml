@@ -29,6 +29,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DB: ${MYSQL_DB}
+      ENV: ${ENV}
     env_file:
       - .env
 

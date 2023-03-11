@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 if (os.environ['ENV'] == 'DEBUG'):
     logger.setLevel(logging.DEBUG)
 else:
-    logger.setLevel(logging.WARNING)
+    logger.setLevel(logging.ERROR)
     
 handler = logging.FileHandler('logfile.log')
 if (os.environ['ENV'] == 'DEBUG'):
     handler.setLevel(logging.DEBUG)
 else:
-    handler.setLevel(logging.WARNING)
+    handler.setLevel(logging.ERROR)
     
 logger.addHandler(handler)
 
@@ -46,6 +46,24 @@ logger.debug(DB_NAME)
 app = Flask(__name__)
 # app.wsgi_app = middleware(app.wsgi_app)
 
+# Set up logging
+logging.basicConfig(filename='error.log', level=logging.ERROR)
+
+# Error handler
+@app.errorhandler(Exception)
+def handle_error(e):
+    # Log the error
+    logging.exception('An error occurred: %s', e)
+    # Return a 500 internal server error response
+    return 'An internal server error occurred.', 500
+
+# Set up logging
+logging.basicConfig(filename='access.log', level=logging.INFO)
+
+# Middleware function to log requests
+@app.before_request
+def log_request():
+    logging.info('%s %s %s %s', request.remote_addr, request.method, request.path, request.user_agent)
 
 def create_app():
 
@@ -57,8 +75,9 @@ def create_app():
     app.config['STATIC_URL_PATH'] = '/static'
     app.config['RBAC_USE_WHITE'] = True
 
-    db.init_app(app)
+    logger.debug(app.config['SQLALCHEMY_DATABASE_URI'])
 
+    db.init_app(app)
     CORS(app)
     Bcrypt(app)
     JWTManager(app)
