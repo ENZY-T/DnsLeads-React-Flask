@@ -1,6 +1,7 @@
 version: '3'
 services:
   web-app:
+    container_name: dnsleads-fe
     build:
       context: .
       dockerfile: Dockerfile
