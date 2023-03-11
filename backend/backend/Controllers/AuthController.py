@@ -122,7 +122,7 @@ def register():
     try:
         db.session.add(new_user)
         db.session.commit()
-        return 200
+        return 'Ok', 200
     except Exception as e:
         return f'Error. Check wether this details have a account already. If error exist ever, please contact the owner', 400
 
