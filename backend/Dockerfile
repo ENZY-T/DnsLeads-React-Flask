@@ -9,4 +9,4 @@ ENV PORT=5000
 
 RUN pip install gunicorn
 
-CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "app:app"]
+ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:5000", "backend:app"]
