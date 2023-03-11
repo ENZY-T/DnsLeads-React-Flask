@@ -16,8 +16,6 @@ RUN rm -rf ./*
 COPY --from=builder /app/build .
 COPY nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 3000 80
-
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
 
 

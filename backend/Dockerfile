@@ -9,6 +9,4 @@ ENV PORT=5000
 
 RUN pip install gunicorn
 
-EXPOSE 5000
-
 CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "app:app"]
