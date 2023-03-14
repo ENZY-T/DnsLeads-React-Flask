@@ -3,8 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from flask import request
+
 import os
-import time, logging
+import time
+import logging
 # from .middlewares.AuthorizationMiddleware import AuthorizationRequired
 
 logger = logging.getLogger(__name__)
@@ -12,13 +15,13 @@ if (os.environ['ENV'] == 'DEBUG'):
     logger.setLevel(logging.DEBUG)
 else:
     logger.setLevel(logging.ERROR)
-    
+
 handler = logging.FileHandler('logfile.log')
 if (os.environ['ENV'] == 'DEBUG'):
     handler.setLevel(logging.DEBUG)
 else:
     handler.setLevel(logging.ERROR)
-    
+
 logger.addHandler(handler)
 
 db = SQLAlchemy()
@@ -26,9 +29,9 @@ db = SQLAlchemy()
 # DB_NAME = 'database.sqlite3'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DB_USERNAME = "dns_user"
-DB_PASSWORD = "dns123"
-DB_HOST = "mysql"
+DB_USERNAME = "dnsleads"
+DB_PASSWORD = "uchome123"
+DB_HOST = "localhost"
 DB_NAME = "dns_db"
 
 DB_PORT = 3306
@@ -50,6 +53,8 @@ app = Flask(__name__)
 logging.basicConfig(filename='error.log', level=logging.ERROR)
 
 # Error handler
+
+
 @app.errorhandler(Exception)
 def handle_error(e):
     # Log the error
@@ -57,18 +62,23 @@ def handle_error(e):
     # Return a 500 internal server error response
     return 'An internal server error occurred.', 500
 
+
 # Set up logging
 logging.basicConfig(filename='access.log', level=logging.INFO)
 
 # Middleware function to log requests
+
+
 @app.before_request
 def log_request():
-    logging.info('%s %s %s %s', request.remote_addr, request.method, request.path, request.user_agent)
+    logging.info('%s %s %s %s', request.remote_addr,
+                 request.method, request.path, request.user_agent)
+
 
 def create_app():
 
-    # app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    # app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
     # app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_NAME}"
     app.config['SECRET_KEY'] = "7c0b1c38-938b-4cce-831d-f3a4dc89e582-4f1ee439-7ee1-4ed2-a44a-5c07f4467a7b"
     app.config["JWT_SECRET_KEY"] = "9f9373d8-a595-4036-bba5-61b45f5f467d-ce14bb63-0a95-4f8c-b5bb-348b61242c64"
