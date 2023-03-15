@@ -80,10 +80,10 @@ def getUsers():
 def getSingleUsers(id):
     if (id):
         user = DbGetOne('Users', 'id', id)
-        return jsonify(user), 200
+        return jsonify(dict(user)), 200
 
     else:
-        return {"error": "id required"}, 400
+        return {"message": "User not found"}, 400
 
 
 @user.route("/user/<id>", methods=["DELETE"])
