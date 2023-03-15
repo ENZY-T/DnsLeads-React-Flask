@@ -90,7 +90,7 @@ export const GlobalData = {
             who_we_are: require('./img/home_who_we_are.jpg'),
         },
     },
-    baseUrl: process.env.NODE_ENV === 'production' ? 'https://whonear.xyz' : 'http://192.168.2.6:5000',
+    baseUrl: process.env.NODE_ENV === 'production' ? 'https://dnsleads.enzy.live' : 'http://localhost:5000',
     // baseUrl: 'http://whonear.xyz',
     // baseUrl: 'https://whonear.xyz',
 
