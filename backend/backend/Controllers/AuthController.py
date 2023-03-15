@@ -6,6 +6,7 @@ import os
 from uuid import uuid4
 from ..Models import Users
 from .. import db
+from .. import logger
 from sqlalchemy import select
 from ..allFunctions import usersObjToDictArr, userObjToDict, GetJwtFromRequest
 from datetime import timedelta
@@ -142,5 +143,6 @@ def logout():
 # this route for testing purposes
 @auth.route("/get-all")
 def get_all_users():
-    all_users = db.session.query(Users).all()
-    return jsonify(usersObjToDictArr(all_users))
+    return "ok", 200
+    # all_users = db.session.query(Users).all()
+    # return jsonify(usersObjToDictArr(all_users))

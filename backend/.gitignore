@@ -1,5 +1,19 @@
+#venv
+bin
+include
+lib
+lib64
+logs/*
+pyvenv*
+
+.vscode
+.github
+
 static/
+
 !dir_maker.md
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

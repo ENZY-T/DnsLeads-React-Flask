@@ -4,34 +4,31 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask import request
-
 import os
-import time
-import logging
+import time, logging
 # from .middlewares.AuthorizationMiddleware import AuthorizationRequired
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+if not os.path.exists('logs'):
+    os.mkdir('logs')
+    
 logger = logging.getLogger(__name__)
 if (os.environ['ENV'] == 'DEBUG'):
     logger.setLevel(logging.DEBUG)
 else:
     logger.setLevel(logging.ERROR)
-
-handler = logging.FileHandler('logfile.log')
-if (os.environ['ENV'] == 'DEBUG'):
-    handler.setLevel(logging.DEBUG)
-else:
-    handler.setLevel(logging.ERROR)
+    
+handler = logging.FileHandler('logs/logfile.log')
 
 logger.addHandler(handler)
 
 db = SQLAlchemy()
 
 # DB_NAME = 'database.sqlite3'
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-DB_USERNAME = "dnsleads"
-DB_PASSWORD = "uchome123"
-DB_HOST = "localhost"
+DB_USERNAME = "dns_user"
+DB_PASSWORD = "dns123"
+DB_HOST = "127.0.0.1"
 DB_NAME = "dns_db"
 
 DB_PORT = 3306
@@ -40,40 +37,36 @@ DB_PORT = 3306
 # DB_PASSWORD = os.environ['MYSQL_PASSWORD'],
 # DB_NAME = os.environ['MYSQL_DB']
 
-logger.debug(DB_HOST)
-logger.debug(DB_USERNAME)
-logger.debug(DB_PASSWORD)
-logger.debug(DB_NAME)
+# logger.debug(DB_HOST)
+# logger.debug(DB_USERNAME)
+# logger.debug(DB_PASSWORD)
+# logger.debug(DB_NAME)
 # DB_NAME = 'database.sqlite3'
 
 app = Flask(__name__)
 # app.wsgi_app = middleware(app.wsgi_app)
 
 # Set up logging
-logging.basicConfig(filename='error.log', level=logging.ERROR)
+logging.basicConfig(filename='logs/error.log', level=logging.ERROR)
 
-# Error handler
-
-
-@app.errorhandler(Exception)
-def handle_error(e):
-    # Log the error
-    logging.exception('An error occurred: %s', e)
-    # Return a 500 internal server error response
-    return 'An internal server error occurred.', 500
-
+@app.errorhandler(404)
+def page_not_found(error):
+    return 'This route does not exist {}'.format(request.url), 404
+# # Error handler
+# @app.errorhandler(Exception)
+# def handle_error(e):
+#     # Log the error
+#     logging.exception('ERROR LOGGER: %s', e)
+#     # Return a 500 internal server error response
+#     # return 'An internal server error occurred.', 500
 
 # Set up logging
-logging.basicConfig(filename='access.log', level=logging.INFO)
+logging.basicConfig(filename='logs/access.log', level=logging.INFO)
 
 # Middleware function to log requests
-
-
-@app.before_request
-def log_request():
-    logging.info('%s %s %s %s', request.remote_addr,
-                 request.method, request.path, request.user_agent)
-
+# @app.before_request
+# def log_request():
+#     logging.info('%s %s %s %s', request.remote_addr, request.method, request.path, request.user_agent)
 
 def create_app():
 
@@ -116,8 +109,8 @@ def create_database(app, db):
             db.create_all()
             logger.debug(" * DB Created")
         except Exception as e:
-            logger.debug(e)
-            logger.debug('Retrying....')
+            logger.exception(e)
+            logger.exception('Retrying....')
             time.sleep(3)
             create_database(app, db)
     # else:

@@ -1,10 +1,11 @@
 version: '3'
+name: dnsleads-backend-services
 
 services:
   mysql:
-    container_name: dnsleads-mysqdb
+    container_name: mysqldb
     image: mysql:latest
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DB}
@@ -17,21 +18,21 @@ services:
       - .env
     volumes:
       - dnsleads-vol:/var/lib/mysql
-  web-api:
-    container_name: dnsleads-be
-    build: .
-    ports:
-      - 5000:5000
-    depends_on:
-      - mysql
-    environment:
-      MYSQL_HOST: 'mysql'
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DB: ${MYSQL_DB}
-      ENV: ${ENV}
-    env_file:
-      - .env
+  # web-api:
+  #   container_name: dnsleads-be
+  #   build: .
+  #   ports:
+  #     - 5000:5000
+  #   depends_on:
+  #     - mysql
+  #   environment:
+  #     MYSQL_HOST: 'mysql'
+  #     MYSQL_USER: ${MYSQL_USER}
+  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  #     MYSQL_DB: ${MYSQL_DB}
+  #     ENV: ${ENV}
+  #   env_file:
+  #     - .env
 
 volumes:
   dnsleads-vol:

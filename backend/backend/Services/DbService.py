@@ -12,6 +12,7 @@ def DbGetOne(tableStr, columnStr, searchKey):
     result = []
     resultProxy = db.session.execute(
         f"SELECT * FROM {tableStr} WHERE {columnStr}=\"{searchKey}\"")
+    
     for row in resultProxy:
         result.append(row._mapping)
 
