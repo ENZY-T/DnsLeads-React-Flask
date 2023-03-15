@@ -8,9 +8,10 @@ pyvenv*
 
 .vscode
 .github
+include
 
 static/
-
+/src/img/*
 !dir_maker.md
 
 
