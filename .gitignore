@@ -8,7 +8,7 @@ lib64
 logs/*
 pyvenv*
 
-src/img/*
+# src/img/*
 
 # dependencies
 /node_modules
