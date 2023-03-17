@@ -1,8 +1,10 @@
 from .. import db
 from ..Models import *
 from sqlalchemy import select
+from sqlalchemy import text
 
 # Get a record from a model/table
+
 
 
 def DbGetOne(tableStr, columnStr, searchKey):
@@ -11,7 +13,7 @@ def DbGetOne(tableStr, columnStr, searchKey):
 
     result = []
     resultProxy = db.session.execute(
-        f"SELECT * FROM {tableStr} WHERE {columnStr}=\"{searchKey}\"")
+        text(f'SELECT * FROM {tableStr} WHERE {columnStr}="{searchKey}"'))
     
     for row in resultProxy:
         result.append(row._mapping)
@@ -20,6 +22,7 @@ def DbGetOne(tableStr, columnStr, searchKey):
         return result[0]
     else:
         return None
+
 
 # Get some records from a model/table
 
