@@ -9,5 +9,5 @@ ENV PORT=5000
 
 RUN pip install gunicorn
 
-ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:5000", "backend:app"]
+ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
 # ENTRYPOINT ["flask", "run"]

@@ -18,22 +18,25 @@ services:
       - .env
     volumes:
       - dnsleads-vol:/var/lib/mysql
-  # web-api:
-  #   container_name: dnsleads-be
-  #   build: .
-  #   ports:
-  #     - 5000:5000
-  #   depends_on:
-  #     - mysql
-  #   environment:
-  #     MYSQL_HOST: 'mysql'
-  #     MYSQL_USER: ${MYSQL_USER}
-  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-  #     MYSQL_DB: ${MYSQL_DB}
-  #     ENV: ${ENV}
-  #   env_file:
-  #     - .env
-
+      - static-files:/app/backend/static
+  web-api:
+    container_name: dnsleads-be
+    build: .
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_HOST: 'mysql'
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB: ${MYSQL_DB}
+      ENV: ${ENV}
+    env_file:
+      - .env
 volumes:
   dnsleads-vol:
     driver: local
+  static-files:
+    driver: local  

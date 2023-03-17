@@ -28,7 +28,7 @@ db = SQLAlchemy()
 
 DB_USERNAME = "dns_user"
 DB_PASSWORD = "dns123"
-DB_HOST = "127.0.0.1"
+DB_HOST = "mysql"
 DB_NAME = "dns_db"
 
 DB_PORT = 3306
