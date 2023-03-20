@@ -18,11 +18,12 @@ services:
       - .env
     volumes:
       - dnsleads-vol:/var/lib/mysql
-      - static-files:/app/backend/static
   web-api:
     container_name: dnsleads-be
     build: .
     restart: unless-stopped
+    volumes:
+      - static-files:/app/backend/static
     ports:
       - 5000:5000
     depends_on:

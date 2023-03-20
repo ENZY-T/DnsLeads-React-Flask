@@ -5,22 +5,18 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask import request
 import os
-import time, logging
+import time
+import logging
+import traceback
+from logging.handlers import RotatingFileHandler
+from time import strftime
+
+
 # from .middlewares.AuthorizationMiddleware import AuthorizationRequired
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if not os.path.exists('logs'):
     os.mkdir('logs')
-    
-logger = logging.getLogger(__name__)
-if (os.environ['ENV'] == 'DEBUG'):
-    logger.setLevel(logging.DEBUG)
-else:
-    logger.setLevel(logging.ERROR)
-    
-handler = logging.FileHandler('logs/logfile.log')
-
-logger.addHandler(handler)
 
 db = SQLAlchemy()
 
@@ -43,30 +39,27 @@ DB_PORT = 3306
 # logger.debug(DB_NAME)
 # DB_NAME = 'database.sqlite3'
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 # app.wsgi_app = middleware(app.wsgi_app)
 
-# Set up logging
-logging.basicConfig(filename='logs/error.log', level=logging.ERROR)
+# logging
+handler = RotatingFileHandler('app.log', maxBytes=100000, backupCount=3)
+logger = logging.getLogger('tdm')
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)    
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return 'This route does not exist {}'.format(request.url), 404
-# # Error handler
-# @app.errorhandler(Exception)
-# def handle_error(e):
-#     # Log the error
-#     logging.exception('ERROR LOGGER: %s', e)
-#     # Return a 500 internal server error response
-#     # return 'An internal server error occurred.', 500
+@app.after_request
+def after_request(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    logger.info('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
 
-# Set up logging
-logging.basicConfig(filename='logs/access.log', level=logging.INFO)
-
-# Middleware function to log requests
-# @app.before_request
-# def log_request():
-#     logging.info('%s %s %s %s', request.remote_addr, request.method, request.path, request.user_agent)
+@app.errorhandler(Exception)
+def exceptions(e):
+    tb = traceback.format_exc()
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    logger.error('%s %s %s %s %s 5xx INTERNAL SERVER ERROR\n%s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, tb)
+    return {"msg":str(e)}, 500
 
 def create_app():
 
@@ -78,7 +71,7 @@ def create_app():
     app.config['STATIC_URL_PATH'] = '/static'
     app.config['RBAC_USE_WHITE'] = True
 
-    logger.debug(app.config['SQLALCHEMY_DATABASE_URI'])
+    # logger.info(app.config['SQLALCHEMY_DATABASE_URI'])
 
     db.init_app(app)
     CORS(app)
@@ -107,7 +100,7 @@ def create_database(app, db):
     with app.app_context():
         try:
             db.create_all()
-            logger.debug(" * DB Created")
+            logger.info(" * DB Created")
         except Exception as e:
             logger.exception(e)
             logger.exception('Retrying....')
