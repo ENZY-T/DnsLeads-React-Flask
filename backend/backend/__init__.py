@@ -74,7 +74,7 @@ def create_app():
     # logger.info(app.config['SQLALCHEMY_DATABASE_URI'])
 
     db.init_app(app)
-    CORS(app)
+    CORS(app,origins="*")
     Bcrypt(app)
     JWTManager(app)
 
