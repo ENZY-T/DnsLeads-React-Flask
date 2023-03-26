@@ -47,7 +47,7 @@ function Footer() {
 			</section>
 			<div className='bottom-line'>
 				<div>
-					<span style={{ fontSize: '20px' }}>&copy;</span> Copyright 2022 DNS Leads. Allright Reserved.
+					<span style={{ fontSize: '20px' }}>&copy;</span> Copyright 2023 DNS Leads. All rights reserved.
 				</div>
 				<div>
 					Developed By <Link to='#'>ENZY Technologies</Link>
