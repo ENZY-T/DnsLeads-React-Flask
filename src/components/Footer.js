@@ -50,7 +50,7 @@ function Footer() {
 					<span style={{ fontSize: '20px' }}>&copy;</span> Copyright 2022 DNS Leads. Allright Reserved.
 				</div>
 				<div>
-					Developed By <Link to='#'>Tech BOSS</Link>
+					Developed By <Link to='#'>ENZY Technologies</Link>
 				</div>
 			</div>
 		</div>
