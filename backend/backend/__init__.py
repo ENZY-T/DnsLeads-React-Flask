@@ -15,9 +15,6 @@ from time import strftime
 # from .middlewares.AuthorizationMiddleware import AuthorizationRequired
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-if not os.path.exists('logs'):
-    os.mkdir('logs')
-
 db = SQLAlchemy()
 
 # DB_NAME = 'database.sqlite3'
@@ -33,48 +30,51 @@ DB_PORT = 3306
 # DB_PASSWORD = os.environ['MYSQL_PASSWORD'],
 # DB_NAME = os.environ['MYSQL_DB']
 
-# logger.debug(DB_HOST)
-# logger.debug(DB_USERNAME)
-# logger.debug(DB_PASSWORD)
-# logger.debug(DB_NAME)
-# DB_NAME = 'database.sqlite3'
+print(DB_HOST)
+print(DB_USERNAME)
+print(DB_PASSWORD)
+print(DB_NAME)
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 # app.wsgi_app = middleware(app.wsgi_app)
 
 # logging
-handler = RotatingFileHandler('app.log', maxBytes=100000, backupCount=3)
-logger = logging.getLogger('tdm')
-logger.setLevel(logging.INFO)
-logger.addHandler(handler)    
+handler = RotatingFileHandler('dnsleads.log', maxBytes=0)
+logger = logging.getLogger('dns-app')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(handler)
+
 
 @app.after_request
 def after_request(response):
     timestamp = strftime('[%Y-%b-%d %H:%M]')
-    logger.info('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    logger.info('%s %s %s %s %s %s', timestamp, request.remote_addr,
+                request.method, request.scheme, request.full_path, response.status)
     return response
+
 
 @app.errorhandler(Exception)
 def exceptions(e):
     tb = traceback.format_exc()
     timestamp = strftime('[%Y-%b-%d %H:%M]')
-    logger.error('%s %s %s %s %s 5xx INTERNAL SERVER ERROR\n%s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, tb)
-    return {"msg":str(e)}, 500
+    logger.error('%s %s %s %s %s 5xx INTERNAL SERVER ERROR\n%s', timestamp,
+                request.remote_addr, request.method, request.scheme, request.full_path, tb)
+    return {"msg": str(e)}, 500
+
 
 def create_app():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     # app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
-    # app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_NAME}"
     app.config['SECRET_KEY'] = "7c0b1c38-938b-4cce-831d-f3a4dc89e582-4f1ee439-7ee1-4ed2-a44a-5c07f4467a7b"
     app.config["JWT_SECRET_KEY"] = "9f9373d8-a595-4036-bba5-61b45f5f467d-ce14bb63-0a95-4f8c-b5bb-348b61242c64"
     app.config['STATIC_URL_PATH'] = '/static'
     app.config['RBAC_USE_WHITE'] = True
 
-    # logger.info(app.config['SQLALCHEMY_DATABASE_URI'])
+    logger.debug(app.config['SQLALCHEMY_DATABASE_URI'])
 
     db.init_app(app)
-    CORS(app,origins="*")
+    CORS(app, origins="*")
     Bcrypt(app)
     JWTManager(app)
 
