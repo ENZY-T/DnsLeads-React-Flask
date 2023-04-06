@@ -39,6 +39,7 @@ jobs:
             sudo rm /var/www/dnsleads.com.au -r;
             sudo mkdir /var/www/dnsleads.com.au;
 
+
           host: dnsleads.com.au
           username: ${{secrets.HOST_USERNAME}}
           password: ${{ secrets.HOST_PASSWORD }}
@@ -54,6 +55,16 @@ jobs:
           password: ${{ secrets.HOST_PASSWORD }}
 
           concurrency: 500
+
+      - name: Stop nginx
+        uses: garygrossgarten/github-action-ssh@v0.3.0
+        with:
+          command: |
+            sudo nginx -s stop;
+
+          host: dnsleads.com.au
+          username: ${{secrets.HOST_USERNAME}}
+          password: ${{ secrets.HOST_PASSWORD }}
 
       - name: Restart nginx
         uses: garygrossgarten/github-action-ssh@v0.3.0

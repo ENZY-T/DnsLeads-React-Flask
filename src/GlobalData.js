@@ -91,8 +91,6 @@ export const GlobalData = {
 		},
 	},
 	baseUrl: process.env.NODE_ENV === 'production' ? 'https://dnsleads.com.au' : 'http://localhost:5000',
-	// baseUrl: 'http://whonear.xyz',
-	// baseUrl: 'https://whonear.xyz',
 
 	services: [
 		{
