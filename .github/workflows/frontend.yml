@@ -59,8 +59,9 @@ jobs:
         uses: garygrossgarten/github-action-ssh@v0.3.0
         with:
           command: |
-            chown -R root:www-data /var/www/whonear.xyz/*;
-            nginx -s reload
+            sudo chown -R www-data:www-data /var/www/dnsleads.com.au;
+            sudo nginx -s reload
+
           host: dnsleads.com.au
           username: ubuntu
           privateKey: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
