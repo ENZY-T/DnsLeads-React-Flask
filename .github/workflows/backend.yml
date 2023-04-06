@@ -40,7 +40,7 @@ jobs:
           host: dnsleads.com.au
           username: ${{secrets.HOST_USERNAME}}
           password: ${{ secrets.HOST_PASSWORD }}
-
+          recursive: true
           concurrency: 500
 
       - name: Restart gunicorn service

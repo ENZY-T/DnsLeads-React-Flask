@@ -8,6 +8,8 @@ lib64
 logs/*
 pyvenv*
 
+.idea
+
 # src/img/*
 
 # dependencies
