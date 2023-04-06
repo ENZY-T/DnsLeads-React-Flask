@@ -33,7 +33,7 @@ jobs:
       - name: Copy to deployment server via scp
         uses: garygrossgarten/github-action-scp@v0.5.3
         with:
-          local: ./backend/*
+          local: ./backend/
           remote: /home/dluser/DnsLeads-React-Flask/backend/
 
           host: dnsleads.com.au
