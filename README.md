@@ -1,4 +1,4 @@
-![DNS Leads - Frontend](https://github.com/ENZY-T/DnsLeads-React-Flask/workflows/frontend.yml/badge.svg)
+[![DNS Leads - Frontend](https://github.com/ENZY-T/DnsLeads-React-Flask/actions/workflows/frontend.yml/badge.svg)](https://github.com/ENZY-T/DnsLeads-React-Flask/actions/workflows/frontend.yml)
 
 ### Official Website od DNS Leads (PVT) LTD., Adelaide, Australia.
 
