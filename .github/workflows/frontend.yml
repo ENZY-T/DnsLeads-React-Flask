@@ -20,17 +20,21 @@ jobs:
         with:
           ref: 'master'
 
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
+
       - name: Install dependencies
         run: npm i
 
+
       - name: Building for production
         run: CI=false npm run build --if-present
+
 
       - name: Clean remote
         uses: garygrossgarten/github-action-ssh@v0.3.0
@@ -38,33 +42,31 @@ jobs:
           command: |
             sudo rm /var/www/dnsleads.com.au -r;
             sudo mkdir /var/www/dnsleads.com.au;
-
-
           host: dnsleads.com.au
           username: ${{secrets.HOST_USERNAME}}
           password: ${{ secrets.HOST_PASSWORD }}
 
-      - name: Copy to deployment server via scp
-        uses: garygrossgarten/github-action-scp@v0.5.3
-        with:
-          local: ./build/
-          remote: /var/www/dnsleads.com.au/
-
-          host: dnsleads.com.au
-          username: ${{secrets.HOST_USERNAME}}
-          password: ${{ secrets.HOST_PASSWORD }}
-
-          concurrency: 500
 
       - name: Stop nginx
         uses: garygrossgarten/github-action-ssh@v0.3.0
         with:
           command: |
             sudo nginx -s stop;
-
           host: dnsleads.com.au
           username: ${{secrets.HOST_USERNAME}}
           password: ${{ secrets.HOST_PASSWORD }}
+
+
+      - name: Copy to deployment server via scp
+        uses: garygrossgarten/github-action-scp@v0.5.3
+        with:
+          local: ./build/
+          remote: /var/www/dnsleads.com.au/
+          concurrency: 500
+          host: dnsleads.com.au
+          username: ${{secrets.HOST_USERNAME}}
+          password: ${{ secrets.HOST_PASSWORD }}
+
 
       - name: Restart nginx
         uses: garygrossgarten/github-action-ssh@v0.3.0
@@ -72,7 +74,6 @@ jobs:
           command: |
             sudo chown -R www-data:www-data /var/www/dnsleads.com.au;
             sudo nginx -s reload
-
           host: dnsleads.com.au
           username: ${{secrets.HOST_USERNAME}}
           password: ${{ secrets.HOST_PASSWORD }}
