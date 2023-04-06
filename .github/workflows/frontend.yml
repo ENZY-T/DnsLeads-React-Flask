@@ -36,21 +36,23 @@ jobs:
         uses: garygrossgarten/github-action-ssh@v0.3.0
         with:
           command: |
-            rm /var/www/whonear.xyz/build -r;
-            mkdir /var/www/whonear.xyz/build;
+            sudo rm /var/www/dnsleads.com.au -r;
+            sudo mkdir /var/www/dnsleads.com.au;
 
-          host: whonear.xyz
-          username: root
-          password: KaviBoss@123
+          host: dnsleads.com.au
+          username: ubuntu
+          privateKey: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
 
       - name: Copy to deployment server via scp
         uses: garygrossgarten/github-action-scp@v0.5.3
         with:
           local: ./build/
-          remote: /var/www/whonear.xyz/build/
-          host: whonear.xyz
-          username: root
-          password: KaviBoss@123
+          remote: /var/www/dnsleads.com.au/
+
+          host: dnsleads.com.au
+          username: ubuntu
+          privateKey: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
+
           concurrency: 500
 
       - name: Restart nginx
@@ -59,6 +61,6 @@ jobs:
           command: |
             chown -R root:www-data /var/www/whonear.xyz/*;
             nginx -s reload
-          host: whonear.xyz
-          username: root
-          password: KaviBoss@123
+          host: dnsleads.com.au
+          username: ubuntu
+          privateKey: ${{ secrets.HOST_SSH_PRIVATE_KEY }}

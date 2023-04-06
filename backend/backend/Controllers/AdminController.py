@@ -19,9 +19,11 @@ from sqlalchemy import func
 
 admin = Blueprint("admin", __name__)
 
+
 def get_month_dates(year, month):
     num_dates = calendar.monthrange(year, month)[1]
     return num_dates
+
 
 def getTimeAndDate():
     today = str(datetime.now())
@@ -29,6 +31,7 @@ def getTimeAndDate():
     started_time = today.split(" ")[1].split(".")[0]
 
     return started_date, started_time
+
 
 MONTH_DATA = [
     "",
@@ -77,11 +80,10 @@ def create_permanent_job():
                 empty_field = ' '.join(itm.split('_')).capitalize()
                 return jsonify({"status": "error", "msg": f"{empty_field} cannot be empty"})
 
-
     job_id = str(uuid4())
     job_name = formData[must_have[0]]
     job_desc = formData[must_have[2]]
-    
+
     # job_payment_for_day = int(formData[must_have[5]])/(working_day_count*2)
     job_location = formData[must_have[1]]
     job_address = formData[must_have[7]]
@@ -105,7 +107,6 @@ def create_permanent_job():
     pay_per_week = 0.0
     for timelineindx in range(len(timeTableArr)):
         startT, endT = timeTableArr[timelineindx]["time"].split("-")
-        
 
         t1 = datetime.strptime(startT, "%H:%M")
         t2 = datetime.strptime(endT, "%H:%M")
@@ -119,7 +120,7 @@ def create_permanent_job():
         works_per_line = 0
         for dy in timeTableArr[timelineindx]["days"]:
             if dy != "":
-                works_per_line+=1
+                works_per_line += 1
                 if dy == "Mo":
                     # pey_per_mo = f"{pay_per_day_sub_c}-{pay_per_day_me}"
                     pey_per_mo += pay_per_day_sub_c
@@ -143,7 +144,7 @@ def create_permanent_job():
                     pey_per_su += pay_per_day_sub_c
 
         pay_per_week += works_per_line*pay_per_day_sub_c
-        
+
     job_payment_for_fortnight = pay_per_week*2
 
     pey_per_mo = f"{pey_per_mo}-{(pey_per_mo/pay_per_day_sub_c)*pay_per_day_me}"
@@ -174,15 +175,15 @@ def create_permanent_job():
         job_timetable=job_timetable,
         job_enrolled_ids=job_enrolled_ids,
         job_need_count=job_need_count,
-        pey_per_mo = pey_per_mo,
-        pey_per_tu = pey_per_tu,
-        pey_per_we = pey_per_we,
-        pey_per_th = pey_per_th,
-        pey_per_fr = pey_per_fr,
-        pey_per_sa = pey_per_sa,
-        pey_per_su = pey_per_su,
+        pey_per_mo=pey_per_mo,
+        pey_per_tu=pey_per_tu,
+        pey_per_we=pey_per_we,
+        pey_per_th=pey_per_th,
+        pey_per_fr=pey_per_fr,
+        pey_per_sa=pey_per_sa,
+        pey_per_su=pey_per_su,
     )
-    
+
     try:
         db.session.add(new_job)
         db.session.commit()
@@ -205,13 +206,13 @@ def get_permanent_jobs():
             "job_location": jb.job_location,
             "job_timetable": json.loads(jb.job_timetable),
             "job_enrolled_ids": json.loads(jb.job_enrolled_ids),
-            "pey_per_mo":jb.pey_per_mo,
-            "pey_per_tu":jb.pey_per_tu,
-            "pey_per_we":jb.pey_per_we,
-            "pey_per_th":jb.pey_per_th,
-            "pey_per_fr":jb.pey_per_fr,
-            "pey_per_sa":jb.pey_per_sa,
-            "pey_per_su":jb.pey_per_su,
+            "pey_per_mo": jb.pey_per_mo,
+            "pey_per_tu": jb.pey_per_tu,
+            "pey_per_we": jb.pey_per_we,
+            "pey_per_th": jb.pey_per_th,
+            "pey_per_fr": jb.pey_per_fr,
+            "pey_per_sa": jb.pey_per_sa,
+            "pey_per_su": jb.pey_per_su,
         })
     return jsonify(return_data)
 
@@ -227,13 +228,13 @@ def get_a_permanent_job(jobID):
         "job_location": job_data.job_location,
         "job_timetable": json.loads(job_data.job_timetable),
         "job_enrolled_ids": json.loads(job_data.job_enrolled_ids),
-        "pey_per_mo":job_data.pey_per_mo,
-        "pey_per_tu":job_data.pey_per_tu,
-        "pey_per_we":job_data.pey_per_we,
-        "pey_per_th":job_data.pey_per_th,
-        "pey_per_fr":job_data.pey_per_fr,
-        "pey_per_sa":job_data.pey_per_sa,
-        "pey_per_su":job_data.pey_per_su,
+        "pey_per_mo": job_data.pey_per_mo,
+        "pey_per_tu": job_data.pey_per_tu,
+        "pey_per_we": job_data.pey_per_we,
+        "pey_per_th": job_data.pey_per_th,
+        "pey_per_fr": job_data.pey_per_fr,
+        "pey_per_sa": job_data.pey_per_sa,
+        "pey_per_su": job_data.pey_per_su,
     }
     return jsonify(return_data)
 
@@ -287,7 +288,6 @@ def add_user_to_permanent_job():
         get_user.permanent_jobs = json.dumps(permanent_job_list)
     else:
         get_user.quick_jobs = json.dumps(permanent_job_list)
-
 
     db.session.commit()
     return jsonify(users_arr)
@@ -391,9 +391,9 @@ def get_done_jobs_by_place():
                 "job_status": job.job_status,
                 "job_started_location": locationLink(job.job_started_location),
                 "job_ended_location": end_location,
-                "start_time":job.started_time,
-                "end_time":job.ended_time,
-                "job_counts_per_day":job.job_counts_per_day
+                "start_time": job.started_time,
+                "end_time": job.ended_time,
+                "job_counts_per_day": job.job_counts_per_day
             })
 
     return jsonify(jobDatas)
@@ -443,7 +443,7 @@ def accept_req_job():
     get_req = JobRequests.query.filter_by(id=row_id).first()
 
     job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
-    get_user = Users.query.filter_by(id=user_id).first()        
+    get_user = Users.query.filter_by(id=user_id).first()
 
     if job_data:
         job_list = list(json.loads(get_user.permanent_jobs))
@@ -513,9 +513,9 @@ def create_quick_job():
     for field in must_have:
         if field not in data:
             txt = (" ".join(field.split("_"))).capitalize()
-            return jsonify({"status":"error", "msg":f"{txt} field cannot be missing"})
+            return jsonify({"status": "error", "msg": f"{txt} field cannot be missing"})
         if data[field] == "":
-            return jsonify({"status":"error", "msg":f"{txt} field cannot be empty"})
+            return jsonify({"status": "error", "msg": f"{txt} field cannot be empty"})
 
     job_id = str(uuid4())
 
@@ -535,7 +535,7 @@ def create_quick_job():
     db.session.add(new_job)
     db.session.commit()
     # print(f"[JOB-CREATED] {job_id}")
-    return ({"status":"done", "msg":f"done"})
+    return ({"status": "done", "msg": f"done"})
 
 
 @admin.route("/get-quick-jobs")
@@ -545,19 +545,19 @@ def get_quick_jobs():
 
     for job in all_jobs:
         allJobs.append({
-            "job_id":job.job_id,
-            "job_name":job.job_name,
-            "job_desc":job.job_desc,
-            "job_location":job.job_location,
-            "job_start_time":job.job_start_time,
-            "job_date":job.job_date,
-            "pay_per_hr_for_c":job.pay_per_hr_for_c,
-            "pay_per_hr_for_me":job.pay_per_hr_for_me,
-            "job_enrolled_ids":job.job_enrolled_ids,
-            "job_need_count":job.job_need_count,
-            "job_available":job.job_available,
+            "job_id": job.job_id,
+            "job_name": job.job_name,
+            "job_desc": job.job_desc,
+            "job_location": job.job_location,
+            "job_start_time": job.job_start_time,
+            "job_date": job.job_date,
+            "pay_per_hr_for_c": job.pay_per_hr_for_c,
+            "pay_per_hr_for_me": job.pay_per_hr_for_me,
+            "job_enrolled_ids": job.job_enrolled_ids,
+            "job_need_count": job.job_need_count,
+            "job_available": job.job_available,
         })
-    
+
     return jsonify(allJobs)
 
 
@@ -565,17 +565,17 @@ def get_quick_jobs():
 def get_quick_job_data(jobID):
     get_job_id = QuickJobs.query.filter_by(job_id=jobID).first()
     job_data = {
-        "job_id":get_job_id.job_id,
-        "job_name":get_job_id.job_name,
-        "job_desc":get_job_id.job_desc,
-        "job_location":get_job_id.job_location,
-        "job_start_time":get_job_id.job_start_time,
-        "job_date":get_job_id.job_date,
-        "pay_per_hr_for_c":get_job_id.pay_per_hr_for_c,
-        "pay_per_hr_for_me":get_job_id.pay_per_hr_for_me,
-        "job_enrolled_ids":json.loads(get_job_id.job_enrolled_ids),
-        "job_need_count":get_job_id.job_need_count,
-        "job_available":get_job_id.job_available,
+        "job_id": get_job_id.job_id,
+        "job_name": get_job_id.job_name,
+        "job_desc": get_job_id.job_desc,
+        "job_location": get_job_id.job_location,
+        "job_start_time": get_job_id.job_start_time,
+        "job_date": get_job_id.job_date,
+        "pay_per_hr_for_c": get_job_id.pay_per_hr_for_c,
+        "pay_per_hr_for_me": get_job_id.pay_per_hr_for_me,
+        "job_enrolled_ids": json.loads(get_job_id.job_enrolled_ids),
+        "job_need_count": get_job_id.job_need_count,
+        "job_available": get_job_id.job_available,
     }
     return jsonify(job_data)
 
@@ -658,9 +658,9 @@ def get_done_quick_jobs_by_place():
             "job_status": job.job_status,
             "job_started_location": locationLink(job.job_started_location),
             "job_ended_location": locationLink(job.job_ended_location),
-            "start_time":job.started_time,
-            "end_time":job.ended_time,
-            "job_counts_per_day":job.job_counts_per_day
+            "start_time": job.started_time,
+            "end_time": job.ended_time,
+            "job_counts_per_day": job.job_counts_per_day
         })
 
     return jsonify(jobsData)
@@ -674,7 +674,7 @@ def upload_image_for_gallery():
     path_static = os.path.join(BASE_DIR, "static")
     path_static_img = os.path.join(path_static, "img")
     path_static_img_gallery = os.path.join(path_static_img, "gallery")
-    
+
     ROW_ID = str(uuid4())
 
     if not os.path.exists(path_static):
@@ -685,7 +685,7 @@ def upload_image_for_gallery():
 
     if not os.path.exists(path_static_img_gallery):
         os.mkdir(path_static_img_gallery)
-    
+
     before_img_paths = []
     before_img_data = []
 
@@ -694,19 +694,23 @@ def upload_image_for_gallery():
 
     for b_file in before_imgs:
         IMG_ID = str(uuid4())
-        save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(b_file.filename).split('.')[-1]}")
-        before_img_paths.append({"id":IMG_ID,"path":save_file_path})
-        before_img_data.append({"id":IMG_ID, "img":b_file, "save_path":save_file_path})
+        save_file_path = os.path.join(
+            path_static_img_gallery, f"{IMG_ID}.{str(b_file.filename).split('.')[-1]}")
+        before_img_paths.append({"id": IMG_ID, "path": save_file_path})
+        before_img_data.append(
+            {"id": IMG_ID, "img": b_file, "save_path": save_file_path})
 
     for a_file in after_imgs:
         IMG_ID = str(uuid4())
-        save_file_path = os.path.join(path_static_img_gallery, f"{IMG_ID}.{str(a_file.filename).split('.')[-1]}")
-        after_img_paths.append({"id":IMG_ID,"path":save_file_path})
-        after_img_data.append({"id":IMG_ID, "img":a_file, "save_path":save_file_path})
+        save_file_path = os.path.join(
+            path_static_img_gallery, f"{IMG_ID}.{str(a_file.filename).split('.')[-1]}")
+        after_img_paths.append({"id": IMG_ID, "path": save_file_path})
+        after_img_data.append(
+            {"id": IMG_ID, "img": a_file, "save_path": save_file_path})
 
     images_data = {
-        "before":before_img_paths,
-        "after":after_img_paths
+        "before": before_img_paths,
+        "after": after_img_paths
     }
     catergory = str(request.form["catergory"])
     save_img = GalleryList(
@@ -724,18 +728,20 @@ def upload_image_for_gallery():
 
         for b_imgData in before_img_data:
             b_imgData["img"].save(b_imgData["save_path"])
-            ret_before_imgs.append({"id":b_imgData["id"], "img_path":imgPath(b_imgData["save_path"])})
+            ret_before_imgs.append(
+                {"id": b_imgData["id"], "img_path": imgPath(b_imgData["save_path"])})
 
         for a_imgData in after_img_data:
             a_imgData["img"].save(a_imgData["save_path"])
-            ret_after_imgs.append({"id":a_imgData["id"], "img_path":imgPath(a_imgData["save_path"])})
-        
+            ret_after_imgs.append(
+                {"id": a_imgData["id"], "img_path": imgPath(a_imgData["save_path"])})
+
         ret_data = {
-            "before":ret_before_imgs,
-            "after":ret_after_imgs
+            "before": ret_before_imgs,
+            "after": ret_after_imgs
         }
 
-        return jsonify({"id":ROW_ID, "imgs":ret_data, "catergory":catergory})
+        return jsonify({"id": ROW_ID, "imgs": ret_data, "catergory": catergory})
     except Exception as e:
         return jsonify({"status": "error", "msg": "Something went wrong please try again letter. If you getting this msg many times please contact system admin."})
 
@@ -752,23 +758,23 @@ def get_gallery_imgs():
 
         for b_img_obj in allImgsData["before"]:
             beforeImgsData.append({
-                "id":b_img_obj["id"],
-                "img_path":imgPath(b_img_obj["path"])
+                "id": b_img_obj["id"],
+                "img_path": imgPath(b_img_obj["path"])
             })
 
         for a_img_obj in allImgsData["after"]:
             afterImgsData.append({
-                "id":a_img_obj["id"],
-                "img_path":imgPath(a_img_obj["path"])
+                "id": a_img_obj["id"],
+                "img_path": imgPath(a_img_obj["path"])
             })
 
         allImgs.append({
-            "id":img.id,
-            "imgs":{
-                "before":beforeImgsData,
-                "after":afterImgsData
+            "id": img.id,
+            "imgs": {
+                "before": beforeImgsData,
+                "after": afterImgsData
             },
-            "catergory":img.category
+            "catergory": img.category
         })
 
     return jsonify(allImgs)
@@ -776,8 +782,9 @@ def get_gallery_imgs():
 
 @admin.route("/remove-gallery-collection", methods=["POST"])
 def remove_gallery_img():
-    img_data = GalleryList.query.filter_by(id=request.json["collection_id"]).first()
-    
+    img_data = GalleryList.query.filter_by(
+        id=request.json["collection_id"]).first()
+
     img_data_dict = json.loads(img_data.img_paths)
 
     if img_data:
@@ -798,7 +805,7 @@ def remove_gallery_img():
         return ""
     else:
         return "", 400
-    
+
 
 @admin.route("/req-invoice-data", methods=["POST"])
 def req_invoice_data():
@@ -807,7 +814,8 @@ def req_invoice_data():
     filter_by_year = data['year']
     filter_by_month = int(data['month'])
 
-    invoice = Invoice.query.filter_by(job_id=job_id).filter_by(invoice_for_year=filter_by_year).filter_by(invoice_for_month=filter_by_month).first()
+    invoice = Invoice.query.filter_by(job_id=job_id).filter_by(
+        invoice_for_year=filter_by_year).filter_by(invoice_for_month=filter_by_month).first()
 
     if invoice:
         lastDay = get_month_dates(int(filter_by_year), int(filter_by_month))
@@ -836,7 +844,7 @@ def req_invoice_data():
 
                 total_for_month_data = job.job_payment_for_day.split("-")
                 total_for_month += float(total_for_month_data[1])
-        
+
         # print("Total : ", total_for_month)
         sub_total = float(total_for_month)
         gst = float(sub_total*0.1)
@@ -845,7 +853,8 @@ def req_invoice_data():
         lastDay = get_month_dates(int(filter_by_year), int(filter_by_month))
         INVOICE_ID = str(uuid4())
         today, today_time = getTimeAndDate()
-        new_invoice_number = int(db.session.query(func.max(Invoice.invoice_number)).scalar())+1
+        new_invoice_number = int(db.session.query(
+            func.max(Invoice.invoice_number)).scalar())+1
 
         month_end_date = f"{filter_by_year}-{filter_by_month}-{lastDay}"
 
@@ -888,4 +897,4 @@ def req_invoice_data():
             return jsonify(ret_data)
 
         else:
-            return jsonify({"msg":"Invoice requested month is not complete"}), 400
+            return jsonify({"msg": "Invoice requested month is not complete"}), 400
