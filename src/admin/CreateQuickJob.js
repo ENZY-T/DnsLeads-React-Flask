@@ -18,8 +18,9 @@ function CreateQuickJob() {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        console.log(result);
+        // console.log(result);
         alert(result.data.msg);
+        formRef.current.reset();
     }
     return (
         <div>

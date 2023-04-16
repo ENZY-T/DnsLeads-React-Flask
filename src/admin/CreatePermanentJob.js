@@ -179,7 +179,7 @@ function CreatePermanentJob() {
             alert(result.data.msg);
         } else {
             alert(result.data.msg);
-            // formRef.current.reset();
+            formRef.current.reset();
         }
     }
 
