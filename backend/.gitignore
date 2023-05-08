@@ -6,6 +6,7 @@ lib64
 logs/*
 pyvenv*
 
+.idea
 .vscode
 .github
 include

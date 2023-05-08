@@ -20,32 +20,36 @@ jobs:
         with:
           ref: 'master'
 
-      - name: Clean remote
-        uses: garygrossgarten/github-action-ssh@v0.3.0
-        with:
-          command: |
-            rm /var/www/whonear.xyz/backend -r;
+      # No Cleaning since it removes user and other data in static directory
+      # - name: Clean remote
+      #   uses: garygrossgarten/github-action-ssh@v0.3.0
+      #   with:
+      #     command: |
+      #       rm /home/dluser/DnsLeads-React-Flask/backend/* -r;
 
-          host: whonear.xyz
-          username: root
-          password: KaviBoss@123
+      #     host: dnsleads.com.au
+      #     username: ${{secrets.HOST_USERNAME}}
+      #     password: ${{ secrets.HOST_PASSWORD }}
 
       - name: Copy to deployment server via scp
         uses: garygrossgarten/github-action-scp@v0.5.3
         with:
           local: ./backend/
-          remote: /var/www/whonear.xyz/backend/
-          host: whonear.xyz
-          username: root
-          password: KaviBoss@123
+          remote: /home/dluser/DnsLeads-React-Flask/backend/
+
+          host: dnsleads.com.au
+          username: ${{secrets.HOST_USERNAME}}
+          password: ${{ secrets.HOST_PASSWORD }}
+          recursive: true
           concurrency: 500
 
       - name: Restart gunicorn service
         uses: garygrossgarten/github-action-ssh@v0.3.0
         with:
           command: |
-            chown -R root:www-data /var/www/whonear.xyz/*;
-            systemctl restart dns_leads_be.service;
-          host: whonear.xyz
-          username: root
-          password: KaviBoss@123
+            chown -R www-data:www-data /home/dluser/DnsLeads-React-Flask/backend;
+            systemctl dnsleads-be;
+
+          host: dnsleads.com.au
+          username: ${{secrets.HOST_USERNAME}}
+          password: ${{ secrets.HOST_PASSWORD }}

@@ -88,10 +88,14 @@ function AdminHome() {
 	}, []);
 
 	return (
-		<div className='all-jobs-cards-container py-3'>
-			{loadingJobs ? '' : allJobs.map((job, indx) => <JobCard key={indx} jobID={job.job_id} jobTitle={job.job_name} />)}
-		</div>
-	);
+        <div className="all-jobs-cards-container py-3">
+            {loadingJobs ? (
+                <h2>No Jobs has Created</h2>
+            ) : (
+                allJobs.map((job, indx) => <JobCard key={indx} jobID={job.job_id} jobTitle={job.job_name} />)
+            )}
+        </div>
+    );
 }
 
 export default adminOnlyWrap(adminWrap(AdminHome));

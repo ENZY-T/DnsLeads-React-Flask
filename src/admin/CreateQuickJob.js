@@ -12,14 +12,15 @@ function CreateQuickJob() {
 
     async function createQuickJob(e) {
         e.preventDefault();
-        const formdata = new FormData(formRef.current);
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/create-quick-job', formdata, {
+        const formData = new FormData(formRef.current);
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/create-quick-job', formData, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        console.log(result);
+        // console.log(result);
         alert(result.data.msg);
+        formRef.current.reset();
     }
     return (
         <div>

@@ -132,64 +132,64 @@ function NavigationBar() {
 	};
 
 	return (
-		<div className='new-nav-bar'>
-			<div className='container'>
-				<div className='nav-item-container'>
-					<div className={isBuggerClicked ? 'burger bugger-clicked' : 'burger'} onClick={() => burgerClickHandle()}>
-						<div className='bar b1'></div>
-						<div className='bar b2'></div>
-						<div className='bar b3'></div>
-					</div>
-					<div className='logo'>
-						<Logo />
-					</div>
-					<ul className='all-nav-items' style={{ display: isBuggerClicked ? 'flex' : 'none' }}>
-						{pagesData.map((pagedt, index) => (
-							<Link onClick={() => hideMenuWhenClick()} className='nav-item' to={pagedt.link} key={index}>
-								<li>{pagedt.name}</li>
-							</Link>
-						))}
-					</ul>
-				</div>
-				<div className='nav-profile-container' style={{ display: 'flex' }}>
-					<div className='notification-container'>
+        <div className="new-nav-bar">
+            <div className="container">
+                <div className="nav-item-container">
+                    <div className={isBuggerClicked ? 'burger bugger-clicked' : 'burger'} onClick={() => burgerClickHandle()}>
+                        <div className="bar b1"></div>
+                        <div className="bar b2"></div>
+                        <div className="bar b3"></div>
+                    </div>
+                    <div className="logo">
+                        <Logo />
+                    </div>
+                    <ul className="all-nav-items" style={{ display: isBuggerClicked ? 'flex' : 'none' }}>
+                        {pagesData.map((pagedt, index) => (
+                            <Link onClick={() => hideMenuWhenClick()} className="nav-item" to={pagedt.link} key={index}>
+                                <li>{pagedt.name}</li>
+                            </Link>
+                        ))}
+                    </ul>
+                </div>
+                <div className="nav-profile-container" style={{ display: 'flex' }}>
+                    {/* <div className='notification-container'>
 						<NotificationsNoneIcon style={{ color: 'white', fontSize: '40px' }} className='mx-2' />
 						<span>{notificationCount}</span>
-					</div>
+					</div> */}
 
-					<div className='profile-icon' onClick={() => profileMenuHAndle()}>
-						{authState.isLogged ? authState.loggedUser?.name?.charAt(0).toUpperCase() : '?'}
-					</div>
-					<div className='profile-popup' style={{ display: isNavProfileClicked ? 'block' : 'none' }}>
-						<ul className='profile-popup-container'>
-							{!authState.isLogged ? (
-								<>
-									<Link className='profile-popup-link' to='/login' onClick={() => hideMenuWhenClick()}>
-										<li>Login</li>
-									</Link>
-									<Link className='profile-popup-link' to='/register' onClick={() => hideMenuWhenClick()}>
-										<li>Register</li>
-									</Link>
-								</>
-							) : authState.loggedUser ? (
-								authState.loggedUser.role ? (
-									<WhenLoginProfileMenu
-										hideMenuWhenClick={hideMenuWhenClick}
-										setLoggedOut={setLoggedOut}
-										authState={authState}
-									/>
-								) : (
-									''
-								)
-							) : (
-								''
-							)}
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+                    <div className="profile-icon" onClick={() => profileMenuHAndle()}>
+                        {authState.isLogged ? authState.loggedUser?.name?.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div className="profile-popup" style={{ display: isNavProfileClicked ? 'block' : 'none' }}>
+                        <ul className="profile-popup-container">
+                            {!authState.isLogged ? (
+                                <>
+                                    <Link className="profile-popup-link" to="/login" onClick={() => hideMenuWhenClick()}>
+                                        <li>Login</li>
+                                    </Link>
+                                    <Link className="profile-popup-link" to="/register" onClick={() => hideMenuWhenClick()}>
+                                        <li>Register</li>
+                                    </Link>
+                                </>
+                            ) : authState.loggedUser ? (
+                                authState.loggedUser.role ? (
+                                    <WhenLoginProfileMenu
+                                        hideMenuWhenClick={hideMenuWhenClick}
+                                        setLoggedOut={setLoggedOut}
+                                        authState={authState}
+                                    />
+                                ) : (
+                                    ''
+                                )
+                            ) : (
+                                ''
+                            )}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default NavigationBar;
