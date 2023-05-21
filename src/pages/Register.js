@@ -20,15 +20,7 @@ function UploadBox({ label, name }) {
             <label htmlFor={name} className="upload-label">
                 {label}
             </label>
-            <input
-                type="file"
-                required={true}
-                className="input-file"
-                id={name}
-                accept=".jpg, .jpeg, .png, .pdf"
-                name={name}
-                onChange={showFileName}
-            />
+            <input type="file" className="input-file" id={name} accept=".jpg, .jpeg, .png, .pdf" name={name} onChange={showFileName} />
             <small>
                 <i>{filename}</i>
             </small>
