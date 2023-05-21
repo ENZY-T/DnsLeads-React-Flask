@@ -80,15 +80,26 @@ def register():
     usrImg = request.files
     usrID = str(uuid4())
 
-    address_proof_img = saveUserImage(
-        usrImg["address_proof_img"], usrID, "address_proof_img")
-    passport_img = saveUserImage(usrImg["passport_img"], usrID, "passport_img")
-    police_check_img = saveUserImage(
-        usrImg["police_check_img"], usrID, "police_check_img")
-    children_check_img = saveUserImage(
-        usrImg["children_check_img"], usrID, "children_check_img")
-    agreement_img = saveUserImage(
-        usrImg["agreement_img"], usrID, "agreement_img")
+    address_proof_img = ""
+    passport_img = ""
+    police_check_img = ""
+    children_check_img = ""
+    agreement_img = ""
+
+    if "address_proof_img" in usrImg:
+        address_proof_img = saveUserImage(usrImg["address_proof_img"], usrID, "address_proof_img")
+    
+    if "passport_img" in usrImg:
+        passport_img = saveUserImage(usrImg["passport_img"], usrID, "passport_img")
+
+    if "police_check_img" in usrImg:
+        police_check_img = saveUserImage(usrImg["police_check_img"], usrID, "police_check_img")
+    
+    if "children_check_img" in usrImg:
+        children_check_img = saveUserImage(usrImg["children_check_img"], usrID, "children_check_img")
+    
+    if "agreement_img" in usrImg:
+        agreement_img = saveUserImage(usrImg["agreement_img"], usrID, "agreement_img")
 
     new_user = Users(
         id=usrID,
