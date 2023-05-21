@@ -48,7 +48,7 @@ jobs:
         with:
           command: |
             chown -R www-data:www-data /home/dluser/DnsLeads-React-Flask/backend;
-            systemctl dnsleads-be;
+            systemctl restart dnsleads-be;
 
           host: dnsleads.com.au
           username: ${{secrets.HOST_USERNAME}}
