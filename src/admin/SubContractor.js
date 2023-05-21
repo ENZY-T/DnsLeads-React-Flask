@@ -9,22 +9,22 @@ import { adminOnlyWrap } from '../components/wraps';
 import { GlobalData } from '../GlobalData';
 import { adminWrap } from './component/adminWrap';
 
-function ShowDocument({ srcLink = '', imgName }) {
-	let split_to_arr = srcLink.split('.');
-	const extenssion = split_to_arr[split_to_arr.length - 1];
-	return (
-		<div>
-			<h4>{imgName}</h4>
-			{extenssion === 'pdf' ? (
-				<a href={`${GlobalData.baseUrl}/${srcLink}`} target='_blank'>
-					{imgName} is PDF Document Click here to Open
-				</a>
-			) : (
-				<iframe src={`${GlobalData.baseUrl}/${srcLink}`} download='false' width='100%' style={{ height: '100vh' }}></iframe>
-				// <img src={srcLink} alt='Pic' style={{ height: '100vh' }} />
-			)}
-		</div>
-	);
+export function ShowDocument({ srcLink = '', imgName }) {
+    let split_to_arr = srcLink.split('.');
+    const extenssion = split_to_arr[split_to_arr.length - 1];
+    return (
+        <div>
+            <h4>{imgName}</h4>
+            {extenssion === 'pdf' ? (
+                <a href={`${GlobalData.baseUrl}/${srcLink}`} target="_blank">
+                    {imgName} is PDF Document Click here to Open
+                </a>
+            ) : (
+                <iframe src={`${GlobalData.baseUrl}/${srcLink}`} download="false" width="100%" style={{ height: '100vh' }}></iframe>
+                // <img src={srcLink} alt='Pic' style={{ height: '100vh' }} />
+            )}
+        </div>
+    );
 }
 
 function ApproveOrDisprove({ verified, userID, setData, data }) {

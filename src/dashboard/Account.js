@@ -25,8 +25,8 @@ function Account() {
                 },
             });
             if (result.status === 200) {
-                // pwchangeref.current.reset();
                 alert(result.data.msg);
+                pwchangeref.current.reset();
             }
         }
     }
@@ -76,12 +76,34 @@ function Account() {
                     <h5>
                         <b>BSB Number</b> : {authState.loggedUser.bsb}
                     </h5>
+
                     <h4 className="mt-5">Change Password</h4>
                     <hr />
                     <form onSubmit={passwordChangeHandle} ref={pwchangeref}>
-                        <TextField label="Current Password" variant="filled" className="w-100 my-2" name="current_password" required />
-                        <TextField label="New Password" variant="filled" className="w-100 my-2" name="new_password" required />
-                        <TextField label="Confirm Password" variant="filled" className="w-100 my-2" name="confirm_password" required />
+                        <TextField
+                            type="password"
+                            label="Current Password"
+                            variant="filled"
+                            className="w-100 my-2"
+                            name="current_password"
+                            required
+                        />
+                        <TextField
+                            type="password"
+                            label="New Password"
+                            variant="filled"
+                            className="w-100 my-2"
+                            name="new_password"
+                            required
+                        />
+                        <TextField
+                            type="password"
+                            label="Confirm Password"
+                            variant="filled"
+                            className="w-100 my-2"
+                            name="confirm_password"
+                            required
+                        />
                         <Button variant="contained" className="my-3" type="submit">
                             Change Password
                         </Button>

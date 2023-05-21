@@ -853,8 +853,10 @@ def req_invoice_data():
         lastDay = get_month_dates(int(filter_by_year), int(filter_by_month))
         INVOICE_ID = str(uuid4())
         today, today_time = getTimeAndDate()
-        new_invoice_number = int(db.session.query(
-            func.max(Invoice.invoice_number)).scalar())+1
+
+        # new_invoice_number = int(db.session.query(func.max(Invoice.invoice_number)).scalar())+1
+        new_invoice_number_query = db.session.query(func.max(Invoice.invoice_number)).scalar()
+        new_invoice_number = 1 if new_invoice_number_query is None else int(new_invoice_number_query) + 1
 
         month_end_date = f"{filter_by_year}-{filter_by_month}-{lastDay}"
 
