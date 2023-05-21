@@ -150,6 +150,8 @@ function Register() {
                 if (result.data.status === 'done') {
                     history.push('/login');
                 }
+            } else {
+                alert('Something went wrong please try again later. If you are getting this error repetedly please contact system admin.');
             }
         }
     };
