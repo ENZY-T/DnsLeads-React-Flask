@@ -146,11 +146,14 @@ function Register() {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             if (result.status === 200) {
-                alert(result.data.msg);
                 if (result.data.status === 'done') {
+                    alert('Registered Successfuly');
                     history.push('/login');
+                } else {
+                    alert(result.data.msg);
                 }
             } else {
+                alert(result.response.data);
                 alert('Something went wrong please try again later. If you are getting this error repetedly please contact system admin.');
             }
         }
