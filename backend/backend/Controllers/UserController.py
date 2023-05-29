@@ -110,12 +110,14 @@ def updateSingleUsers():
 
     usrID = usr["id"]
 
-    address_proof_img = ""
-    passport_img = ""
-    police_check_img = ""
-    children_check_img = ""
-    agreement_img = ""
-    declaration_img = ""
+    user = Users.query.filter_by(id=usrID).first()
+
+    address_proof_img = user.address_proof_img
+    passport_img = user.passport_img
+    police_check_img = user.police_check_img
+    children_check_img = user.children_check_img
+    agreement_img = user.agreement_img
+    declaration_img = user.declaration_img
 
     if "address_proof_img" in usrImg:
         address_proof_img = saveUserImage(usrImg["address_proof_img"], usrID, "address_proof_img")
@@ -135,6 +137,15 @@ def updateSingleUsers():
     if "declaration_img" in usrImg:
         declaration_img = saveUserImage(
             usrImg["declaration_img"], usrID, "declaration_img")
+    
+    user.address_proof_img = address_proof_img
+    user.passport_img = passport_img
+    user.police_check_img = police_check_img
+    user.children_check_img = children_check_img
+    user.agreement_img = agreement_img
+    user.declaration_img = declaration_img
+
+    db.session.commit()
 
     return jsonify({})
 
