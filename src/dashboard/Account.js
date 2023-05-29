@@ -107,9 +107,9 @@ function Account() {
                             <label>
                                 Passport Document
                                 {authState.loggedUser.passport_img === EMPTY_PATH ? (
-                                    <span style={{ color: 'var(--bs-warning-text-emphasis)' }}>No Document</span>
+                                    <span className="warning-span">No Document</span>
                                 ) : (
-                                    <span style={{ color: 'var(--bs-success-text-emphasis)' }}>Done</span>
+                                    <span className="done-span">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="passport-file" className="form-control mb-3" />
@@ -119,9 +119,9 @@ function Account() {
                             <label>
                                 Address Proof Document
                                 {authState.loggedUser.address_proof_img === EMPTY_PATH ? (
-                                    <span style={{ color: 'var(--bs-warning-text-emphasis)' }}>No Document</span>
+                                    <span className="warning-span">No Document</span>
                                 ) : (
-                                    <span style={{ color: 'var(--bs-success-text-emphasis)' }}>Done</span>
+                                    <span className="done-span">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="address-proof-file" className="form-control mb-3" />
@@ -131,9 +131,9 @@ function Account() {
                             <label>
                                 Police Check Document
                                 {authState.loggedUser.police_check_img === EMPTY_PATH ? (
-                                    <span style={{ color: 'var(--bs-warning-text-emphasis)' }}>No Document</span>
+                                    <span className="warning-span">No Document</span>
                                 ) : (
-                                    <span style={{ color: 'var(--bs-success-text-emphasis)' }}>Done</span>
+                                    <span className="done-span">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="police-check-file" className="form-control mb-3" />
@@ -143,9 +143,9 @@ function Account() {
                             <label>
                                 Children Check Document
                                 {authState.loggedUser.children_check_img === EMPTY_PATH ? (
-                                    <span style={{ color: 'var(--bs-warning-text-emphasis)' }}>No Document</span>
+                                    <span className="warning-span">No Document</span>
                                 ) : (
-                                    <span style={{ color: 'var(--bs-success-text-emphasis)' }}>Done</span>
+                                    <span className="done-span">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="children-check-file" className="form-control mb-3" />

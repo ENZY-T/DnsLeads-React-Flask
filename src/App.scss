@@ -39,6 +39,17 @@ html {
 html p {
 	margin: 0;
 }
+.warning-span {
+	padding: 10px;
+	border-radius: 5px;
+	border: 2px solid rgb(33, 161, 76);
+}
+
+.done-span {
+	padding: 10px;
+	border-radius: 5px;
+	border: 2px solid rgb(182, 112, 21);
+}
 .bg-theme {
 	background-color: $themeColor !important;
 }
