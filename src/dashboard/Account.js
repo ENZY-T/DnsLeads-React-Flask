@@ -49,6 +49,7 @@ function Account() {
             if (result.status === 200) {
                 alert(result.data.msg);
                 uploadDocsRef.current.reset();
+                window.location.reload();
             }
         }
     }

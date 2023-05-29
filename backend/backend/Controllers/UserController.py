@@ -147,7 +147,7 @@ def updateSingleUsers():
 
     db.session.commit()
 
-    return jsonify({})
+    return jsonify({}), 200
 
 
 
