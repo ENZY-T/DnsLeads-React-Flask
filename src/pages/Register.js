@@ -168,7 +168,7 @@ function Register() {
                         <h2 className="text-center mb-3 display-6">Sub-Contractor Register</h2>
                         <div className="register-form px-4">
                             <div className="alert alert-warning">
-                                <WarningAmberRounded /> Please fill and submit form carefuly. After the register, if you need to change
+                                <WarningAmberRounded /> Please fill and submit form carefuly. After registration, if you need to change
                                 something you will need to contact <strong>System Admin</strong>
                             </div>
                             <h4>Sub-Contractor Details</h4>

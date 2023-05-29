@@ -6,6 +6,7 @@ import { getItemFromLocalStorage, localStoreKeys } from '../allFuncs';
 import { userOnlyWrap } from '../components/wraps';
 import { AppContext } from '../Context/AppContext';
 import { GlobalData } from '../GlobalData';
+import { Label } from '@mui/icons-material';
 
 function Account() {
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
@@ -81,11 +82,17 @@ function Account() {
                     <hr />
 
                     <form className="py-3">
+                        <Label>Passport Document</Label>
                         <TextField type="file" name="passport-file" className="form-control" />
+                        <Label>Address Proof Document</Label>
                         <TextField type="file" name="address-proof-file" className="form-control" />
+                        <Label>Police Check Document</Label>
                         <TextField type="file" name="police-check-file" className="form-control" />
+                        <Label>Children Check Document</Label>
                         <TextField type="file" name="children-check-file" className="form-control" />
+                        <Label>Agreement Document</Label>
                         <TextField type="file" name="agreement-file" className="form-control" />
+                        <Label>Declaration Document</Label>
                         <TextField type="file" name="declaration-file" className="form-control" />
 
                         <Button variant="contained" className="my-3" type="submit">

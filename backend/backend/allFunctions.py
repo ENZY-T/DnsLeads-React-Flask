@@ -41,6 +41,7 @@ def userObjToDict(obj, isPw=False):
             "police_check_img": imgPath(str(obj.police_check_img)),
             "children_check_img": imgPath(str(obj.children_check_img)),
             "agreement_img": imgPath(str(obj.agreement_img)),
+            "declaration_img": imgPath(str(obj.declaration_img)),
 
             "verified": str(obj.verified),
             "password": str(obj.password),
@@ -74,6 +75,7 @@ def userObjToDict(obj, isPw=False):
         "police_check_img": imgPath(str(obj.police_check_img)),
         "children_check_img": imgPath(str(obj.children_check_img)),
         "agreement_img": imgPath(str(obj.agreement_img)),
+        "declaration_img": imgPath(str(obj.declaration_img)),
 
         "verified": str(obj.verified),
         "permanent_jobs": json.loads(obj.permanent_jobs),

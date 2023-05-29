@@ -108,73 +108,74 @@ function SubContractorPage({ data, setData, userID }) {
 	}
 
 	return (
-		<div>
-			<ApproveOrDisprove setData={setData} verified={data.verified} userID={userID} data={data} />
-			<h2 style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-				Sub-Contractor Details
-				<Button variant='contained' color='error' onClick={removeSubContractor}>
-					Remove Sub-Contractor
-				</Button>
-			</h2>
-			<hr />
+        <div>
+            <ApproveOrDisprove setData={setData} verified={data.verified} userID={userID} data={data} />
+            <h2 style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                Sub-Contractor Details
+                <Button variant="contained" color="error" onClick={removeSubContractor}>
+                    Remove Sub-Contractor
+                </Button>
+            </h2>
+            <hr />
 
-			<h5>
-				<b>Name : </b>
-				{data.name}
-			</h5>
-			<h5>
-				<b>Email : </b>{' '}
-				<a href={`mailto:${data.email}`} target='_blank'>
-					{data.email}
-				</a>{' '}
-			</h5>
-			<h5>
-				<b>Address : </b>
-				{data.address}, {data.zip_code}
-			</h5>
-			<h5>
-				<b>Contract No : </b>
-				{data.contact_no}
-			</h5>
-			<h5>
-				<b>ABN No : </b>
-				{data.abn}
-			</h5>
-			<h5>
-				<b>Passport No : </b>
-				{data.passport_number}
-			</h5>
-			<h2 className='mt-4'>Bank Details</h2>
-			<hr />
-			<h5>
-				<b>Bank : </b>
-				{data.bank_name}
-			</h5>
-			<h5>
-				<b>Acc Type : </b>
-				{data.account_type}
-			</h5>
-			<h5>
-				<b>Acc Name : </b>
-				{data.account_name}
-			</h5>
-			<h5>
-				<b>Acc Number : </b>
-				{data.account_number}
-			</h5>
-			<h5>
-				<b>BSB No : </b>
-				{data.bsb}
-			</h5>
-			<h2 className='mt-4'>Documents</h2>
-			<hr />
-			<ShowDocument srcLink={data.agreement_img} imgName='Agreement' />
-			<ShowDocument srcLink={data.address_proof_img} imgName='Address Proof' />
-			<ShowDocument srcLink={data.children_check_img} imgName='Children check' />
-			<ShowDocument srcLink={data.passport_img} imgName='Passport' />
-			<ShowDocument srcLink={data.police_check_img} imgName='Police check' />
-		</div>
-	);
+            <h5>
+                <b>Name : </b>
+                {data.name}
+            </h5>
+            <h5>
+                <b>Email : </b>{' '}
+                <a href={`mailto:${data.email}`} target="_blank">
+                    {data.email}
+                </a>{' '}
+            </h5>
+            <h5>
+                <b>Address : </b>
+                {data.address}, {data.zip_code}
+            </h5>
+            <h5>
+                <b>Contract No : </b>
+                {data.contact_no}
+            </h5>
+            <h5>
+                <b>ABN No : </b>
+                {data.abn}
+            </h5>
+            <h5>
+                <b>Passport No : </b>
+                {data.passport_number}
+            </h5>
+            <h2 className="mt-4">Bank Details</h2>
+            <hr />
+            <h5>
+                <b>Bank : </b>
+                {data.bank_name}
+            </h5>
+            <h5>
+                <b>Acc Type : </b>
+                {data.account_type}
+            </h5>
+            <h5>
+                <b>Acc Name : </b>
+                {data.account_name}
+            </h5>
+            <h5>
+                <b>Acc Number : </b>
+                {data.account_number}
+            </h5>
+            <h5>
+                <b>BSB No : </b>
+                {data.bsb}
+            </h5>
+            <h2 className="mt-4">Documents</h2>
+            <hr />
+            <ShowDocument srcLink={data.agreement_img} imgName="Agreement" />
+            <ShowDocument srcLink={data.declaration_img} imgName="Declaration" />
+            <ShowDocument srcLink={data.address_proof_img} imgName="Address Proof" />
+            <ShowDocument srcLink={data.children_check_img} imgName="Children check" />
+            <ShowDocument srcLink={data.passport_img} imgName="Passport" />
+            <ShowDocument srcLink={data.police_check_img} imgName="Police check" />
+        </div>
+    );
 }
 
 function SubContractor(props) {
