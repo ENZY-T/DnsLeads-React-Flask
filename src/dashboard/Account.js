@@ -82,17 +82,17 @@ function Account() {
                     <hr />
 
                     <form className="py-3">
-                        <Label>Passport Document</Label>
+                        <label>Passport Document</label>
                         <TextField type="file" name="passport-file" className="form-control" />
-                        <Label>Address Proof Document</Label>
+                        <label>Address Proof Document</label>
                         <TextField type="file" name="address-proof-file" className="form-control" />
-                        <Label>Police Check Document</Label>
+                        <label>Police Check Document</label>
                         <TextField type="file" name="police-check-file" className="form-control" />
-                        <Label>Children Check Document</Label>
+                        <label>Children Check Document</label>
                         <TextField type="file" name="children-check-file" className="form-control" />
-                        <Label>Agreement Document</Label>
+                        <label>Agreement Document</label>
                         <TextField type="file" name="agreement-file" className="form-control" />
-                        <Label>Declaration Document</Label>
+                        <label>Declaration Document</label>
                         <TextField type="file" name="declaration-file" className="form-control" />
 
                         <Button variant="contained" className="my-3" type="submit">
