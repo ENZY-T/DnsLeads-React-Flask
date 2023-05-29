@@ -85,6 +85,7 @@ def register():
     police_check_img = ""
     children_check_img = ""
     agreement_img = ""
+    declaration_img = ""
 
     if "address_proof_img" in usrImg:
         address_proof_img = saveUserImage(usrImg["address_proof_img"], usrID, "address_proof_img")
@@ -100,6 +101,10 @@ def register():
     
     if "agreement_img" in usrImg:
         agreement_img = saveUserImage(usrImg["agreement_img"], usrID, "agreement_img")
+
+    if "declaration_img" in usrImg:
+        declaration_img = saveUserImage(
+            usrImg["declaration_img"], usrID, "declaration_img")
 
     new_user = Users(
         id=usrID,
@@ -122,6 +127,8 @@ def register():
         police_check_img=police_check_img,
         children_check_img=children_check_img,
         agreement_img=agreement_img,
+        declaration_img=declaration_img,
+
         permanent_jobs=json.dumps([]),
         quick_jobs=json.dumps([]),
         verified="false",

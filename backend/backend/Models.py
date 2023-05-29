@@ -26,6 +26,7 @@ class Users(db.Model, UserMixin):
     police_check_img = db.Column(db.String(250))
     children_check_img = db.Column(db.String(250))
     agreement_img = db.Column(db.String(250))
+    declaration_img = db.Column(db.String(250))
     verified = db.Column(db.String(10))
     password = db.Column(db.String(250))
     permanent_jobs = db.Column(db.String(2000))

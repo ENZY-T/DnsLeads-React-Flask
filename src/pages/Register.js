@@ -135,7 +135,8 @@ function Register() {
                     obj.name === 'passport_img' ||
                     obj.name === 'police_check_img' ||
                     obj.name === 'children_check_img' ||
-                    obj.name === 'agreement_img'
+                    obj.name === 'agreement_img' ||
+                    obj.name === 'declaration_img'
                 ) {
                     formData.append(obj.name, obj.files[0]);
                 } else {
@@ -345,6 +346,15 @@ function Register() {
                                     </div>
                                 </div>
 
+                                <div className="row">
+                                    <a href={GlobalData.CompanyDetails.agreement} className="p-2">
+                                        Download Agreement
+                                    </a>
+                                    <a href={GlobalData.CompanyDetails.declaration} className="p-2">
+                                        Download Declaration
+                                    </a>
+                                </div>
+
                                 <hr />
                                 <div className="upload-document-container">
                                     <UploadBox label={'Upload Passport Image'} name={'passport_img'} />
@@ -352,6 +362,7 @@ function Register() {
                                     <UploadBox label={'Upload police check'} name={'police_check_img'} />
                                     <UploadBox label={'Upload children check'} name={'children_check_img'} />
                                     <UploadBox label={'Upload signed contract agreement'} name={'agreement_img'} />
+                                    <UploadBox label={'Upload signed declaration form'} name={'declaration_img'} />
                                 </div>
                                 <div className="d-flex justify-content-center">
                                     <Button variant="contained" className="my-4 rounded-0 px-4 bg-theme" type="submit">

@@ -5,6 +5,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { getItemFromLocalStorage, localStoreKeys, removeItemFromLocalStorage } from '../allFuncs';
 import { AppContext } from '../Context/AppContext';
 import Logo from './Logo';
+import AgreementForm from './Logo';
 
 const settings = [
 	{
