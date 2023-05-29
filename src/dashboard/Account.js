@@ -14,6 +14,7 @@ function Account() {
     console.log(authState.loggedUser);
 
     const pwchangeref = useRef();
+    const uploadDocsRef = useRef();
 
     async function passwordChangeHandle(e) {
         e.preventDefault();
@@ -28,6 +29,24 @@ function Account() {
             if (result.status === 200) {
                 alert(result.data.msg);
                 pwchangeref.current.reset();
+            }
+        }
+    }
+
+    async function uploadNewDocuments(e) {
+        e.preventDefault();
+        if (window.confirm('Do you realy want to change the password?') === true) {
+            const uploadForm = new FormData(uploadDocsRef.current);
+            uploadForm.append('id', authState.loggedUser.id);
+            const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            if (result.status === 200) {
+                alert(result.data.msg);
+                uploadDocsRef.current.reset();
             }
         }
     }
@@ -81,17 +100,22 @@ function Account() {
                     <h4 className="mt-5">Documents</h4>
                     <hr />
 
-                    <form className="py-3">
+                    <form className="py-3" onSubmit={uploadNewDocuments} ref={uploadDocsRef}>
                         <label>Passport Document</label>
                         <TextField type="file" name="passport-file" className="form-control" />
+                        <br />
                         <label>Address Proof Document</label>
                         <TextField type="file" name="address-proof-file" className="form-control" />
+                        <br />
                         <label>Police Check Document</label>
                         <TextField type="file" name="police-check-file" className="form-control" />
+                        <br />
                         <label>Children Check Document</label>
                         <TextField type="file" name="children-check-file" className="form-control" />
+                        <br />
                         <label>Agreement Document</label>
                         <TextField type="file" name="agreement-file" className="form-control" />
+                        <br />
                         <label>Declaration Document</label>
                         <TextField type="file" name="declaration-file" className="form-control" />
 

@@ -15,6 +15,7 @@ from datetime import datetime, date
 from backend.middlewares.AuthorizationMiddleware import AuthorizationRequired
 from sqlalchemy.sql.operators import and_
 from .. import app
+from .AuthController import saveUserImage
 
 
 user = Blueprint("user", __name__)
@@ -100,75 +101,43 @@ def delSingleUsers(id):
         return {"error": "id required"}, 400
 
 
-'''
-@user.route("/update/user", methods=["POST"])
+
+@user.route("/update-documents", methods=["POST"])
+@jwt_required()
 def updateSingleUsers():
-    if "id" in request.json:
-        id = request.json["id"]
-        user = User.query.filter_by(id=id).first()
-        if "abn" in request.json:
-            user.abn = request.json["abn"]
+    usr = request.form
+    usrImg = request.files
 
-        if "account_name" in request.json:
-            user.account_name = request.json["account_name"]
+    usrID = usr["id"]
 
-        if "account_number" in request.json:
-            user.account_number = request.json["account_number"]
+    address_proof_img = ""
+    passport_img = ""
+    police_check_img = ""
+    children_check_img = ""
+    agreement_img = ""
+    declaration_img = ""
 
-        if "account_type" in request.json:
-            user.account_type = request.json["account_type"]
+    if "address_proof_img" in usrImg:
+        address_proof_img = saveUserImage(usrImg["address_proof_img"], usrID, "address_proof_img")
+    
+    if "passport_img" in usrImg:
+        passport_img = saveUserImage(usrImg["passport_img"], usrID, "passport_img")
 
-        if "address" in request.json:
-            user.address = request.json["address"]
+    if "police_check_img" in usrImg:
+        police_check_img = saveUserImage(usrImg["police_check_img"], usrID, "police_check_img")
+    
+    if "children_check_img" in usrImg:
+        children_check_img = saveUserImage(usrImg["children_check_img"], usrID, "children_check_img")
+    
+    if "agreement_img" in usrImg:
+        agreement_img = saveUserImage(usrImg["agreement_img"], usrID, "agreement_img")
 
-        if "address_proof_img" in request.json:
-            user.address_proof_img = request.json["address_proof_img"]
+    if "declaration_img" in usrImg:
+        declaration_img = saveUserImage(
+            usrImg["declaration_img"], usrID, "declaration_img")
 
-        if "agreement_img" in request.json:
-            user.agreement_img = request.json["agreement_img"]
+    return jsonify({})
 
-        if "bank_name" in request.json:
-            user.bank_name = request.json["bank_name"]
-
-        if "bsb" in request.json:
-            user.bsb = request.json["bsb"]
-
-        if "children_check_img" in request.json:
-            user.children_check_img = request.json["children_check_img"]
-
-        if "contact_no" in request.json:
-            user.contact_no = request.json["contact_no"]
-
-        if "email" in request.json:
-            user.email = request.json["email"]
-
-        if "name" in request.json:
-            user.name = request.json["name"]
-
-        if "passport_img" in request.json:
-            user.passport_img = request.json["passport_img"]
-
-        if "passport_number" in request.json:
-            user.passport_number = request.json["passport_number"]
-
-        if "password" in request.json:
-            user.password = request.json["password"]
-
-        if "police_check_img" in request.json:
-            user.police_check_img = request.json["police_check_img"]
-
-        if "verified" in request.json:
-            user.verified = request.json["verified"]
-
-        if "zip_code" in request.json:
-            user.zip_code = request.json["zip_code"]
-
-        db.session.commit()
-        return usersObjtoDictArr([user])
-
-    else:
-        return {"error": "id required"}, 400
-'''
 
 
 @user.route("/user", methods=["GET"])
