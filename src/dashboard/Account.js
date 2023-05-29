@@ -155,9 +155,9 @@ function Account() {
                             <label>
                                 Agreement Document
                                 {authState.loggedUser.agreement_img === EMPTY_PATH ? (
-                                    <span style={{ color: 'var(--bs-warning-text-emphasis)' }}>No Document</span>
+                                    <span className="warning-span">No Document</span>
                                 ) : (
-                                    <span style={{ color: 'var(--bs-success-text-emphasis)' }}>Done</span>
+                                    <span className="done-span">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="agreement-file" className="form-control mb-3" />
@@ -167,9 +167,9 @@ function Account() {
                             <label>
                                 Declaration Document
                                 {authState.loggedUser.declaration_img === EMPTY_PATH ? (
-                                    <span style={{ color: 'var(--bs-warning-text-emphasis)' }}>No Document</span>
+                                    <span className="warning-span">No Document</span>
                                 ) : (
-                                    <span style={{ color: 'var(--bs-success-text-emphasis)' }}>Done</span>
+                                    <span className="done-span">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="declaration-file" className="form-control" />

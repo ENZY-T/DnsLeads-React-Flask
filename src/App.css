@@ -39,13 +39,13 @@ html p {
 }
 
 .warning-span {
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   border: 2px solid #21a14c;
 }
 
 .done-span {
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   border: 2px solid #b67015;
 }
