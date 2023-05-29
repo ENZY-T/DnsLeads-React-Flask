@@ -8,6 +8,8 @@ import { AppContext } from '../Context/AppContext';
 import { GlobalData } from '../GlobalData';
 import { Label } from '@mui/icons-material';
 
+const EMPTY_PATH = '/api/static';
+
 function Account() {
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
     const { authState } = useContext(AppContext);
@@ -35,7 +37,7 @@ function Account() {
 
     async function uploadNewDocuments(e) {
         e.preventDefault();
-        if (window.confirm('Do you realy want to change the password?') === true) {
+        if (window.confirm('Do you realy want to change your documents?') === true) {
             const uploadForm = new FormData(uploadDocsRef.current);
             uploadForm.append('id', authState.loggedUser.id);
             const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
@@ -101,23 +103,77 @@ function Account() {
                     <hr />
 
                     <form className="py-3" onSubmit={uploadNewDocuments} ref={uploadDocsRef}>
-                        <label>Passport Document</label>
-                        <TextField type="file" name="passport-file" className="form-control" />
-                        <br />
-                        <label>Address Proof Document</label>
-                        <TextField type="file" name="address-proof-file" className="form-control" />
-                        <br />
-                        <label>Police Check Document</label>
-                        <TextField type="file" name="police-check-file" className="form-control" />
-                        <br />
-                        <label>Children Check Document</label>
-                        <TextField type="file" name="children-check-file" className="form-control" />
-                        <br />
-                        <label>Agreement Document</label>
-                        <TextField type="file" name="agreement-file" className="form-control" />
-                        <br />
-                        <label>Declaration Document</label>
-                        <TextField type="file" name="declaration-file" className="form-control" />
+                        <div className="my-3">
+                            <label>
+                                Passport Document
+                                {authState.loggedUser.passport_img === EMPTY_PATH ? (
+                                    <div className="alert alert-warning m-1">No Document</div>
+                                ) : (
+                                    <div className="alert alert-success m-1">Done</div>
+                                )}
+                            </label>
+                            <TextField type="file" name="passport-file" className="form-control mb-3" />
+                        </div>
+
+                        <div className="my-3">
+                            <label>
+                                Address Proof Document
+                                {authState.loggedUser.address_proof_img === EMPTY_PATH ? (
+                                    <div className="alert alert-warning m-1">No Document</div>
+                                ) : (
+                                    <div className="alert alert-success m-1">Done</div>
+                                )}
+                            </label>
+                            <TextField type="file" name="address-proof-file" className="form-control mb-3" />
+                        </div>
+
+                        <div className="my-3">
+                            <label>
+                                Police Check Document
+                                {authState.loggedUser.police_check_img === EMPTY_PATH ? (
+                                    <div className="alert alert-warning m-1">No Document</div>
+                                ) : (
+                                    <div className="alert alert-success m-1">Done</div>
+                                )}
+                            </label>
+                            <TextField type="file" name="police-check-file" className="form-control mb-3" />
+                        </div>
+
+                        <div className="my-3">
+                            <label>
+                                Children Check Document
+                                {authState.loggedUser.children_check_img === EMPTY_PATH ? (
+                                    <div className="alert alert-warning m-1">No Document</div>
+                                ) : (
+                                    <div className="alert alert-success m-1">Done</div>
+                                )}
+                            </label>
+                            <TextField type="file" name="children-check-file" className="form-control mb-3" />
+                        </div>
+
+                        <div className="my-3">
+                            <label>
+                                Agreement Document
+                                {authState.loggedUser.agreement_img === EMPTY_PATH ? (
+                                    <div className="alert alert-warning m-1">No Document</div>
+                                ) : (
+                                    <div className="alert alert-success m-1">Done</div>
+                                )}
+                            </label>
+                            <TextField type="file" name="agreement-file" className="form-control mb-3" />
+                        </div>
+
+                        <div className="my-3">
+                            <label>
+                                Declaration Document
+                                {authState.loggedUser.declaration_img === EMPTY_PATH ? (
+                                    <div className="alert alert-warning m-1">No Document</div>
+                                ) : (
+                                    <div className="alert alert-success m-1">Done</div>
+                                )}
+                            </label>
+                            <TextField type="file" name="declaration-file" className="form-control" />
+                        </div>
 
                         <Button variant="contained" className="my-3" type="submit">
                             Save Changes
