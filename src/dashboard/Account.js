@@ -107,9 +107,9 @@ function Account() {
                             <label>
                                 Passport Document
                                 {authState.loggedUser.passport_img === EMPTY_PATH ? (
-                                    <div className="alert alert-warning m-1">No Document</div>
+                                    <span className="alert alert-warning m-1">No Document</span>
                                 ) : (
-                                    <div className="alert alert-success m-1">Done</div>
+                                    <span className="alert alert-success m-1">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="passport-file" className="form-control mb-3" />
@@ -119,9 +119,9 @@ function Account() {
                             <label>
                                 Address Proof Document
                                 {authState.loggedUser.address_proof_img === EMPTY_PATH ? (
-                                    <div className="alert alert-warning m-1">No Document</div>
+                                    <span className="alert alert-warning m-1">No Document</span>
                                 ) : (
-                                    <div className="alert alert-success m-1">Done</div>
+                                    <span className="alert alert-success m-1">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="address-proof-file" className="form-control mb-3" />
@@ -131,9 +131,9 @@ function Account() {
                             <label>
                                 Police Check Document
                                 {authState.loggedUser.police_check_img === EMPTY_PATH ? (
-                                    <div className="alert alert-warning m-1">No Document</div>
+                                    <span className="alert alert-warning m-1">No Document</span>
                                 ) : (
-                                    <div className="alert alert-success m-1">Done</div>
+                                    <span className="alert alert-success m-1">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="police-check-file" className="form-control mb-3" />
@@ -143,9 +143,9 @@ function Account() {
                             <label>
                                 Children Check Document
                                 {authState.loggedUser.children_check_img === EMPTY_PATH ? (
-                                    <div className="alert alert-warning m-1">No Document</div>
+                                    <span className="alert alert-warning m-1">No Document</span>
                                 ) : (
-                                    <div className="alert alert-success m-1">Done</div>
+                                    <span className="alert alert-success m-1">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="children-check-file" className="form-control mb-3" />
@@ -155,9 +155,9 @@ function Account() {
                             <label>
                                 Agreement Document
                                 {authState.loggedUser.agreement_img === EMPTY_PATH ? (
-                                    <div className="alert alert-warning m-1">No Document</div>
+                                    <span className="alert alert-warning m-1">No Document</span>
                                 ) : (
-                                    <div className="alert alert-success m-1">Done</div>
+                                    <span className="alert alert-success m-1">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="agreement-file" className="form-control mb-3" />
@@ -167,9 +167,9 @@ function Account() {
                             <label>
                                 Declaration Document
                                 {authState.loggedUser.declaration_img === EMPTY_PATH ? (
-                                    <div className="alert alert-warning m-1">No Document</div>
+                                    <span className="alert alert-warning m-1">No Document</span>
                                 ) : (
-                                    <div className="alert alert-success m-1">Done</div>
+                                    <span className="alert alert-success m-1">Done</span>
                                 )}
                             </label>
                             <TextField type="file" name="declaration-file" className="form-control" />
