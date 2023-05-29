@@ -347,10 +347,10 @@ function Register() {
                                 </div>
 
                                 <div className="row">
-                                    <a href={GlobalData.CompanyDetails.agreement} className="p-2 btn" download={true}>
+                                    <a href={GlobalData.CompanyDetails.agreement} className="p-2" download={true}>
                                         Download Agreement
                                     </a>
-                                    <a href={GlobalData.CompanyDetails.declaration} className="p-2 btn" download={true}>
+                                    <a href={GlobalData.CompanyDetails.declaration} className="p-2" download={true}>
                                         Download Declaration
                                     </a>
                                 </div>
