@@ -41,15 +41,15 @@ html p {
 .warning-span {
   margin: 5px 10px;
   padding: 5px;
-  border-radius: 5px;
-  border: 2px solid #21a14c;
+  font-weight: 600;
+  color: #b67015;
 }
 
 .done-span {
   margin: 5px 10px;
   padding: 5px;
-  border-radius: 5px;
-  border: 2px solid #b67015;
+  font-weight: 600;
+  color: #21a14c;
 }
 
 .bg-theme {

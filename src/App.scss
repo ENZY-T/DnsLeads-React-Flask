@@ -42,15 +42,15 @@ html p {
 .warning-span {
 	margin: 5px 10px;
 	padding: 5px;
-	border-radius: 5px;
-	border: 2px solid rgb(33, 161, 76);
+	font-weight: 600;
+		color: rgb(182, 112, 21);
 }
 
 .done-span {
 	margin: 5px 10px;
 	padding: 5px;
-	border-radius: 5px;
-	border: 2px solid rgb(182, 112, 21);
+	font-weight: 600;
+		color: rgb(33, 161, 76);
 }
 .bg-theme {
 	background-color: $themeColor !important;
