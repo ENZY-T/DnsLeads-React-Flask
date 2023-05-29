@@ -1,5 +1,6 @@
 // $themeColor: #ab1e05;
-$themeColor: #fbfbfb;
+$themeColor: #b0b0b0;
+$themetxt: #2c4fa2;
 
 html,
 body,
@@ -127,7 +128,8 @@ html p {
 	background-repeat: no-repeat;
 	background-size: cover;
 	h1 {
-		color: white;
+		// color: white;
+			color: $themetxt;
 		font-weight: 800;
 		font-size: 50px;
 	}
@@ -298,7 +300,7 @@ html p {
 				.bar {
 					width: 30px;
 					height: 3px;
-					background-color: white;
+					background-color: $themetxt;
 					margin: 5px 0;
 				}
 			}
@@ -320,7 +322,7 @@ html p {
 				margin: 0 !important;
 				z-index: 10000 !important;
 				.nav-item {
-					color: white;
+					color: $themetxt;
 					text-decoration: none;
 					padding: 15px 5px;
 				}
@@ -332,7 +334,7 @@ html p {
 				width: 45px;
 				height: 45px;
 				border-radius: 50%;
-				background-color: #959595;
+				background-color: $themetxt;
 				color: white;
 				display: flex;
 				align-items: center;

@@ -116,5 +116,5 @@ function Account() {
     );
 }
 
-// export default userOnlyWrap(Account);
-export default Account;
+export default userOnlyWrap(Account);
+// export default Account;
