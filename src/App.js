@@ -57,7 +57,8 @@ function App() {
                         {/* Testing Pages */}
                         <Route path="/invoice" exact component={Invoice} />
                         {/* Public Pages */}
-                        <Route path="/" exact component={HomePage} />
+                        {/* <Route path="/" exact component={HomePage} /> */}
+                        <Route path="/" exact component={Account} />
                         <Route path="/about-us" exact component={AboutUs} />
                         <Route path="/services" exact component={Services} />
                         <Route path="/services/details" exact component={ServiceDetails} />

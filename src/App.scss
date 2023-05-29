@@ -1,4 +1,5 @@
-$themeColor: #ab1e05;
+// $themeColor: #ab1e05;
+$themeColor: #fbfbfb;
 
 html,
 body,
@@ -476,7 +477,8 @@ html p {
 				border: 1px solid rgba(0, 0, 0, 0.2);
 			}
 			.nav-item:hover {
-				background-color: #841d0b;
+				// background-color: #841d0b;
+					background-color: #cccccc;
 			}
 		}
 	}
