@@ -77,6 +77,22 @@ function Account() {
                         <b>BSB Number</b> : {authState.loggedUser.bsb}
                     </h5>
 
+                    <h4 className="mt-5">Documents</h4>
+                    <hr />
+
+                    <form className="py-3">
+                        <TextField type="file" name="passport-file" className="form-control" />
+                        <TextField type="file" name="address-proof-file" className="form-control" />
+                        <TextField type="file" name="police-check-file" className="form-control" />
+                        <TextField type="file" name="children-check-file" className="form-control" />
+                        <TextField type="file" name="agreement-file" className="form-control" />
+                        <TextField type="file" name="declaration-file" className="form-control" />
+
+                        <Button variant="contained" className="my-3" type="submit">
+                            Save Changes
+                        </Button>
+                    </form>
+
                     <h4 className="mt-5">Change Password</h4>
                     <hr />
                     <form onSubmit={passwordChangeHandle} ref={pwchangeref}>
