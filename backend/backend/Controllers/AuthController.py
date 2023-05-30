@@ -48,8 +48,7 @@ def saveUserImage(file, userID, saveName):
 
     if not os.path.exists(user_folder):
         os.mkdir(user_folder)
-    save_file_path = os.path.join(
-        user_folder, f"{saveName}.{str(file.filename).split('.')[-1]}")
+    save_file_path = os.path.join(user_folder, f"{saveName}.{str(file.filename).split('.')[-1]}")
     file.save(save_file_path)
     return save_file_path
 

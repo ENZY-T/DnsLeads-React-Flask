@@ -39,6 +39,7 @@ function Account() {
         e.preventDefault();
         if (window.confirm('Do you realy want to change your documents?') === true) {
             const uploadForm = new FormData(uploadDocsRef.current);
+            console.log(uploadForm);
             uploadForm.append('id', authState.loggedUser.id);
             const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
                 headers: {
@@ -47,9 +48,11 @@ function Account() {
                 },
             });
             if (result.status === 200) {
-                alert(result.data.msg);
+                alert('Documents uploaded successfuly');
                 uploadDocsRef.current.reset();
                 window.location.reload();
+            }else{
+                alert("Something went wrong please try again later. if this msg getting continuously, please call to system admin. (+61 45 1570 605)")
             }
         }
     }
