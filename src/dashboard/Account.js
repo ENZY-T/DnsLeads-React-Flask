@@ -56,12 +56,12 @@ function Account() {
             console.log(agreementImg);
             console.log(declarationImg);
 
-            const passportImgFile = passportImg.firstChild.firstChild.current.files[0];
-            const addressProofImgFile = addressProofImg.firstChild.firstChild.current.files[0];
-            const policeCheckImgFile = policeCheckImg.firstChild.firstChild.current.files[0];
-            const childrenCheckImgFile = childrenCheckImg.firstChild.firstChild.current.files[0];
-            const agreementImgFile = agreementImg.firstChild.firstChild.current.files[0];
-            const declarationImgFile = declarationImg.firstChild.firstChild.current.files[0];
+            const passportImgFile = passportImg.current.files[0];
+            const addressProofImgFile = addressProofImg.current.files[0];
+            const policeCheckImgFile = policeCheckImg.current.files[0];
+            const childrenCheckImgFile = childrenCheckImg.current.files[0];
+            const agreementImgFile = agreementImg.current.files[0];
+            const declarationImgFile = declarationImg.current.files[0];
 
             if (passportImgFile) {
                 uploadForm.append('passport_img', passportImgFile);
@@ -81,6 +81,8 @@ function Account() {
             if (declarationImgFile) {
                 uploadForm.append('declaration_img', declarationImgFile);
             }
+
+            console.log('done');
 
             // const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
             //     headers: {
@@ -159,7 +161,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField ref={passportImg} type="file" name="passport_img" className="form-control mb-3" />
+                            <input ref={passportImg} type="file" name="passport_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -171,7 +173,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField ref={addressProofImg} type="file" name="address_proof_img" className="form-control mb-3" />
+                            <input ref={addressProofImg} type="file" name="address_proof_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -183,7 +185,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField ref={policeCheckImg} type="file" name="police_check_img" className="form-control mb-3" />
+                            <input ref={policeCheckImg} type="file" name="police_check_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -195,7 +197,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField ref={childrenCheckImg} type="file" name="children_check_img" className="form-control mb-3" />
+                            <input ref={childrenCheckImg} type="file" name="children_check_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -207,7 +209,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField ref={agreementImg} type="file" name="agreement_img" className="form-control mb-3" />
+                            <input ref={agreementImg} type="file" name="agreement_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -219,7 +221,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField ref={declarationImg} type="file" name="declaration_img" className="form-control" />
+                            <input ref={declarationImg} type="file" name="declaration_img" className="form-control" />
                         </div>
 
                         <Button variant="contained" className="my-3" type="submit">
