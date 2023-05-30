@@ -91,8 +91,10 @@ function AdminHome() {
         <div className="all-jobs-cards-container py-3">
             {loadingJobs ? (
                 <h2>No Jobs has Created</h2>
-            ) : (
+            ) : allJobs.length > 0 ? (
                 allJobs.map((job, indx) => <JobCard key={indx} jobID={job.job_id} jobTitle={job.job_name} />)
+            ) : (
+                <h2>No Jobs has Created</h2>
             )}
         </div>
     );

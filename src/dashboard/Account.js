@@ -35,12 +35,46 @@ function Account() {
         }
     }
 
+    const passportImg = useRef();
+    const addressProofImg = useRef();
+    const policeCheckImg = useRef();
+    const childrenCheckImg = useRef();
+    const agreementImg = useRef();
+    const declarationImg = useRef();
+
     async function uploadNewDocuments(e) {
         e.preventDefault();
         if (window.confirm('Do you realy want to change your documents?') === true) {
-            const uploadForm = new FormData(uploadDocsRef.current);
-            console.log(uploadForm);
+            const uploadForm = new FormData();
+
             uploadForm.append('id', authState.loggedUser.id);
+
+            const passportImgFile = passportImg.current.files[0];
+            const addressProofImgFile = addressProofImg.current.files[0];
+            const policeCheckImgFile = policeCheckImg.current.files[0];
+            const childrenCheckImgFile = childrenCheckImg.current.files[0];
+            const agreementImgFile = agreementImg.current.files[0];
+            const declarationImgFile = declarationImg.current.files[0];
+
+            if (passportImgFile) {
+                uploadForm.append('passport_img', passportImgFile);
+            }
+            if (addressProofImgFile) {
+                uploadForm.append('address_proof_img', addressProofImgFile);
+            }
+            if (policeCheckImgFile) {
+                uploadForm.append('police_check_img', policeCheckImgFile);
+            }
+            if (childrenCheckImgFile) {
+                uploadForm.append('children_check_img', childrenCheckImgFile);
+            }
+            if (agreementImgFile) {
+                uploadForm.append('agreement_img', agreementImgFile);
+            }
+            if (declarationImgFile) {
+                uploadForm.append('declaration_img', declarationImgFile);
+            }
+
             const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
                 headers: {
                     Authorization: `Bearer ${authTokenData}`,
@@ -51,8 +85,10 @@ function Account() {
                 alert('Documents uploaded successfuly');
                 uploadDocsRef.current.reset();
                 window.location.reload();
-            }else{
-                alert("Something went wrong please try again later. if this msg getting continuously, please call to system admin. (+61 45 1570 605)")
+            } else {
+                alert(
+                    'Something went wrong please try again later. if this msg getting continuously, please call to system admin. (+61 45 1570 605)'
+                );
             }
         }
     }
@@ -116,7 +152,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="passport_img" className="form-control mb-3" />
+                            <TextField ref={passportImg} type="file" name="passport_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -128,7 +164,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="address_proof_img" className="form-control mb-3" />
+                            <TextField ref={addressProofImg} type="file" name="address_proof_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -140,7 +176,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="police_check_img" className="form-control mb-3" />
+                            <TextField ref={policeCheckImg} type="file" name="police_check_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -152,7 +188,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="children_check_img" className="form-control mb-3" />
+                            <TextField ref={childrenCheckImg} type="file" name="children_check_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -164,7 +200,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="agreement_img" className="form-control mb-3" />
+                            <TextField ref={agreementImg} type="file" name="agreement_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -176,7 +212,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="declaration_img" className="form-control" />
+                            <TextField ref={declarationImg} type="file" name="declaration_img" className="form-control" />
                         </div>
 
                         <Button variant="contained" className="my-3" type="submit">
