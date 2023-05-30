@@ -48,7 +48,7 @@ function Account() {
             const uploadForm = new FormData();
 
             uploadForm.append('id', authState.loggedUser.id);
-            
+
             console.log(passportImg);
             console.log(addressProofImg);
             console.log(policeCheckImg);
@@ -56,13 +56,12 @@ function Account() {
             console.log(agreementImg);
             console.log(declarationImg);
 
-            const passportImgFile = passportImg.current.files[0];
-            const addressProofImgFile = addressProofImg.current.files[0];
-            const policeCheckImgFile = policeCheckImg.current.files[0];
-            const childrenCheckImgFile = childrenCheckImg.current.files[0];
-            const agreementImgFile = agreementImg.current.files[0];
-            const declarationImgFile = declarationImg.current.files[0];
-
+            const passportImgFile = passportImg.firstChild.firstChild.current.files[0];
+            const addressProofImgFile = addressProofImg.firstChild.firstChild.current.files[0];
+            const policeCheckImgFile = policeCheckImg.firstChild.firstChild.current.files[0];
+            const childrenCheckImgFile = childrenCheckImg.firstChild.firstChild.current.files[0];
+            const agreementImgFile = agreementImg.firstChild.firstChild.current.files[0];
+            const declarationImgFile = declarationImg.firstChild.firstChild.current.files[0];
 
             if (passportImgFile) {
                 uploadForm.append('passport_img', passportImgFile);
@@ -83,21 +82,21 @@ function Account() {
                 uploadForm.append('declaration_img', declarationImgFile);
             }
 
-            const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
-                headers: {
-                    Authorization: `Bearer ${authTokenData}`,
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            if (result.status === 200) {
-                alert('Documents uploaded successfuly');
-                uploadDocsRef.current.reset();
-                window.location.reload();
-            } else {
-                alert(
-                    'Something went wrong please try again later. if this msg getting continuously, please call to system admin. (+61 45 1570 605)'
-                );
-            }
+            // const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
+            //     headers: {
+            //         Authorization: `Bearer ${authTokenData}`,
+            //         'Content-Type': 'multipart/form-data',
+            //     },
+            // });
+            // if (result.status === 200) {
+            //     alert('Documents uploaded successfuly');
+            //     uploadDocsRef.current.reset();
+            //     window.location.reload();
+            // } else {
+            //     alert(
+            //         'Something went wrong please try again later. if this msg getting continuously, please call to system admin. (+61 45 1570 605)'
+            //     );
+            // }
         }
     }
 
