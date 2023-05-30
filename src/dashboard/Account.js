@@ -48,6 +48,13 @@ function Account() {
             const uploadForm = new FormData();
 
             uploadForm.append('id', authState.loggedUser.id);
+            
+            console.log(passportImg);
+            console.log(addressProofImg);
+            console.log(policeCheckImg);
+            console.log(childrenCheckImg);
+            console.log(agreementImg);
+            console.log(declarationImg);
 
             const passportImgFile = passportImg.current.files[0];
             const addressProofImgFile = addressProofImg.current.files[0];
@@ -55,6 +62,7 @@ function Account() {
             const childrenCheckImgFile = childrenCheckImg.current.files[0];
             const agreementImgFile = agreementImg.current.files[0];
             const declarationImgFile = declarationImg.current.files[0];
+
 
             if (passportImgFile) {
                 uploadForm.append('passport_img', passportImgFile);
