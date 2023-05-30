@@ -82,23 +82,21 @@ function Account() {
                 uploadForm.append('declaration_img', declarationImgFile);
             }
 
-            console.log('done');
-
-            // const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
-            //     headers: {
-            //         Authorization: `Bearer ${authTokenData}`,
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            // });
-            // if (result.status === 200) {
-            //     alert('Documents uploaded successfuly');
-            //     uploadDocsRef.current.reset();
-            //     window.location.reload();
-            // } else {
-            //     alert(
-            //         'Something went wrong please try again later. if this msg getting continuously, please call to system admin. (+61 45 1570 605)'
-            //     );
-            // }
+            const result = await axios.post(GlobalData.baseUrl + '/api/update-documents', uploadForm, {
+                headers: {
+                    Authorization: `Bearer ${authTokenData}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            if (result.status === 200) {
+                alert('Documents uploaded successfuly');
+                uploadDocsRef.current.reset();
+                window.location.reload();
+            } else {
+                alert(
+                    'Something went wrong please try again later. if this msg getting continuously, please call to system admin. (+61 45 1570 605)'
+                );
+            }
         }
     }
 
