@@ -116,7 +116,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="passport-file" className="form-control mb-3" />
+                            <TextField type="file" name="passport_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -128,7 +128,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="address-proof-file" className="form-control mb-3" />
+                            <TextField type="file" name="address_proof_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -140,7 +140,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="police-check-file" className="form-control mb-3" />
+                            <TextField type="file" name="police_check_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -152,7 +152,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="children-check-file" className="form-control mb-3" />
+                            <TextField type="file" name="children_check_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -164,7 +164,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="agreement-file" className="form-control mb-3" />
+                            <TextField type="file" name="agreement_img" className="form-control mb-3" />
                         </div>
 
                         <div className="my-3">
@@ -176,7 +176,7 @@ function Account() {
                                     <span className="done-span">Done</span>
                                 )}
                             </label>
-                            <TextField type="file" name="declaration-file" className="form-control" />
+                            <TextField type="file" name="declaration_img" className="form-control" />
                         </div>
 
                         <Button variant="contained" className="my-3" type="submit">
