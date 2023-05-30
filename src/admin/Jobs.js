@@ -473,6 +473,8 @@ function Jobs(props) {
         }
     }
 
+    const [doneBy, setDoneBy] = useState('');
+
     useEffect(() => {
         getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob);
         getAllContractors(setUserData, setLoadingContractors, jobID);
@@ -555,6 +557,24 @@ function Jobs(props) {
                 <Button onClick={downloadPdf} variant="contained" color="primary" style={{ height: '50px' }}>
                     Download Invoice
                 </Button>
+            </div>
+            <div className="d-flex my-3">
+                <h4>Enter record manualy</h4>
+                <form>
+                    <input type="text" className="form-control my-2" name="pay_for_me" placeholder="Payment for me/day" />
+                    <input type="text" className="form-control my-2" name="pay_for_cleaner" placeholder="Payment for cleaner/day" />
+                    <input type="datetime-local" className="form-control my-2" name="date" />
+                    <SelectOptions
+                        setSelectedData={setDoneBy}
+                        selectedData={doneBy}
+                        inputLabel="Done By"
+                        dropList={userData}
+                        emptyVal={true}
+                    />
+                    <Button variant="contained" color="primary" className="my-2">
+                        Add New Record
+                    </Button>
+                </form>
             </div>
             {completedJobData ? <JobDataTable jobData={completedJobData} /> : ''}
         </div>
