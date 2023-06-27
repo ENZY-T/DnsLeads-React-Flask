@@ -105,7 +105,7 @@ function NewInvoice({ invoiceRef }) {
                             <td style={{ width: '50%' }}>
                                 <h6>
                                     TO:<span style={{ opacity: '0' }}>OM</span>
-                                    {to_name ? to_name : ''}
+                                    <TextEditLine txt={toName} setTxt={setToName} />
                                 </h6>
                             </td>
                         </tr>
@@ -117,7 +117,9 @@ function NewInvoice({ invoiceRef }) {
                                 </h6>
                             </td>
                             <td>
-                                <h6>{toAddress}</h6>
+                                <h6>
+                                    <TextEditLine txt={toAddress} setTxt={setToAddress} />
+                                </h6>
                             </td>
                         </tr>
                         <tr>
@@ -165,7 +167,9 @@ function NewInvoice({ invoiceRef }) {
                     <tbody>
                         <tr>
                             <td>01</td>
-                            <td>{description}</td>
+                            <td>
+                                <TextEditLine txt={description} setTxt={setDescription} />
+                            </td>
                             <td></td>
                             <td></td>
                             <td className="txt-right">$ {data.sub_total ? data.sub_total : ''}</td>
