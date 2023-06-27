@@ -507,7 +507,7 @@ function Jobs(props) {
             if (result.status === 200) {
                 window.location.reload();
             } else {
-                alert(result.data.msg);
+                alert('Something went wrong please try again. If this msg showing you several times please contact system admin.');
             }
         }
     }
