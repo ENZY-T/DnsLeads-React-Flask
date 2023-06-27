@@ -9,7 +9,7 @@ from .. import db
 from ..allFunctions import usersObjToDictArr, userObjToDict, convert_coordinates, imgPath
 from datetime import timedelta
 import json
-from datetime import datetime
+from datetime import datetime, date
 from sqlalchemy.sql.operators import and_
 from ..middlewares.AuthorizationMiddleware import AuthorizationRequired
 from .. import BASE_DIR
@@ -31,6 +31,15 @@ def getTimeAndDate():
     started_time = today.split(" ")[1].split(".")[0]
 
     return started_date, started_time
+
+
+def get_day_txt():
+    daysArr = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+    today, _ = getTimeAndDate()
+    year, month, day = today.split("-")
+    year, month, day = int(year), int(month), int(day)
+    dayIndex = date(year, month, day)
+    return daysArr[dayIndex.weekday()]
 
 
 MONTH_DATA = [
@@ -900,3 +909,43 @@ def req_invoice_data():
 
         else:
             return jsonify({"msg": "Invoice requested month is not complete"}), 400
+
+
+
+@admin.route("/get-contractors", methods=["POST"])
+def manual_add_record():
+    m_payForMe = request.json['m_payForMe']
+    m_payForCleaner = request.json['m_payForCleaner']
+    m_dateTime = str(request.json['m_dateTine'])
+    job_started_date, job_started_time = m_dateTime.split("T")
+
+    user_id = request.json['m_doneBy']
+    job_id = request.json['job_id']
+
+    user_data = Users.query.filter_by(id=user_id).first()
+    job_data = PermanentJobs.query.filter_by(job_id=job_id).first()
+
+    original_time = datetime.strptime(job_started_time, '%H:%M')
+    new_time = original_time + timedelta(hours=2)
+    job_ended_time = new_time.strftime('%H:%M')
+
+    started_job = CompletedJobs(
+        id=job_id,
+        user_id=user_id,
+        user_name=user_data.name,
+        job_id=job_id,
+        job_name=job_data.job_name,
+        started_time=job_started_time,
+        ended_time=job_ended_time,
+        date=job_started_date,
+        job_payment_for_day=f"{m_payForCleaner}-{m_payForMe}",
+        job_status="done",
+        job_started_location="-34.9501214,138.6287817",
+        job_ended_location="-34.9501214,138.6287817",
+        job_counts_per_day="0"
+    )
+
+    db.session.add(started_job)
+    db.session.commit()
+
+    return jsonify()

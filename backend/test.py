@@ -1,5 +1,7 @@
-from flask_bcrypt import generate_password_hash
-from uuid import uuid4
+from datetime import datetime, timedelta
 
-print(generate_password_hash("asdf1234").decode('utf-8'))
-print(uuid4())
+original_time = datetime.strptime("18:08", '%H:%M')
+new_time = original_time + timedelta(hours=2)
+job_ended_time = new_time.strftime('%H:%M')
+
+print(job_ended_time)

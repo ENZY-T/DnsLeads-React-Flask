@@ -473,7 +473,32 @@ function Jobs(props) {
         }
     }
 
-    const [doneBy, setDoneBy] = useState('');
+    const [m_payForMe, m_setPayForMe] = useState();
+    const [m_payForCleaner, m_setPayForCleaner] = useState();
+    const [m_dateTine, m_setDateTime] = useState();
+    const [m_doneBy, m_setDoneBy] = useState();
+
+    const manualAddFormRef = useRef();
+
+    async function addNewRecord() {
+        const data = {
+            m_payForMe: m_payForMe,
+            m_payForCleaner: m_payForCleaner,
+            m_dateTine: m_dateTine,
+            m_doneBy: m_doneBy,
+            job_id: jobID,
+        };
+        const result = await axios.post(GlobalData.baseUrl + '', data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        if (result.status === 200) {
+            window.location.reload();
+        } else {
+            alert(result.data.msg);
+        }
+    }
 
     useEffect(() => {
         getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob);
@@ -560,18 +585,18 @@ function Jobs(props) {
             </div>
             <div className="my-3">
                 <h4>Enter record manualy</h4>
-                <form style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
+                <form style={{ display: 'flex', width: '100%', flexDirection: 'column' }} ref={manualAddFormRef}>
                     <input type="text" className="form-control my-2" name="pay_for_me" placeholder="Payment for me/day" />
                     <input type="text" className="form-control my-2" name="pay_for_cleaner" placeholder="Payment for cleaner/day" />
                     <input type="datetime-local" className="form-control my-2" name="date" />
                     <SelectOptions
-                        setSelectedData={setDoneBy}
-                        selectedData={doneBy}
+                        setSelectedData={m_setDoneBy}
+                        selectedData={m_doneBy}
                         inputLabel="Done By"
                         dropList={userData}
                         emptyVal={true}
                     />
-                    <Button variant="contained" color="primary" className="my-2" style={{ width: '150px' }}>
+                    <Button variant="contained" onSubmit={addNewRecord} color="primary" className="my-2" style={{ width: '150px' }}>
                         Add New Record
                     </Button>
                 </form>
