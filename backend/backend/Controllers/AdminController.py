@@ -928,13 +928,13 @@ def req_invoice_data():
 
 @admin.route("/manual-record-add", methods=["POST"])
 def manual_add_record():
-    print(request.json)
-    m_payForMe = request.json['m_payForMe']
-    m_payForCleaner = request.json['m_payForCleaner']
-    m_dateTime = str(request.json['m_dateTine'])
+
+    m_payForMe = request.json['m_pay_for_me']
+    m_payForCleaner = request.json['m_pay_for_cleaner']
+    m_dateTime = str(request.json['m_date_time'])
     job_started_date, job_started_time = m_dateTime.split("T")
 
-    user_id = request.json['m_doneBy']
+    user_id = request.json['m_done_by']
     job_id = request.json['job_id']
 
     user_data = Users.query.filter_by(id=user_id).first()

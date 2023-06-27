@@ -493,10 +493,10 @@ function Jobs(props) {
     async function addNewRecord() {
         if (window.confirm('Do you want to add manual record?')) {
             const data = {
-                m_payForMe: m_payForMe,
-                m_payForCleaner: m_payForCleaner,
-                m_dateTine: m_dateTine,
-                m_doneBy: m_doneBy,
+                m_pay_for_me: m_payForMe,
+                m_pay_for_cleaner: m_payForCleaner,
+                m_date_time: m_dateTine,
+                m_done_by: m_doneBy,
                 job_id: jobID,
             };
             const result = await axios.post(GlobalData.baseUrl + '/api/admin/manual-record-add', data, {
