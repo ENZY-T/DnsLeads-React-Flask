@@ -928,10 +928,6 @@ def req_invoice_data():
 
 @admin.route("/manual-record-add", methods=["POST"])
 def manual_add_record():
-    print(" * Came here")
-    print(request.data)
-    print(request.json)
-    print(request.form)
     m_payForMe = request.json['m_pay_for_me']
     m_payForCleaner = request.json['m_pay_for_cleaner']
     m_dateTime = str(request.json['m_date_time'])

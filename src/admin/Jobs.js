@@ -600,9 +600,26 @@ function Jobs(props) {
             <div className="my-3">
                 <h4>Enter record manualy</h4>
                 <form style={{ display: 'flex', width: '100%', flexDirection: 'column' }} ref={manualAddFormRef}>
-                    <input type="text" className="form-control my-2" name="pay_for_me" placeholder="Payment for me/day" />
-                    <input type="text" className="form-control my-2" name="pay_for_cleaner" placeholder="Payment for cleaner/day" />
-                    <input type="datetime-local" className="form-control my-2" name="date" />
+                    <input
+                        type="text"
+                        className="form-control my-2"
+                        onChange={(e) => m_setPayForMe(e.target.value)}
+                        name="pay_for_me"
+                        placeholder="Payment for me/day"
+                    />
+                    <input
+                        type="text"
+                        className="form-control my-2"
+                        onChange={(e) => m_setPayForCleaner(e.target.value)}
+                        name="pay_for_cleaner"
+                        placeholder="Payment for cleaner/day"
+                    />
+                    <input
+                        type="datetime-local"
+                        className="form-control my-2"
+                        onChange={(e) => m_setDateTime(e.target.value)}
+                        name="date"
+                    />
                     <SelectOptions
                         setSelectedData={m_setDoneBy}
                         selectedData={m_doneBy}
