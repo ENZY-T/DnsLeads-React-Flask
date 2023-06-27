@@ -30,6 +30,8 @@ function TextEditLine({ txt, setTxt }) {
                     >
                         ✓
                     </button>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas vero aliquam iusto quam at. Sapiente dolorem pariatur quas
+                    sint impedit officiis nemo! Reiciendis ipsum suscipit cum, rem quia earum adipisci!
                 </span>
             ) : (
                 <span onClick={enableEdit}>{txt}</span>
@@ -66,11 +68,7 @@ function NewInvoice({ invoiceRef }) {
         `Cleaning provided at ${data.to_name ? data.to_name : ''} from ${data.duration ? data.duration : ''}.`
     );
     const [toAddress, setToAddress] = useState(`${to_address ? to_address : ''}`);
-    const [] = useState();
-    const [] = useState();
-    const [] = useState();
-    const [] = useState();
-    const [] = useState();
+    const [todayDate, setTodayDate] = useState(today);
 
     return (
         <div className="new-invoice-container container" ref={invoiceRef}>
@@ -87,7 +85,7 @@ function NewInvoice({ invoiceRef }) {
                                 <h6>
                                     DATE
                                     <br />
-                                    {today}
+                                    <TextEditLine txt={todayDate} setTxt={setTodayDate} />
                                 </h6>
                             </td>
                             <td>
