@@ -35,9 +35,6 @@ const SecureAdminRoute = ({ component: Component, ...rest }) => {
 
     const handleSuccessAuth = (res) => {
         setIsAuthenticated(true);
-        // console.log('from');
-        // console.log(res.data);
-        // console.log('from');
         setLogged(res.data);
     };
 

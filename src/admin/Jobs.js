@@ -91,8 +91,6 @@ export function SelectOptions({
     emptyVal = false,
     ifOnChange = (test) => {},
 }) {
-    console.log(inputLabel);
-    console.log(dropList);
     return (
         <FormControl variant="filled" className={`w-100 my-4`}>
             <InputLabel id="select-bank">{inputLabel}</InputLabel>
@@ -476,7 +474,6 @@ function Jobs(props) {
             },
         });
         if (result.status === 200) {
-            console.log(result.data);
             setInvoiceDataForPDF(result.data);
             setTimeout(() => {
                 history.push(`/invoice`);

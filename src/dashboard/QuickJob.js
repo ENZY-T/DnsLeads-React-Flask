@@ -45,7 +45,7 @@ function QuickJob(props) {
                 },
             }
         );
-        // console.log(result.data);
+
         if (result.status === 200) {
             if (result.data === 'done') {
                 setIsRequested(true);

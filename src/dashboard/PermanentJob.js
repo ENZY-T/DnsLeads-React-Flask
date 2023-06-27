@@ -44,14 +44,13 @@ function PermanentJob(props) {
                 },
             }
         );
-        console.log(result);
+
         if (result.status === 200) {
             if (result.data.status === 'enrolled') {
                 history.push(`/my-jobs/${result.data.job_id}`);
             } else if (result.data.status === 'not-available') {
                 history.push(`/permanent-jobs`);
             } else {
-                console.log(result);
                 setJobData(result.data);
             }
         }
@@ -67,7 +66,7 @@ function PermanentJob(props) {
                 },
             }
         );
-        // console.log(result.data);
+
         if (result.status === 200) {
             if (result.data === 'done') {
                 setIsRequested(true);

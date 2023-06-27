@@ -178,7 +178,7 @@ function JobCard({ job }) {
                 },
             }
         );
-        console.log(result.data);
+
         if (result.status === 200) {
             setJobData(result.data);
         }

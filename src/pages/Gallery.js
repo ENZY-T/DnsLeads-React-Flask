@@ -27,7 +27,6 @@ function CreateAlbum({ setCreateCollectionShow, uploadPhoto, uploadForm }) {
     const [afterImgs, setAfterImgs] = useState([]);
 
     function setToShowList(e, setAfterOrBefore) {
-        console.log(e.target.files);
         const selectedFilesArray = Array.from(e.target.files);
         setAfterOrBefore(
             selectedFilesArray.map((file) => {
@@ -130,17 +129,12 @@ function ImgBox({ setAllPhotos, imgData, openImageWindow }) {
 
 function CollectionGallery({ imgObj, openImageWindow, setAllPhotos }) {
     const { authState } = useContext(AppContext);
-    async function removeCollection(){
-        if(window.confirm(`Do you want to delete ${imgObj.catergory} collection?`)){
-            const result = await axios.post(
-                GlobalData.baseUrl+
-                "/api/admin/remove-gallery-collection",
-                {
-                    collection_id:imgObj.id
-                },
-    
-            )
-            if(result.status === 200){
+    async function removeCollection() {
+        if (window.confirm(`Do you want to delete ${imgObj.catergory} collection?`)) {
+            const result = await axios.post(GlobalData.baseUrl + '/api/admin/remove-gallery-collection', {
+                collection_id: imgObj.id,
+            });
+            if (result.status === 200) {
                 setAllPhotos((prevState) => {
                     const index = prevState.indexOf(imgObj);
                     if (index > -1) {
@@ -227,7 +221,6 @@ function Gallery() {
             },
         });
         if (result.status === 200) {
-            console.log(result.data);
             setAllPhotos([...allPhotos, result.data]);
             uploadForm.current.reset();
         }
@@ -239,7 +232,7 @@ function Gallery() {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        console.log(result);
+
         if (result.status === 200) {
             setAllPhotos(result.data);
         }

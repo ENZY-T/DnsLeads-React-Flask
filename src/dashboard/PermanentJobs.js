@@ -56,15 +56,6 @@ function JobCard({ job }) {
         <div className="job-card-container">
             <div className="job-card p-4">
                 <h3 className="txt-theme">{job.job_name}</h3>
-                {/* <div>
-                    <CalendarMonthIcon /> <p>{job.daysCount} days for a week</p>
-                </div> */}
-                {/* <div>
-                    <ScheduleIcon /> <p>Duration : {job.job_duration}hr</p>
-                </div>
-                <div>
-                    <FlagIcon /> <p>Start Time : {job.job_start_time}</p>
-                </div> */}
                 <div>
                     <PaidIcon /> <p>A${job.job_payment_for_fortnight}/fortnight</p>
                 </div>
@@ -81,7 +72,7 @@ function PermanentJobs() {
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
     const { authState } = useContext(AppContext);
     const [allJobData, setAllJobData] = useState([]);
-    // console.log(authState);
+
     async function getAllPermanentJobs() {
         const result = await axios.post(
             GlobalData.baseUrl + '/api/get-all-permanent-jobs',

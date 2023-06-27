@@ -25,7 +25,6 @@ export function userOnlyWrap(WrappedComponent) {
             }
         }
         useEffect(() => {
-            console.log(authState);
             if (authState.loggedUser.verified === 'false') {
                 history.push('/not-verified');
             }

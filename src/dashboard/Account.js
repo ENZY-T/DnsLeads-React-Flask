@@ -13,7 +13,6 @@ const EMPTY_PATH = '/api/static';
 function Account() {
     const authTokenData = getItemFromLocalStorage(localStoreKeys.authKey);
     const { authState } = useContext(AppContext);
-    console.log(authState.loggedUser);
 
     const pwchangeref = useRef();
     const uploadDocsRef = useRef();
@@ -48,13 +47,6 @@ function Account() {
             const uploadForm = new FormData();
 
             uploadForm.append('id', authState.loggedUser.id);
-
-            console.log(passportImg);
-            console.log(addressProofImg);
-            console.log(policeCheckImg);
-            console.log(childrenCheckImg);
-            console.log(agreementImg);
-            console.log(declarationImg);
 
             const passportImgFile = passportImg.current.files[0];
             const addressProofImgFile = addressProofImg.current.files[0];

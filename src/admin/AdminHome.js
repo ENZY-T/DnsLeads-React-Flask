@@ -39,9 +39,8 @@ function JobCard({ jobID, jobTitle }) {
 			},
 		);
 		if (result.status === 200) {
-			// console.log(result.data);
-			setReqCount(result.data);
-		}
+            setReqCount(result.data);
+        }
 	}
 
 	useEffect(() => {

@@ -101,7 +101,6 @@ function QuickJobDataPage(props) {
             }
         );
         if (result.status === 200) {
-            console.log(result.data);
             setCompletedJobData(result.data);
         }
     }

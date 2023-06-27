@@ -48,7 +48,6 @@ function AdminMyJob(props) {
     const [jobStarted, setJobStarted] = useState();
     const history = useHistory();
     const { authState, setCurrentPermanentJobID } = useContext(AppContext);
-    // console.log(authState);
 
     const goBack = () => {
         history.goBack();

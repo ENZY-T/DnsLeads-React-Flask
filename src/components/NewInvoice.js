@@ -20,7 +20,7 @@ function NewInvoice({ invoiceRef }) {
               total: '',
               duration: '',
           };
-    console.log(data);
+
     const invoice_number = data.invoice_number ? data.invoice_number : '';
     const to_name = data.to_name ? data.to_name : '';
     const to_address = data.to_address ? data.to_address : '';

@@ -11,8 +11,6 @@ function JobCard({ job }) {
     const jobID = job.job_id;
     const history = useHistory();
 
-    console.log(job);
-
     return (
         <div className="quick-job-card">
             <div className="inner">
@@ -34,7 +32,6 @@ function QuickJobsData() {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        console.log(result);
         if (result.status === 200) {
             setAllJobData(result.data);
         }

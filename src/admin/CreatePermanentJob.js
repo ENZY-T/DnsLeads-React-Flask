@@ -50,9 +50,6 @@ function DayTimeLine({ dayTimeLines, setDayTimeLines, dayTimeLine, dayTimeLineIn
             return [...prevVal];
         });
     }
-    useEffect(() => {
-        console.log(dayTimeLines);
-    }, [dayTimeLines]);
     return (
         <tr>
             <td>

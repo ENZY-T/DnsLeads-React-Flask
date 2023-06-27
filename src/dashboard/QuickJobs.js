@@ -47,7 +47,6 @@ function QuickJobs() {
         });
         if (result.status === 200) {
             setQuickJobList(result.data);
-            console.log(result.data);
         }
     }
 
