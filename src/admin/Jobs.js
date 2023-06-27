@@ -323,6 +323,7 @@ function Jobs(props) {
     const [workingSubContractorsInThisJob, setWorkingSubContractorsInThisJob] = useState([]);
     const [completedJobData, setCompletedJobData] = useState([]);
     const [allReqUsers, setAllReqUsers] = useState([]);
+    const [allContractorsList, setAllContractorsList] = useState([]);
 
     async function addOrRemoveUser(jobID, method, added_id, added_name) {
         const sendData = {
@@ -361,6 +362,7 @@ function Jobs(props) {
         );
         if (result.status === 200) {
             setUserData(result.data);
+            setAllContractorsList(result.data);
             setLoadingContractors(false);
         }
     }
@@ -462,14 +464,13 @@ function Jobs(props) {
             },
         });
         if (result.status === 200) {
-            console.log(result.data)
+            console.log(result.data);
             setInvoiceDataForPDF(result.data);
             setTimeout(() => {
                 history.push(`/invoice`);
             }, 1000);
-        }
-        else{
-            alert(result.data.msg)
+        } else {
+            alert(result.data.msg);
         }
     }
 
@@ -595,7 +596,7 @@ function Jobs(props) {
                         setSelectedData={m_setDoneBy}
                         selectedData={m_doneBy}
                         inputLabel="Done By"
-                        dropList={userData}
+                        dropList={allContractorsList}
                         emptyVal={true}
                     />
                     <Button variant="contained" onSubmit={addNewRecord} color="primary" className="my-2" style={{ width: '350px' }}>
