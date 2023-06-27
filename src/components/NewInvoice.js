@@ -30,8 +30,6 @@ function TextEditLine({ txt, setTxt }) {
                     >
                         ✓
                     </button>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas vero aliquam iusto quam at. Sapiente dolorem pariatur quas
-                    sint impedit officiis nemo! Reiciendis ipsum suscipit cum, rem quia earum adipisci!
                 </span>
             ) : (
                 <span onClick={enableEdit}>{txt}</span>
