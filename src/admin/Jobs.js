@@ -479,7 +479,7 @@ function Jobs(props) {
                 history.push(`/invoice`);
             }, 1000);
         } else {
-            alert(result.data.msg);
+            alert(result.response.data.msg);
         }
     }
 
