@@ -481,22 +481,24 @@ function Jobs(props) {
     const manualAddFormRef = useRef();
 
     async function addNewRecord() {
-        const data = {
-            m_payForMe: m_payForMe,
-            m_payForCleaner: m_payForCleaner,
-            m_dateTine: m_dateTine,
-            m_doneBy: m_doneBy,
-            job_id: jobID,
-        };
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/manual-record-add', data, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        if (result.status === 200) {
-            window.location.reload();
-        } else {
-            alert(result.data.msg);
+        if (window.confirm('Do you want to add manual record?')) {
+            const data = {
+                m_payForMe: m_payForMe,
+                m_payForCleaner: m_payForCleaner,
+                m_dateTine: m_dateTine,
+                m_doneBy: m_doneBy,
+                job_id: jobID,
+            };
+            const result = await axios.post(GlobalData.baseUrl + '/api/admin/manual-record-add', data, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            if (result.status === 200) {
+                window.location.reload();
+            } else {
+                alert(result.data.msg);
+            }
         }
     }
 
