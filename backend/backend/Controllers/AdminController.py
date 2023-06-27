@@ -334,6 +334,20 @@ def get_all_contractors_to_show():
     return jsonify(allUsers)
 
 
+@admin.route("/get-all-users-list")
+def get_all_users_list_to_show():
+    all_users = Users.query.all()
+    allUsers = []
+    for usr in all_users:
+        to_append = {
+            "id": usr.id,
+            "name": usr.name
+        }
+        allUsers.append(to_append)
+
+    return jsonify(allUsers)
+
+
 @admin.route("/get-contractor/<userID>")
 def get_single_contractor(userID):
     user_data = Users.query.filter_by(id=userID).first()

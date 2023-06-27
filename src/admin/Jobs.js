@@ -366,7 +366,7 @@ function Jobs(props) {
         }
     }
 
-    async function getAllContractorsList(setLoadingContractors) {
+    async function getAllContractorsList() {
         const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-all-sub-contractors', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -374,7 +374,6 @@ function Jobs(props) {
         });
         if (result.status === 200) {
             setAllContractorsList(result.data);
-            setLoadingContractors(false);
         }
     }
 
@@ -517,7 +516,7 @@ function Jobs(props) {
     useEffect(() => {
         getJobdata(setLoadingJob, setJobData, jobID, setWorkingSubContractorsInThisJob);
         getAllContractors(setUserData, setLoadingContractors, jobID);
-        getAllContractorsList(setLoadingContractors);
+        getAllContractorsList();
         getAllCompletedJobData();
         getAllReqUsers();
     }, []);
