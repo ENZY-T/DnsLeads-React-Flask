@@ -912,7 +912,7 @@ def req_invoice_data():
 
 
 
-@admin.route("/get-contractors", methods=["POST"])
+@admin.route("/manual-record-add", methods=["POST"])
 def manual_add_record():
     m_payForMe = request.json['m_payForMe']
     m_payForCleaner = request.json['m_payForCleaner']
@@ -948,4 +948,4 @@ def manual_add_record():
     db.session.add(started_job)
     db.session.commit()
 
-    return jsonify()
+    return jsonify({"msg":""}), 200

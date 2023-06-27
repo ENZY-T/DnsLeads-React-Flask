@@ -488,7 +488,7 @@ function Jobs(props) {
             m_doneBy: m_doneBy,
             job_id: jobID,
         };
-        const result = await axios.post(GlobalData.baseUrl + '', data, {
+        const result = await axios.post(GlobalData.baseUrl + '/api/admin/manual-record-add', data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
