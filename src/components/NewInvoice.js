@@ -15,10 +15,15 @@ function TextEditLine({ txt, setTxt }) {
     }
 
     return (
-        <div>
+        <span>
             {isedit ? (
                 <span className="d-flex">
-                    <input type="text" style={{ border: 'none' }} value={txt} onChange={(e) => setTxt(e.target.value)} />
+                    <input
+                        type="text"
+                        style={{ border: 'none', width: '100%', padding: '2px' }}
+                        value={txt}
+                        onChange={(e) => setTxt(e.target.value)}
+                    />
                     <button
                         style={{ backgroundColor: ThemeColors.themeColor, color: ThemeColors.white, padding: '2px' }}
                         onClick={textChangeHandler}
@@ -29,7 +34,7 @@ function TextEditLine({ txt, setTxt }) {
             ) : (
                 <span onClick={enableEdit}>{txt}</span>
             )}
-        </div>
+        </span>
     );
 }
 
