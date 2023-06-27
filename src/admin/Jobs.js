@@ -558,9 +558,9 @@ function Jobs(props) {
                     Download Invoice
                 </Button>
             </div>
-            <div className="d-flex my-3">
+            <div className="my-3">
                 <h4>Enter record manualy</h4>
-                <form>
+                <form style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
                     <input type="text" className="form-control my-2" name="pay_for_me" placeholder="Payment for me/day" />
                     <input type="text" className="form-control my-2" name="pay_for_cleaner" placeholder="Payment for cleaner/day" />
                     <input type="datetime-local" className="form-control my-2" name="date" />
@@ -571,7 +571,7 @@ function Jobs(props) {
                         dropList={userData}
                         emptyVal={true}
                     />
-                    <Button variant="contained" color="primary" className="my-2">
+                    <Button variant="contained" color="primary" className="my-2" style={{ width: '150px' }}>
                         Add New Record
                     </Button>
                 </form>
