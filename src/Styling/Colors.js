@@ -7,4 +7,5 @@ export const ThemeColors = {
     textColor_fade: '#959595',
     yellow: 'yellow',
     bg_grey: '#f7f7f7',
+    themeColor: '#2c4fa2',
 };

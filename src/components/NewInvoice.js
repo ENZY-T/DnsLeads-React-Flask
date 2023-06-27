@@ -1,6 +1,37 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AppContext } from '../Context/AppContext';
 import Logo from './Logo';
+import { ThemeColors } from '../Styling/Colors';
+
+function TextEditLine({ txt, setTxt }) {
+    const [isedit, setIsEdit] = useState(false);
+
+    function textChangeHandler() {
+        setIsEdit(false);
+    }
+
+    function enableEdit() {
+        setIsEdit(true);
+    }
+
+    return (
+        <div>
+            {isedit ? (
+                <span className="d-flex">
+                    <input type="text" style={{ border: 'none' }} value={txt} onChange={(e) => setTxt(e.target.value)} />
+                    <button
+                        style={{ backgroundColor: ThemeColors.themeColor, color: ThemeColors.white, padding: '2px' }}
+                        onClick={textChangeHandler}
+                    >
+                        ✓
+                    </button>
+                </span>
+            ) : (
+                <span onClick={enableEdit}>{txt}</span>
+            )}
+        </div>
+    );
+}
 
 function NewInvoice({ invoiceRef }) {
     const date = new Date();
@@ -24,6 +55,17 @@ function NewInvoice({ invoiceRef }) {
     const invoice_number = data.invoice_number ? data.invoice_number : '';
     const to_name = data.to_name ? data.to_name : '';
     const to_address = data.to_address ? data.to_address : '';
+
+    const [toName, setToName] = useState(to_name);
+    const [description, setDescription] = useState(
+        `Cleaning provided at ${data.to_name ? data.to_name : ''} from ${data.duration ? data.duration : ''}.`
+    );
+    const [toAddress, setToAddress] = useState(`${to_address ? to_address : ''}`);
+    const [] = useState();
+    const [] = useState();
+    const [] = useState();
+    const [] = useState();
+    const [] = useState();
 
     return (
         <div className="new-invoice-container container" ref={invoiceRef}>
@@ -75,7 +117,7 @@ function NewInvoice({ invoiceRef }) {
                                 </h6>
                             </td>
                             <td>
-                                <h6>{to_address ? to_address : ''}</h6>
+                                <h6>{toAddress}</h6>
                             </td>
                         </tr>
                         <tr>
@@ -123,9 +165,7 @@ function NewInvoice({ invoiceRef }) {
                     <tbody>
                         <tr>
                             <td>01</td>
-                            <td>
-                                Cleaning provided at {data.to_name ? data.to_name : ''} from {data.duration ? data.duration : ''}.
-                            </td>
+                            <td>{description}</td>
                             <td></td>
                             <td></td>
                             <td className="txt-right">$ {data.sub_total ? data.sub_total : ''}</td>

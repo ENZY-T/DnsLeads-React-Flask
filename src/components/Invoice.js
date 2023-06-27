@@ -34,18 +34,6 @@ const Invoice = ({
         setPrintPdfFlag(true);
     };
 
-    // const invoiceData = props.params.match.invoiceData
-
-    const [data, setData] = useState({
-        invoice_number: '',
-        to_name: '',
-        to_address: '',
-        sub_total: '',
-        gst: '',
-        total: '',
-        duration: '',
-    });
-
     return (
         <div className="container px-5">
             <div className="container px-5">
