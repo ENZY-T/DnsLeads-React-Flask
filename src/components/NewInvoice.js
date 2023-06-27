@@ -67,6 +67,7 @@ function NewInvoice({ invoiceRef }) {
     );
     const [toAddress, setToAddress] = useState(`${to_address ? to_address : ''}`);
     const [todayDate, setTodayDate] = useState(today);
+    const [invoiceNumber, setInvoiceNumber] = useState(invoice_number);
 
     return (
         <div className="new-invoice-container container" ref={invoiceRef}>
@@ -90,7 +91,7 @@ function NewInvoice({ invoiceRef }) {
                                 <h6>
                                     TAX INVOICE NUMBER
                                     <br />
-                                    {invoice_number ? invoice_number : ''}
+                                    <TextEditLine txt={invoiceNumber} setTxt={setInvoiceNumber} />
                                 </h6>
                             </td>
                         </tr>
