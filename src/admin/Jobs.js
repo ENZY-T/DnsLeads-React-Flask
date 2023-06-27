@@ -609,7 +609,14 @@ function Jobs(props) {
                         dropList={allContractorsList}
                         emptyVal={true}
                     />
-                    <Button variant="contained" onClick={addNewRecord} color="primary" className="my-2" style={{ width: '350px' }}>
+                    <Button
+                        variant="contained"
+                        onClick={addNewRecord}
+                        type="button"
+                        color="primary"
+                        className="my-2"
+                        style={{ width: '350px' }}
+                    >
                         Add New Record
                     </Button>
                 </form>
