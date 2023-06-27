@@ -369,7 +369,7 @@ function Jobs(props) {
     }
 
     async function getAllContractorsList() {
-        const result = await axios.post(GlobalData.baseUrl + '/api/admin/get-all-users-list', {
+        const result = await axios.get(GlobalData.baseUrl + '/api/admin/get-all-users-list', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
