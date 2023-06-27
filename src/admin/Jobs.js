@@ -91,6 +91,8 @@ export function SelectOptions({
     emptyVal = false,
     ifOnChange = (test) => {},
 }) {
+    console.log(inputLabel);
+    console.log(dropList);
     return (
         <FormControl variant="filled" className={`w-100 my-4`}>
             <InputLabel id="select-bank">{inputLabel}</InputLabel>
