@@ -596,7 +596,7 @@ function Jobs(props) {
                         dropList={userData}
                         emptyVal={true}
                     />
-                    <Button variant="contained" onSubmit={addNewRecord} color="primary" className="my-2" style={{ width: '150px' }}>
+                    <Button variant="contained" onSubmit={addNewRecord} color="primary" className="my-2" style={{ width: '350px' }}>
                         Add New Record
                     </Button>
                 </form>

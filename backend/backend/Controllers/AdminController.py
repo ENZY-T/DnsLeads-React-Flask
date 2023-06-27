@@ -948,4 +948,4 @@ def manual_add_record():
     db.session.add(started_job)
     db.session.commit()
 
-    return jsonify({"msg":""}), 200
+    return jsonify({"msg":"Record added succesfuly"}), 200
