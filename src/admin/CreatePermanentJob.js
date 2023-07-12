@@ -186,8 +186,8 @@ function CreatePermanentJob() {
             <div>
                 <form ref={formRef} onSubmit={handleCreateJob}>
                     <TextField required className="w-100 my-3" label="Job Title" name="job_title" variant="filled" />
-                    <TextField required className="w-100 my-3" label="Job Address" name="job_address" variant="filled" />
-                    <TextField required className="w-100 my-3" label="Job Location" name="job_location" variant="filled" />
+                    <TextField required className="w-100 my-3" label="Job Location" name="job_address" variant="filled" />
+                    <TextField required className="w-100 my-3" label="Job Address" name="job_location" variant="filled" />
                     <TextField
                         required
                         className="w-100 my-3"
