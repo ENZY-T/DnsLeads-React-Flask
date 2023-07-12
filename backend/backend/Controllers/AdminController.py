@@ -944,7 +944,7 @@ def manual_add_record():
     job_ended_time = new_time.strftime('%H:%M')
 
     started_job = CompletedJobs(
-        id=job_id,
+        id=str(uuid4()),
         user_id=user_id,
         user_name=user_data.name,
         job_id=job_id,
